@@ -1,3 +1,6 @@
 business_configuration_module/wendelin_configuration
+knowledge_pad_module/3
+knowledge_pad_module/3/**
+portal_gadgets/WendelinInfoGadget
 workflow_module/erp5_wendelin_workflow
 workflow_module/erp5_wendelin_workflow/**
