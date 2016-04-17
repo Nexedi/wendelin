@@ -14,7 +14,7 @@
         </item>
         <item>
             <key> <string>action</string> </key>
-            <value> <string>Base_edit</string> </value>
+            <value> <string></string> </value>
         </item>
         <item>
             <key> <string>description</string> </key>
@@ -32,7 +32,7 @@
         </item>
         <item>
             <key> <string>enctype</string> </key>
-            <value> <string>multipart/form-data</string> </value>
+            <value> <string></string> </value>
         </item>
         <item>
             <key> <string>group_list</string> </key>
@@ -60,7 +60,7 @@
                     <key> <string>center</string> </key>
                     <value>
                       <list>
-                        <string>my_description</string>
+                        <string>information</string>
                       </list>
                     </value>
                 </item>
@@ -73,26 +73,13 @@
                 <item>
                     <key> <string>left</string> </key>
                     <value>
-                      <list>
-                        <string>my_title</string>
-                        <string>my_source_title</string>
-                        <string>my_reference</string>
-                        <string>my_version</string>
-                        <string>my_publication_section_list</string>
-                      </list>
+                      <list/>
                     </value>
                 </item>
                 <item>
                     <key> <string>right</string> </key>
                     <value>
-                      <list>
-                        <string>my_content_type</string>
-                        <string>my_filename</string>
-                        <string>my_size</string>
-                        <string>my_file</string>
-                        <string>my_translated_validation_state_title</string>
-                        <string>my_append_file</string>
-                      </list>
+                      <list/>
                     </value>
                 </item>
               </dictionary>
@@ -100,7 +87,7 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>DataStream_view</string> </value>
+            <value> <string>ERP5Site_viewWendelinInformationGadget</string> </value>
         </item>
         <item>
             <key> <string>method</string> </key>
@@ -108,11 +95,11 @@
         </item>
         <item>
             <key> <string>name</string> </key>
-            <value> <string>DataStream_view</string> </value>
+            <value> <string>ERP5Site_viewWendelinInfoGadget</string> </value>
         </item>
         <item>
             <key> <string>pt</string> </key>
-            <value> <string>form_view</string> </value>
+            <value> <string>gadget_view</string> </value>
         </item>
         <item>
             <key> <string>row_length</string> </key>
@@ -124,7 +111,7 @@
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>Data Stream</string> </value>
+            <value> <string>Wendelin Information</string> </value>
         </item>
         <item>
             <key> <string>unicode_mode</string> </key>

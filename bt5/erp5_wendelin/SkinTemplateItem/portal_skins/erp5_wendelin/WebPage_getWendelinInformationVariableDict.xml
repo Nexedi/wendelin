@@ -50,11 +50,11 @@
         </item>
         <item>
             <key> <string>_params</string> </key>
-            <value> <string>data_supply_kw, data_supply_line_kw</string> </value>
+            <value> <string></string> </value>
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>PortalIngestionPolicy_addDataSupply</string> </value>
+            <value> <string>WebPage_getWendelinInformationVariableDict</string> </value>
         </item>
       </dictionary>
     </pickle>
