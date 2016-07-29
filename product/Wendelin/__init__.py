@@ -44,3 +44,22 @@ for dtype in ('int8', 'int16', 'int32', 'int64', \
 
 allow_module('sklearn')
 allow_module('scipy')
+
+allow_module('wendelin.bigarray.array_zodb')
+allow_module('pandas')
+
+allow_type(np.timedelta64)
+allow_type(type(np.c_))
+
+import pandas as pd
+allow_type(pd.Series)
+allow_type(pd.DatetimeIndex)
+allow_type(pd.DataFrame)
+
+# Modify 'safetype' dict in full_write_guard function
+# of RestrictedPython (closure) directly To allow
+# write access to ndarray and ZBigArray objects
+from RestrictedPython.Guards import full_write_guard
+full_write_guard.func_closure[1].cell_contents.__self__[np.ndarray] = True
+from wendelin.bigarray.array_zodb import ZBigArray
+full_write_guard.func_closure[1].cell_contents.__self__[ZBigArray] = True
