@@ -1,6 +1,6 @@
 from Products.ERP5Type.Document import newTempBase
 
-if context.getArray() is None:
+if context.getArray() is None or context.getArrayShape() == (0,0):
   return []
 
 class SequenceSliceMap():
