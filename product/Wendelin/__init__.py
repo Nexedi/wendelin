@@ -41,6 +41,10 @@ for dtype in ('int8', 'int16', 'int32', 'int64', \
   z = np.array([0,], dtype = dtype)
   allow_type(type(z[0]))
   allow_type(type(z))
+  
+  sz = np.array([(0,)], dtype = [('f0', dtype)])
+  allow_type(type(sz[0]))
+  allow_type(type(sz))
 
 allow_module('sklearn')
 allow_module('scipy')
