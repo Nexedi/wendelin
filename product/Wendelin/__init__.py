@@ -57,6 +57,7 @@ allow_type(type(np.c_))
 
 import pandas as pd
 allow_type(pd.Series)
+allow_type(pd.Timestamp)
 allow_type(pd.DatetimeIndex)
 allow_type(pd.DataFrame)
 
@@ -67,3 +68,5 @@ from RestrictedPython.Guards import full_write_guard
 full_write_guard.func_closure[1].cell_contents.__self__[np.ndarray] = True
 from wendelin.bigarray.array_zodb import ZBigArray
 full_write_guard.func_closure[1].cell_contents.__self__[ZBigArray] = True
+
+allow_type(ZBigArray)
