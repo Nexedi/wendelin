@@ -37,7 +37,7 @@ allow_module('numpy')
 for dtype in ('int8', 'int16', 'int32', 'int64', \
               'uint8', 'uint16', 'uint32', 'uint64', \
               'float16', 'float32', 'float64', \
-              'complex64', 'complex128',):
+              'complex64', 'complex128'):
   z = np.array([0,], dtype = dtype)
   allow_type(type(z[0]))
   allow_type(type(z))
@@ -49,6 +49,9 @@ for dtype in ('int8', 'int16', 'int32', 'int64', \
   rz = np.rec.array(np.array([(0,)], dtype = [('f0', dtype)]))
   allow_type(type(rz[0]))
   allow_type(type(rz))
+  
+sz = np.array([('2017-07-12T12:30:20',)], dtype=[('date', 'M8[s]')])
+allow_type(type(sz[0]['date']))
 
 allow_module('sklearn')
 allow_module('scipy')
