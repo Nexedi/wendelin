@@ -83,6 +83,15 @@ class Test(ERP5TypeTestCase):
     import sklearn as _
     import pandas as _
     import matplotlib as _
+    import math as _
+    import sympy as _
+    import pylab as _
+    import openpyxl as _
+    import pickle as _
+    import statsmodels as _
+    import zipfile as _
+    import ftplib as _
+    import datetime as _
 
   def test_01_IngestionFromFluentd(self):
     """
