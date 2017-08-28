@@ -34,6 +34,7 @@ import msgpack
 import numpy as np
 import string
 import random
+import transaction
 
 def getRandomString():
   return 'test_%s' %''.join([random.choice(string.ascii_letters + string.digits) \
@@ -72,6 +73,24 @@ class Test(ERP5TypeTestCase):
     self.tic()
     
     return ingestion_policy, data_supply, data_stream, data_array
+    
+  def countObjectReinstantiations(self, ob):
+    """
+      Counts how many portal activity messages with a method_id of 
+      immediateReindexObject have been called on ob.
+    """    
+    activity_tool = self.portal.portal_activities  
+    activity_messages = activity_tool.getMessageList()
+    
+    result = 0
+    
+    last_messages = activity_messages[-10:]
+    
+    for message in last_messages:
+      if message.getObject(activity_tool) == ob and message.method_id == 'immediateReindexObject':
+        result += 1
+    
+    return result
     
    
   def test_0_import(self): 		 
@@ -341,3 +360,44 @@ context.activate().DataStream_readChunkListAndTransform( \
     # test as sequence
     bucket = bucket_stream.getBucketItemSequence(start_key=10, count=1)[0]
     self.assertEqual(100000, bucket[1].value)
+  
+  def test_05_NoReindexDataStream(self):
+    """
+      Test if DataStreams reindex themselves when they have data appended to them.
+    """
+    
+    
+    portal = self.portal
+    reference = getRandomString()
+    
+    row = ','.join(['%s' %x for x in range(1000)])
+    number_string_list = [row]*20
+    real_data = '\n'.join(number_string_list)
+    
+    data_stream = portal.data_stream_module.newContent(portal_type = 'Data Stream',
+                                                       reference = reference)
+    
+    self.tic()
+    
+    data_stream.appendData(real_data)
+    
+    transaction.commit()
+    
+    result = self.countObjectReinstantiations(data_stream)
+    
+    self.assertEquals(result, 0)
+    
+    reference = getRandomString()
+    data_array = portal.data_array_module.newContent(portal_type = 'Data Array',
+                                                     reference = reference)
+                                                     
+    self.tic()
+    
+    data_array.edit(title='New title')
+    
+    transaction.commit()
+    
+    result = self.countObjectReinstantiations(data_array)
+    
+    self.assertNotEquals(result, 0)
+    

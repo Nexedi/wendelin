@@ -5,6 +5,23 @@
 from wendelin.bigarray.array_zodb import ZBigArray
 import numpy as np
 
+from Products.ERP5Type.TransactionalVariable import getTransactionalVariable
+
+
+def Base_denyObjectReindexation(self):
+  tv = getTransactionalVariable()
+  key = 'explicitly_deny_object_reindexation_list'
+
+  try:
+    tmp = tv[key]
+    if not isinstance(tmp, list):
+      tv[key] = []
+    
+  except KeyError:
+    tv[key] = []
+  
+  tv[key].append(self)
+
 def DataStream_copyCSVToDataArray(data_stream, chunk_list, start, end, \
                                   data_array_reference=None):
   """
