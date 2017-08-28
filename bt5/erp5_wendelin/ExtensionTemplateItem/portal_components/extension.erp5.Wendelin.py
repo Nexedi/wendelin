@@ -5,6 +5,25 @@
 from wendelin.bigarray.array_zodb import ZBigArray
 import numpy as np
 
+from Products.ERP5Type.TransactionalVariable import getTransactionalVariable
+
+
+def DataStream_appendToTransactionalVariable(self, key, value):
+  """
+    Use this when information needs to be passed along a transaction.
+  """
+  tv = getTransactionalVariable()
+
+  try:
+    tmp = tv[key]
+    if not isinstance(tmp, list):
+      tv[key] = []
+    
+  except KeyError:
+    tv[key] = []
+  
+  tv[key].append(value)
+
 def DataStream_copyCSVToDataArray(data_stream, chunk_list, start, end, \
                                   data_array_reference=None):
   """
