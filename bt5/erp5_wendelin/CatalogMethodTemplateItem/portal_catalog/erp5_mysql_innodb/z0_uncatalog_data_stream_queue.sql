@@ -1,0 +1,1 @@
+DELETE FROM data_stream_queue WHERE <dtml-sqltest uid op=eq type=int multiple>

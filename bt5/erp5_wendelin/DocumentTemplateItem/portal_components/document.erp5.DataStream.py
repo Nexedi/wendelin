@@ -59,3 +59,16 @@ class DataStream(BigFile):
       chunk_list.append(chunk)
 
     return chunk_list
+
+  def appendData(self, data_chunk):
+    db = self.getPortalObject().erp5_sql_connection()
+    db.query('INSERT INTO data_stream_queue(uid, chunk) VALUES(%s,%s)'
+             % (self.getUid(), db.string_literal(data_chunk)))
+
+  def processDataStreamQueue(self):
+    q = self.getPortalObject().erp5_sql_connection().query
+    r = q('SELECT id, chunk FROM data_stream_queue WHERE uid=%s ORDER BY id'
+          % self.getUid(), max_rows=0)[1]
+    self._appendData(''.join(x[1] for x in r))
+    q('DELETE FROM data_stream_queue WHERE id IN (%s)'
+      % ','.join(str(x[0]) for x in r))

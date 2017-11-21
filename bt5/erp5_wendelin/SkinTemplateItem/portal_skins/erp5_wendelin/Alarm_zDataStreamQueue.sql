@@ -1,0 +1,1 @@
+SELECT catalog.uid, path FROM data_stream_queue LEFT JOIN catalog USING (uid)

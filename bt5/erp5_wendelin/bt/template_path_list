@@ -1,3 +1,4 @@
+portal_alarms/process_data_stream_queue
 portal_gadgets/WendelinInformationGadget
 portal_gadgets/WendelinInformationGadget/**
 web_page_module/wendelin_information_gadget.html

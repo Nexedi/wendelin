@@ -1,0 +1,3 @@
+erp5_mysql_innodb/z0_drop_data_stream_queue
+erp5_mysql_innodb/z0_uncatalog_data_stream_queue
+erp5_mysql_innodb/z_create_data_stream_queue
