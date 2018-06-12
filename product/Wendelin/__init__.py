@@ -67,7 +67,7 @@ allow_type(pd.Series)
 allow_type(pd.Timestamp)
 allow_type(pd.DatetimeIndex)
 allow_type(pd.DataFrame)
-
+allow_type(pd.core.groupby.DataFrameGroupBy)
 allow_class(pd.DataFrame)
 
 # Modify 'safetype' dict in full_write_guard function
