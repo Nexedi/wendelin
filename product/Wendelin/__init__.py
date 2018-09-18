@@ -49,6 +49,8 @@ for dtype in ('int8', 'int16', 'int32', 'int64', \
   rz = np.rec.array(np.array([(0,)], dtype = [('f0', dtype)]))
   allow_type(type(rz[0]))
   allow_type(type(rz))
+
+allow_type(np.dtype)
   
 sz = np.array([('2017-07-12T12:30:20',)], dtype=[('date', 'M8[s]')])
 allow_type(type(sz[0]['date']))
@@ -72,11 +74,14 @@ allow_class(pd.DataFrame)
 
 # Modify 'safetype' dict in full_write_guard function
 # of RestrictedPython (closure) directly To allow
-# write access to ndarray and ZBigArray objects
+# write access to ndarray, ZBigArray and RAMArray objects
 from RestrictedPython.Guards import full_write_guard
 full_write_guard.func_closure[1].cell_contents.__self__[np.ndarray] = True
 full_write_guard.func_closure[1].cell_contents.__self__[np.core.records.recarray] = True
 from wendelin.bigarray.array_zodb import ZBigArray
 full_write_guard.func_closure[1].cell_contents.__self__[ZBigArray] = True
-
 allow_type(ZBigArray)
+from wendelin.bigarray.array_ram import RAMArray
+full_write_guard.func_closure[1].cell_contents.__self__[RAMArray] = True
+allow_type(RAMArray)
+
