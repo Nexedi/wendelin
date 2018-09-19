@@ -34,6 +34,7 @@ from AccessControl import allow_module, allow_type, allow_class
 # we neeed to allow access to numpy's internal types
 import numpy as np
 allow_module('numpy')
+allow_module('numpy.lib.recfunctions')
 for dtype in ('int8', 'int16', 'int32', 'int64', \
               'uint8', 'uint16', 'uint32', 'uint64', \
               'float16', 'float32', 'float64', \
@@ -74,10 +75,14 @@ allow_class(pd.DataFrame)
 
 # Modify 'safetype' dict in full_write_guard function
 # of RestrictedPython (closure) directly To allow
-# write access to ndarray, ZBigArray and RAMArray objects
+# write access to ndarray, DataFrame, ZBigArray and RAMArray objects
 from RestrictedPython.Guards import full_write_guard
 full_write_guard.func_closure[1].cell_contents.__self__[np.ndarray] = True
 full_write_guard.func_closure[1].cell_contents.__self__[np.core.records.recarray] = True
+full_write_guard.func_closure[1].cell_contents.__self__[np.core.records.record] = True
+full_write_guard.func_closure[1].cell_contents.__self__[pd.DataFrame] = True
+full_write_guard.func_closure[1].cell_contents.__self__[pd.tseries.index.DatetimeIndex] = True
+full_write_guard.func_closure[1].cell_contents.__self__[pd.core.indexing._iLocIndexer] = True
 from wendelin.bigarray.array_zodb import ZBigArray
 full_write_guard.func_closure[1].cell_contents.__self__[ZBigArray] = True
 allow_type(ZBigArray)
