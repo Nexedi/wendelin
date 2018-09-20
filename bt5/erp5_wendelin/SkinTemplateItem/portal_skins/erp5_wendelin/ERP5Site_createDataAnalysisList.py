@@ -121,13 +121,13 @@ for movement in portal_catalog(query = query):
             resource_relative_url = resource.getRelativeUrl())
             
           for related_movement in related_movement_list:
-            #aggregate_set.update(related_movement.getAggregateSet())
-            related_movement.getParentValue().deliver()
-
-
+            if "big_data/ingestion/batch" in related_movement.getUseList():
+              related_movement.getParentValue().deliver()
+      
       # create new item based on item_type if it is not already aggregated
       aggregate_type_set = set(
         [portal.restrictedTraverse(a).getPortalType() for a in aggregate_set])
+      
       for item_type in transformation_line.getAggregatedPortalTypeList():
         # if item is not yet aggregated to this line, search it by related project
         # and source If the item is a data configuration or a device configuration
@@ -149,8 +149,13 @@ for movement in portal_catalog(query = query):
                 item_project_relative_url=delivery.getDestinationProject(),
                 item_source_relative_url=delivery.getSource())
   
-          elif item_type != "Data Array Line":
-            
+          elif all(
+            [
+              item_type != "Data Array Line",
+              not (item_type == "Data Array" and "big_data/analysis/transient" in transformation_line.getUseList()),
+              not (quantity < 0 and item_type == "Data Array")
+            ]
+          ):  
             item_query_dict = dict(
               portal_type=item_type,
               validation_state="validated",
@@ -158,6 +163,7 @@ for movement in portal_catalog(query = query):
               item_device_relative_url=movement.getAggregateDevice(),
               item_resource_uid=resource.getUid(),
               item_source_relative_url=data_analysis.getSource())
+
 
             if data_analysis.getDestinationProjectValue() is not None:
               item_query_dict["item_project_relative_url"] = data_analysis.getDestinationProject()
@@ -176,7 +182,9 @@ for movement in portal_catalog(query = query):
               pass
           aggregate_set.add(item.getRelativeUrl())
 
+      tag = "%s-%s" %(data_analysis.getUid(), transformation_line.getUid())
       data_analysis_line = data_analysis.newContent(
+        activate_kw={'tag': tag},
         portal_type = "Data Analysis Line",
         title = transformation_line.getTitle(),
         reference = transformation_line.getReference(),
@@ -185,7 +193,7 @@ for movement in portal_catalog(query = query):
         variation_category_list = transformation_line.getVariationCategoryList(),
         quantity = quantity,
         quantity_unit = transformation_line.getQuantityUnit(),
-        use = transformation_line.getUse(),
+        use_list = transformation_line.getUseList(),
         aggregate_set = aggregate_set)
       # for intput lines of first level analysis set causality and specialise
       if quantity < 0 and delivery.getPortalType() == "Data Ingestion":
@@ -193,7 +201,14 @@ for movement in portal_catalog(query = query):
           causality_value = delivery,
           specialise_value_list = data_supply_list)
     
-    data_analysis.checkConsistency(fixit=True)
+    # fix consistency of line and all affected items. Do it after reindexing
+    # activities of newly created Data Analysis Line finished, because check
+    # consistency script might need to find the newly created Data Analysis
+    # Line in catalog.
+    data_analysis_line.checkConsistency(fixit=True)
+    for item in data_analysis_line.getAggregateValueList():
+      item.activate(after_tag=tag).checkConsistency(fixit=True)
+
     try:
       data_analysis.start()
     except UnsupportedWorkflowMethod:
