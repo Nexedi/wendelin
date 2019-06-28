@@ -35,6 +35,7 @@ for movement in portal_catalog(query):
   delivery = movement.getParentValue()
   data_supply = delivery.getSpecialiseValue(portal_type="Data Supply")
   data_supply_list = delivery.getSpecialiseValueList(portal_type="Data Supply")
+
   composed_data_supply = data_supply.asComposedDocument()
   # Get applicable transformation
   transformation_list = []
@@ -91,6 +92,7 @@ for movement in portal_catalog(query):
                      "Data Transformation Operation Line"]):
       resource = transformation_line.getResourceValue()
       quantity = transformation_line.getQuantity()
+
       if isinstance(quantity, tuple):
         quantity = quantity[0]
       # In case of shared data anylsis only add additional input lines
@@ -99,6 +101,7 @@ for movement in portal_catalog(query):
       aggregate_set = set()
       # manually add device to every line
       aggregate_set.add(movement.getAggregateDevice())
+
       if transformation_line.getPortalType() == \
           "Data Transformation Resource Line":
         # at the moment, we only check for positive or negative quantity
@@ -110,6 +113,7 @@ for movement in portal_catalog(query):
           # then we search for an ingestion line with resource portal type
           # Data Product
           batch_relative_url = movement.getAggregateDataIngestionBatch()
+
           if batch_relative_url is not None:
             related_movement_list = portal_catalog(
               portal_type="Data Ingestion Line",
@@ -120,18 +124,26 @@ for movement in portal_catalog(query):
             related_movement_list = movement.getParentValue().searchFolder(
               portal_type=["Data Ingestion Line", "Data Analysis Line"],
               resource_relative_url = resource.getRelativeUrl())
-          for related_movement in related_movement_list:
-            aggregate_set.update(related_movement.getAggregateSet())
-            if related_movement.getUse() == "big_data/ingestion/batch":
-              related_movement.getParentValue().deliver()
+          #for related_movement in related_movement_list:
+            #aggregate_set.update(related_movement.getAggregateSet())   ########## do not copy device configurations to lines!!
+            #if related_movement.getUse() == "big_data/ingestion/batch":
+              #related_movement.getParentValue().deliver()
         # create new item based on item_type if it is not already aggregated
-        aggregate_type_set = set(
-          [portal.restrictedTraverse(a).getPortalType() for a in aggregate_set])
-        for item_type in transformation_line.getAggregatedPortalTypeList():
-          # create item if it does note exist yet.
-          # Except if it is a Data Array Line, then it is currently created by
-          # data operation itself (probably this exception is inconsistent)
-          if item_type not in aggregate_type_set and item_type != "Data Array Line":
+      aggregate_type_set = set(
+        [portal.restrictedTraverse(a).getPortalType() for a in aggregate_set])
+      for item_type in transformation_line.getAggregatedPortalTypeList():
+        # create item if it does note exist yet.
+        # Except if it is a Data Array Line, then it is currently created by
+        # data operation itself (probably this exception is inconsistent)
+
+        if transformation_line.getPortalType() ==  "Data Transformation Operation Line" and item_type not in aggregate_type_set:
+          if item_type in portal.getPortalDeviceConfigurationTypeList() + portal.getPortalDataConfigurationTypeList():
+            item = portal.portal_catalog.getResultValue(
+              portal_type=item_type,
+              #validation_state="validated",
+              item_project_relative_url=data_analysis.getDestinationProject(),
+              item_source_relative_url=data_analysis.getSource())
+          elif item_type != "Data Array Line":
             item = portal.portal_catalog.getResultValue(
               portal_type=item_type,
               validation_state="validated",
@@ -140,27 +152,28 @@ for movement in portal_catalog(query):
               item_project_relative_url=data_analysis.getDestinationProject(),
               item_resource_uid=resource.getUid(),
               item_source_relative_url=data_analysis.getSource())
-            if item is None:
-              module = portal.getDefaultModule(item_type)
-              item = module.newContent(portal_type = item_type,
-                                title = transformation.getTitle(),
-                                reference = "%s-%s" %(transformation.getTitle(),
-                                                      delivery.getReference()),
-                                version = '001')
-              try:
-                item.validate()
-              except AttributeError:
-                pass
-            aggregate_set.add(item.getRelativeUrl())
+          if item is None:
+            module = portal.getDefaultModule(item_type)
+            item = module.newContent(portal_type = item_type,
+                              title = transformation.getTitle(),
+                              reference = "%s-%s" %(transformation.getTitle(),
+                                                    delivery.getReference()),
+                              version = '001')
+            try:
+              item.validate()
+            except AttributeError:
+              pass
+          aggregate_set.add(item.getRelativeUrl())
+
       # find other items such as device configuration and data configuration
       # from data ingestion and data supply
-      composed = data_analysis.asComposedDocument()
-      line_list = [l for l in delivery.objectValues(portal_type="Data Ingestion Line")]
-      line_list +=  [l for l in composed.objectValues(portal_type="Data Supply Line")]
-      for line in line_list:
-        if line.getResourceValue().getPortalType() == "Data Operation":
-          aggregate_set.update(line.getAggregateList())
-
+      #composed = data_analysis.asComposedDocument()
+      #line_list = [l for l in delivery.objectValues(portal_type="Data Ingestion Line")]
+      #line_list +=  [l for l in composed.objectValues(portal_type="Data Supply Line")]
+      #for line in line_list:
+        #if line.getResourceValue().getPortalType() == "Data Operation":
+          #aggregate_set.update(line.getAggregateList())
+      
       data_analysis_line = data_analysis.newContent(
         portal_type = "Data Analysis Line",
         title = transformation_line.getTitle(),
@@ -172,12 +185,12 @@ for movement in portal_catalog(query):
         quantity_unit = transformation_line.getQuantityUnit(),
         use = transformation_line.getUse(),
         aggregate_set = aggregate_set)
-
       # for intput lines of first level analysis set causality and specialise
       if quantity < 0 and delivery.getPortalType() == "Data Ingestion":
         data_analysis_line.edit(
           causality_value = delivery,
           specialise_value_list = data_supply_list)
+
     data_analysis.checkConsistency(fixit=True)
     try:
       data_analysis.start()
