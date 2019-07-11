@@ -53,12 +53,23 @@ class IngestionPolicy(Folder):
     return self.portal_ingestion_policies.unpack(data)
   
   security.declarePublic('ingest')
-  def ingest(self, **kw):
+  def ingest(self, REQUEST):
     """
     Ingest chunk of raw data either from a Sensor or any of DAUs.
     """
-    if self.REQUEST.method != 'POST':
-      raise BadRequest('Only POST request is allowed.')
+    environ = REQUEST.environ
+    method = environ.pop('REQUEST_METHOD')
+    try:
+      if method != 'POST':
+        raise BadRequest('Only POST request is allowed.')
+      if REQUEST._file is not None:
+        assert not REQUEST.form, REQUEST.form # Are cgi and HTTPRequest fixed ?
+        # Query string was ignored so parse again, faking a GET request.
+        # Such POST is legit: https://stackoverflow.com/a/14710450
+        REQUEST.processInputs()
+        REQUEST.form['data_chunk'] = REQUEST._file.read()
+    finally:
+      environ['REQUEST_METHOD'] = method
       
     tag_parsing_script_id = self.getScriptId()
     
@@ -72,7 +83,7 @@ class IngestionPolicy(Folder):
     # XXX Compatibility with old ingestion. Must be dropped before merging
     # with wendelin master
     if tag_parsing_script_id == "ERP5Site_handleDefaultFluentdIngestion":
-      return tag_parsing_script(**kw)
+      return tag_parsing_script()
     
     reference = self.REQUEST.get('reference')
     data_chunk = self.REQUEST.get('data_chunk')  
