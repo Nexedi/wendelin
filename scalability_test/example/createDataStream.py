@@ -46,9 +46,9 @@ def createDataStream(result, browser):
   result('Save',
     browser.mainForm.submitSave(sleep=(TMIN_SLEEP, TMAX_SLEEP)))
   
-  # tests upload data from file
+  # tests upload data from file of 1Mb size
   ctrl = browser.mainForm.getControl(name='field_my_file')
-  ctrl.add_file(io.BytesIO(b'File contents'*1000), 'text/plain', 'test.txt')
+  ctrl.add_file(io.BytesIO(generateString(1024)*1024), 'text/plain', 'test.txt')
 
   # Submit the changes, record the time elapsed in seconds
   result('Save',
@@ -62,3 +62,4 @@ def createDataStream(result, browser):
   #result('Validate',
   #    browser.mainForm.submitDialogConfirm(sleep=(TMIN_SLEEP, TMAX_SLEEP)))
   #assert browser.getTransitionMessage() == 'Status changed.'
+
