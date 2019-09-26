@@ -1,0 +1,1955 @@
+<section>
+<h1>Overview</h1>
+
+<ul>
+	<li>In this tutorial we will learn how to:
+	<ul>
+		<li>Install and configure Wendelin on a KVM.</li>
+		<li>Ingest data into Wendelin using Fluentd. (open source data collector used to ingest data to Wendelin) <a href="https://www.fluentd.org/" style="color: #002e3f; text-decoration: none; background-color: inherit;" target="_blank">Fluentd Website</a>.</li>
+		<li>Manipulate data in Wendelin using Jupyter Notebook. <a href="https://jupyter.org/" style="color: #002e3f; text-decoration: none; background-color: inherit;" target="_blank">Jupyter Website</a>.</li>
+		<li>Present data in Wendelin on a web site using Renderjs and jIO javascript libraries.</li>
+	</ul>
+	</li>
+</ul>
+</section>
+
+<section>
+<h1>1. Getting Wendelin on your KVM</h1>
+</section>
+
+<section class="screenshot">
+<h1>Request a KVM</h1>
+
+<ul>
+	<li>For this tutorial, you will use services provided by vifib.com.</li>
+	<li>On Vifib request a KVM:</li>
+	<li>Go to services.</li>
+	<li>Click on Add button.</li>
+	<li>Choose KVM software and the latest version</li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>More info: <a href="http://slapos.nexedi.com/slapos-HowTo.Instantiate.Kvm" style="color: #002e3f; text-decoration: none; background-color: inherit;" target="_blank">How to instantiate a KVM</a>.</li>
+</ul>
+</details>
+</section>
+
+<section class="screenshot">
+<h1>Request a KVM</h1>
+
+<ul>
+	<li>Choose a name for your KVM and enter parameters:
+	<ul>
+		<li>4 GB of RAM</li>
+		<li>at least 25 GB of disk space.</li>
+		<li>list of NAT rules: 22, 80, 433, 20000, 20001, 20002, 20003 (Ports from 20000 to 20003 will be used for Wendelin services.)</li>
+	</ul>
+	</li>
+	<li>Click Proceed.</li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>More info: <a href="http://slapos.nexedi.com/slapos-HowTo.Instantiate.Kvm" style="color: #002e3f; text-decoration: none; background-color: inherit;" target="_blank">How to instantiate a KVM</a>.</li>
+</ul>
+</details>
+</section>
+
+<section class="screenshot">
+<h1>Request a KVM</h1>
+
+<ul>
+	<li>Wait for monitoring status to turn green and connection parameters to appear.</li>
+	<li>Click on url parameter and install debian.</li>
+	<li>From software to install choose only SSH server!</li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>More info: <a href="http://slapos.nexedi.com/slapos-HowTo.Instantiate.Kvm" style="color: #002e3f; text-decoration: none; background-color: inherit;" target="_blank">How to instantiate a KVM</a>.</li>
+</ul>
+</details>
+</section>
+
+<section>
+<h1>Access your KVM from terminal</h1>
+
+<ul>
+	<li>Under connection parameters of your KVM look for IPv6.</li>
+	<li>Go to terminal. (Can be anywhere, you just need IPv6 access.)</li>
+	<li>From terminal access your KVM on port 10022 via ssh:</li>
+	<li>ssh username@IPv6 -p 10022</li>
+</ul>
+</section>
+
+<section>
+<h1>Authenticate and install Wendelin</h1>
+
+<ul>
+	<li>Authenticate</li>
+	<li>Switch to root with: sudo -su , authenticate again, install with:</li>
+	<li>wget http://deploy.nexedi.cn/wendelin-standalone &amp;&amp; bash wendelin-standalone</li>
+	<li>This is one line code used to install Wendelin.</li>
+</ul>
+</section>
+
+<section>
+<h1>Monitor Installaton process</h1>
+
+<ul>
+	<li>First time, you run the installer, you will probably get an error with a message: &quot;Your software is still building, be patient it can take a while.&quot; Do not panic. This is expected. Installation is now running.</li>
+	<li>You can check that installation is going ok by following SlapOS software installation log:</li>
+	<li>tail -f /opt/slapos/log/slapos-node-software.log</li>
+</ul>
+
+<details open="true">
+<ul>
+	<li>Be patient. Installation can take up to several hours to complete.</li>
+</ul>
+</details>
+</section>
+
+<section>
+<h1>Check Software Installaton Status</h1>
+
+<ul>
+	<li>Check status of Wendelin Installation With command erp5-show -s</li>
+	<li>Once done, it will return you an internal IPv4, username and password. Note them down.</li>
+	<li>Run bash wendelin-standalone again to make sure there are no errors.</li>
+</ul>
+</section>
+
+<section>
+<h1>Socat Bind</h1>
+
+<ul>
+	<li>Next step is to bind the services to the correct ports of the KVM. Execute following commands:</li>
+	<li>apt-get install net-tools</li>
+	<li>wget https://lab.nexedi.com/nexedi/wendelin/raw/master/utils/wendelin-standalone-bind.sh &amp;&amp; bash wendelin-standalone-bind.sh</li>
+	<li>This will activate urls provided to access Jupyter/ERP5.</li>
+	<li>Check if socat works: ps aux | grep socat</li>
+</ul>
+</section>
+
+<section class="screenshot">
+<h1>Request frontend</h1>
+
+<ul>
+	<li>Same way like you requested KVM, now request Frontend on Vifib with parameters Backend URL: http://[!YOUR_IPv6!]:30001 and Backend Type: Zope.</li>
+	<li>Wait for connection parameters to appear and click on the URL parameter</li>
+</ul>
+
+</section>
+
+<section>
+<h1>Login</h1>
+
+<ul>
+	<li>Click on Zope management interface</li>
+	<li>Login using username and password</li>
+	<li>go to: http://softinstxxxx.host.vifib.net/erp5</li>
+</ul>
+</section>
+
+<section class="screenshot">
+<h1>Configure Site</h1>
+
+<ul>
+	<li>Go to: My Favorites &gt; <strong>Configure your Site</strong> .</li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>Your ERP5 instance is now ready, but it has only very generic core library. This core can be specialized through different business templates for different purposes.</li>
+	<li>This can be done manually, installing individual business templates that provide your ERP5 instance with utilities that you need.</li>
+	<li>That can be done in My Favorites &gt; <strong>Manage Business Templates</strong></li>
+	<li>But Wendelin uses a lot of different business templates and that would be a lot of work, so configurator is provided that makes that work for you and installs just the business templates that are important for Wendelin.</li>
+</ul>
+</details>
+</section>
+
+<section class="screenshot">
+<h1>Install Configuration</h1>
+
+<ul>
+	<li>Select Wendelin Configuration.</li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>IF there is no Wendelin Configurator, you have to install it:
+	<ul>
+		<li>Go to My Favourites &gt; <strong>Manage Business Templates</strong> .</li>
+		<li>Click on Import/Export button (blue and red arrows).</li>
+		<li>Select Exchange &gt; <strong>Install Business Templates from Repositories</strong> .</li>
+		<li>Check box before erp5_wendelin_configurator business template and click Install Business Templates from Repositories.</li>
+	</ul>
+	</li>
+	<li>Configuration will take some minutes.</li>
+</ul>
+</details>
+</section>
+
+<section class="screenshot">
+<h1>Install Configuration</h1>
+
+<ul>
+	<li>On next screen make sure that the boxes <strong>set wendelin tutorial</strong> and <strong>set up Data Notebook module for Jupyter integration</strong> are checked.</li>
+	<li>Click <strong>Set of data Notebook module</strong> and on the next screen <strong>Install</strong> .</li>
+</ul>
+
+</section>
+
+<section class="screenshot">
+<h1>Wait</h1>
+
+<ul>
+	<li>Installation may take a few minutes</li>
+	<li>Once down, click &quot;Start using your ERP5 System&quot;</li>
+	<li>Login again.</li>
+</ul>
+
+</section>
+
+<section>
+<h1>Main Interface</h1>
+
+<ul>
+	<li>Your instance is now ready to use</li>
+</ul>
+
+<details open="true">
+<ul>
+	<li>The start screen shows a list of modules (data-types) directly accessible.</li>
+	<li>You can also access them through <strong>Modules</strong> selection tab at the top of the screen.</li>
+	<li>Probably you noticed that after configuration there are a lot more of them.</li>
+	<li>Modules can be contain anything from Persons, Organizations to Data Streams.</li>
+	<li>Modules prefixed with <strong>Portal</strong> are not displayed (e.g. portal ingestion policies)</li>
+</ul>
+</details>
+  <test>
+    <table cellspacing="1" cellpadding="1" border="1" style="display: none;" class="test">
+      <thead> </thead>
+      <tbody>
+        <tr>
+          <td>setTimeout</td>
+          <td>1800000</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>pause</td>
+          <td>10000</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>open</td>
+          <td>${base_url}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Welcome to ERP5</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </test>
+</section>
+
+<section>
+<h1>2. Simulate Sensor and ingest data via Fluentd</h1>
+</section>
+
+<section>
+<h1>Create Ingestion Policy</h1>
+
+<ul>
+	<li>Now we will setup Wendelin to receive data from fluentd.</li>
+	<li>Goto: http://softinstxxxx.host.vifib.net/erp5/portal_ingestion_policies/</li>
+	<li>Ingestion policy is security Setting to prevent arbitrary stream from being sent</li>
+</ul>
+
+<details open="true">
+<ul>
+	<li>Currently fluentd and Wendelin are setup to receive streams of data</li>
+	<li>A data stream is a file, created by ingestion policy, to which data is continually appended</li>
+</ul>
+</details>
+  <test>
+    <table cellspacing="1" cellpadding="1" border="1" style="display: none;" class="test">
+      <thead> </thead>
+      <tbody>
+        <tr style="opacity: 1; z-index: 0;">
+          <td>open</td>
+          <td>${base_url}/portal_ingestion_policies</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="form_id" and @value="IngestionPolicyTool_view"]</td>
+          <td></td>
+        </tr>
+        <tr>
+      </tbody>
+    </table>
+  </test>
+</section>
+
+<section>
+<h1>Fast Input</h1>
+
+<ul>
+	<li>Hit the &quot;Green Runner&quot; to create new Ingestion Policy</li>
+	<li>Enter &quot;pydata&quot; as reference name and &quot;Pydata&quot; as title and click <strong>Create Ingestion Policy</strong> .</li>
+	<li>This creates a new ingestion policy.</li>
+</ul>
+
+<details open="true">
+<ul>
+	<li>The ingestion policy includes default scripts to be called on incoming data.</li>
+	<li>If you want to modify data handling, you could now write your own script.</li>
+</ul>
+</details>
+  <test>
+    <table cellspacing="1" cellpadding="1" border="1" style="display: none;" class="test">
+      <thead> </thead>
+      <tbody>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="context_bar"]/span[4]/span[1]/a[3]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="dialog_id" and @value="IngestionPolicyTool_viewAddIngestionPolicyActionDialog"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>field_your_title</td>
+          <td>Pydata</td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>field_your_reference</td>
+          <td>pydata</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//button[@id="dialog_submit_button"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Ingestion Policy added.</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </test>
+</section>
+
+<section>
+<h1>Wendelin in Production</h1>
+
+<ul>
+	<li>First Wendelin prototype in production was used to monitor wind turbines.</li>
+	<li>Wendelin is used to collect data and manage wind parks.</li>
+	<li>Allowed to use Machine Learning for failure prediction, structural health monitoring.</li>
+</ul>
+
+<details open="true">
+<ul>
+	<li><span style="margin: 0px; padding: 0px; color: #001730; background-color: inherit;">Photo: <a href="/web_page_module/5474/www.fotolia.fr" style="color: #002e3f; text-decoration: none; background-color: inherit;">Fotolia.fr</a> - David Hense </span></li>
+</ul>
+</details>
+</section>
+
+<section>
+<h1>Wendelin in Production</h1>
+
+<ul>
+	<li>Each wind turbine equipped with multiple sensors per blade and PC collecting sensor data</li>
+	<li>Each PC including fluentd for ingesting into Wendelin (network availability!)</li>
+</ul>
+</section>
+
+<section>
+<h1>Basic FluentD</h1>
+
+<ul>
+	<li>FluentD is open source unified data collector</li>
+	<li>Has a source and destination, generic, easy to extend</li>
+	<li>Can handle data collection even under poor network conditions</li>
+	<li>More info: <a href="http://www.fluentd.org/" style="color: #002e3f; text-decoration: none; background-color: inherit;">FluentD Website</a></li>
+</ul>
+</section>
+
+<section>
+<h1>Complex FluentD</h1>
+
+<ul>
+	<li>Setup of FluentD can be much more complex.</li>
+	<li>In Wendelin production, every turbine has its own FluentD.</li>
+</ul>
+</section>
+
+<section>
+<h1>Record Audio</h1>
+
+<ul>
+	<li>For demostration of data ingestion we will use simple audio .vaw file.</li>
+	<li>You can record it on your own, use another SlapOS Webrunner hosting only a webpage:</li>
+	<li><code><a href="https://softinst56756.host.vifib.net/public/project/hyperconvergence/" style="color: #002e3f; text-decoration: none; background-color: inherit;" target="_blank">https://softinst56756.host.vifib.net/public/project/hyperconvergence/</a> </code></li>
+	<li>Click &quot;Record&quot; to Start/Stop audio and &quot;Save&quot; to save</li>
+	<li>Or you can download <a href="https://nexedi.erp5.net/document_module/9858/Base_download" style="color: #002e3f; text-decoration: none; background-color: inherit;" target="_blank">sample.wav</a></li>
+</ul>
+
+</section>
+
+<section>
+<h1>Webrunner using fluentD</h1>
+
+<ul>
+	<li>For this part of tutorial you will need a webrunner using Fluentd:
+	<ul>
+		<li>Request a new service on vifib, choose webrunner, and wait for connection parameters to appear.</li>
+		<li>Click on the URL, and enter username and password provided.</li>
+		<li>Click Open Softwate release, choose slapos &gt; software &gt; fluentd and click Open Software.</li>
+		<li>Click green arrow and wait for installation to finnish.</li>
+	</ul>
+	</li>
+</ul>
+</section>
+
+<section>
+<h1>Upload to Monitor</h1>
+
+<ul>
+	<li>Go to the Editor, click &quot;This Project&quot;</li>
+	<li>Make a folder for this tutorial</li>
+	<li>Left click and select upload file</li>
+	<li>Upload your .vaw file.</li>
+</ul>
+</section>
+
+<section>
+<h1>Forward File to fluentD</h1>
+
+<ul>
+	<li>In the Editor, open folder that you created.</li>
+	<li>Create a new file, name it YOUR_NAME.cfg</li>
+	<li>Code on next slide (please copy&amp;paste)</li>
+</ul>
+
+<details open="true">
+<ul>
+	<li>We are now creating a configuration file to pass to fluentd</li>
+	<li>The file contains all parameters for fluentD regarding data source and destination</li>
+	<li>Normally this is set upfront, but for the tutorial we hardcode</li>
+</ul>
+</details>
+</section>
+
+<section>
+<h1>FluentD Configuration File (<a href="https://gist.github.com/frequent/119be294f3e75d882bc1e309991274c0" style="color: #002e3f; text-decoration: none; background-color: inherit;" target="_blank">Gist</a>)</h1>
+
+<pre>
+    <code>
+            &lt;source&gt;
+            @type bin
+            format none
+            path /srv/slapgrid/slappart9/srv/runner/PUT_YOUR_WAV_HERE/!!YOURNAME!!*.wav
+            pos_file /srv/slapgrid/slappart9/srv/runner/!!YOURNAMEGOESHERE!!.pos
+            enable_watch_timer false
+            read_from_head true
+            tag pydata
+            &lt;/source&gt;
+            &lt;match pydata&gt;
+            @type wendelin
+            @id wendelin_out
+            streamtool_uri
+            http://!!URL_TO_YOUR_ZOPE!!/erp5/portal_ingestion_policies/pydata
+            user zope
+            password insecure
+            buffer_type memory
+            flush_interval 1s
+            disable_retry_limit true
+            &lt;/match&gt;
+          </code>
+        </pre>
+
+<ul>
+	<li>Copy this script to new file that you created and edit paths to the vaw file and to the pos file, uri to your wendelin and username and password.</li>
+	<li>Fluentd configuration file has two parts.</li>
+	<li>Source part contains path to file that you wish to upload, path to pos file which is used to track position while sending the data, and a tag, which is used to match source to the output</li>
+	<li>Output part is a match tag. It must match a tag given to the data in the source part. It contains uri to your ingestion policy, and username and password for your Wendelin</li>
+	<li>Make sure all the paths are correct.</li>
+</ul>
+
+<details open="true">
+<ul>
+	<li>For more information on writing Fluentd configuration files check out: <a href="https://docs.fluentd.org/configuration" style="color: #002e3f; text-decoration: none; background-color: inherit;" target="_blank">Fluentd configuration documentation</a>.</li>
+</ul>
+</details>
+</section>
+
+<section>
+<h1>Save and send from Terminal</h1>
+
+<ul>
+	<li>Switch to the terminal and run fluentd with:</li>
+	<li>software/YOUR SOFT NUMBER/bin/fluentd -c path/to/YOUR_NAME.cfg</li>
+	<li>To run fluents with your configuration including what file to send to Wendelin.</li>
+	<li>This will create new Data Stream in your Wendelin instance, and send data to it.</li>
+</ul>
+
+<details open="true">
+<ul>
+	<li>Notice that Fluentd is running until you interrupt it and waiting for new input.</li>
+	<li>In our case, we had just a small .vaw file, but we could also have continuous stream of data from the sensor and fluentd would be continuously appending it to Data Stream.</li>
+</ul>
+</details>
+</section>
+
+<section>
+<h1>Check created Data Stream</h1>
+
+<ul>
+	<li>Head back to Wendelin/ERP5.</li>
+	<li>In the Data Stream Module, check the file size of the pydata stream.</li>
+	<li>It should show a file size larger than 0.</li>
+</ul>
+</section>
+
+<section>
+<h1>3. Work with Ingested Data</h1>
+</section>
+
+<section>
+<h1>Out-of-Core</h1>
+
+<ul>
+	<li>Wendelin.Core enables computation beyond limits of existing RAM</li>
+	<li>We have integrated Wendelin and Wendelin.Core With Jupyter</li>
+	<li>In Jupyter we can use ERP5 Kernel (out-of-core compliant) vs. Python 2 Kernel (default Jupyter)</li>
+</ul>
+</section>
+
+<section class="screenshot">
+<h1>Enable Data Notebook</h1>
+
+<ul>
+	<li>Head to My Favourites &gt; Preferences.</li>
+	<li>Click Default System Preferences and open Data Notebook tag.</li>
+	<li>Check the box to enable Data Notebook and click the save icon.</li>
+</ul>
+</section>
+
+<section class="screenshot">
+<h1>Head to Jupyter</h1>
+
+<ul>
+	<li>Request a frontend with Backand URL: https://[IPv6]:30000 and Backend Type: notebook. Wait for connection parameters and click on secure_access_url.</li>
+	<li>For password check the file knowledge0.cfg on a partition, where Jupyter is installed in your KVM (first use: slapos node | grep jupyter to check partition, and then: cat /srv/slapgrid/slappart__/knowledge0.cfg)</li>
+	<li>Go to: https://softinstxxxxxx.host.vifib.net/tree</li>
+	<li>Start a new ERP5 Notebook</li>
+	<li>This will make sure you use the <strong>ERP5 Kernel</strong></li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>The Python 2 Kernel is the default Jupyter Kernel</li>
+	<li>Using Python 2 will disregard Wendelin and Wendelin.Core, so it&#39;s basic Jupyter.</li>
+	<li>Using ERP5 Kernel will use Wendelin.core in the background.</li>
+	<li>To make good use of it, all code written should be Out-of-core &quot;compatible&quot;</li>
+	<li>For example you should not just load a large file into memory (see below).</li>
+</ul>
+</details>
+</section>
+
+<section class="screenshot">
+<h1>Learn ERP5 Kernel</h1>
+
+<ul>
+	<li>Help yourself with <a href="https://nbviewer.jupyter.org/url/nexedi.erp5.net/document_module/9794/getData" style="color: #002e3f; text-decoration: none; background-color: inherit;">Notebook</a></li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>Note that your ERP5_URL in this case should be your internal url</li>
+	<li>You can retrieve it by running erp5-show -s in your KVM</li>
+	<li>Note, outside of the tutorial we would set the external IPv6 adress of ZOPE</li>
+</ul>
+</details>
+</section>
+
+<section class="screenshot">
+<h1>Getting Started</h1>
+
+<ul>
+	<li>Authenticate and set arbitrary reference for your notebook.</li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>This is always the first step when you start a new Notebook with ERP5 Kernel.</li>
+	<li>It makes sure that you are connected to ERP5/Wendelin instance any you can work with objects on it.</li>
+	<li>It also creates Data Notebook object on your ERP5/Wendelin instance.</li>
+	<li>You can go to Data Notebook Module and see that your Data Notebook object is now saved there.</li>
+</ul>
+</details>
+</section>
+
+<section class="screenshot">
+<h1>Accessing Objects</h1>
+
+<ul>
+	<li>Type context, this will give you the Wendelin/ERP5 Object.</li>
+	<li>Type context.data_stream_module[&quot;1&quot;] to get your uploaded sound file.</li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>Accessing data works the same ways throughout [IPv6]:30002/erp5/[module_name]/[id].</li>
+	<li>All modules you see on the Wendelin/ERP5 start page can be accessed like this.</li>
+	<li>Once you have an object you can manipulate it.</li>
+	<li>Note that accessing a file by internal id (1) is only one way.</li>
+	<li>The standard way would be using the reference of the respective object, which will also allow to user portal_catalog to query.</li>
+</ul>
+</details>
+</section>
+
+<section class="screenshot">
+<h1>Import libraries</h1>
+
+<ul>
+	<li>Import necessary libs for later.</li>
+</ul>
+
+<details open="open">&nbsp;</details>
+</section>
+
+<section class="screenshot">
+<h1>Accessing Data Itself</h1>
+<img alt="" src="accessing_data_itself_screenshot?format=" title="" type="image/svg+xml" />
+<ul>
+	<li>Try to get the length of the file using getData and via iterate</li>
+	<li>Note then when using ERP5 kernel all manipulations should be &quot;Big Data Aware&quot;</li>
+	<li>Just loading a file via getData() works for small files, but will break with volume</li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>It&#39;s important to understand that manipulations outside of Wendelin.Core need to be Big Data &quot;compatible&quot;</li>
+	<li>Internally Wendelin.Core will run all manipulations &quot;context-aware&quot;</li>
+	<li>An alternative way to work would be to create your scripts inside Wendelin/ERP5 and call them from Juypter</li>
+	<li>Scripts/Manipulations are stored in <strong>Data Operations Module</strong></li>
+</ul>
+</details>
+</section>
+
+<section class="screenshot">
+<h1>Compute Fourier</h1>
+
+<ul>
+	<li>Proceed to fetch data using getData for now</li>
+	<li>Extract one channel, save it back to Wendelin and compute FFT</li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>Note the way to call methods from Wendelin/ERP5 (<code>Base_renderAsHtml</code> )</li>
+	<li>Wendelin/ERP5 has a system of method acquistion. Every module can come with its own module specific methods and method names are always context specific ([object_name]_[method_name] ). Base methods on the other hand are core methods of Wendelin/ERP5 and applicable to more than one object.</li>
+</ul>
+</details>
+</section>
+
+<section class="screenshot">
+<h1>Display Fourier</h1>
+
+<ul>
+	<li>Check the rendered Fourier graphs of your recorded sound file</li>
+</ul>
+
+</section>
+
+<section class="screenshot">
+<h1>Save Image</h1>
+
+<ul>
+	<li>Save the image back to Wendelin/ERP5.</li>
+	<li>Close figure with plt.close(), otherwise it will show on all outputs.</li>
+</ul>
+
+<details open="open">&nbsp;</details>
+</section>
+
+<section class="screenshot">
+<h1>Create BigFile Reader</h1>
+
+<ul>
+	<li>Add a new class BigFileReader</li>
+	<li>Allows to pass out-of-core objects</li>
+</ul>
+
+</section>
+
+<section class="screenshot">
+<h1>Rerun using Big File Reader</h1>
+
+<ul>
+	<li>Rerun using the Big File Reader</li>
+	<li>Now one more step is out of core compliant</li>
+	<li>Verify graphs render the same</li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>We are now showing how to step by step convert our code to being Out-of-Core compatible</li>
+	<li>This will only be possible for code we write ourselves</li>
+	<li>Whenever we have to rely on 3rd party libraries, there is no guarantee that data will be handled in the correct way. The only option to be truly Out-of-Core is to either make sure the 3rd party methods used are compatible and fixing them accordingly/committing back or to reimplement a 3rd party library completely.</li>
+</ul>
+</details>
+</section>
+
+<section class="screenshot">
+<h1>Redraw from Wendelin</h1>
+
+<ul>
+	<li>This is the way to redraw the plot directly from data stored in Wendelin/ERP5</li>
+	<li>Imidiatelly after you create content, you cannot redraw it. You must wait for the object to be catalogued.</li>
+</ul>
+
+</section>
+
+<section class="screenshot">
+<h1>Verify Images are Stored</h1>
+
+<ul>
+	<li>Head back to Wendelin/ERP5</li>
+	<li>Go to Image module and verify your stored images are there.</li>
+</ul>
+
+</section>
+
+<section class="screenshot">
+<h1>Verify Data Arrays are Stored</h1>
+
+<ul>
+	<li>Switch to the Data Array module</li>
+	<li>Verify all computed files are there.</li>
+</ul>
+
+</section>
+
+<section>
+<h1>4. Visualize, Display computed data</h1>
+</section>
+
+<section>
+<h1>Running Web Sites from Wendelin</h1>
+
+<ul>
+	<li>Last step is to display results in a web app</li>
+	<li>Head back to main section in Wendelin/ERP5</li>
+	<li>Go to Website Module</li>
+</ul>
+
+<details open="true">
+<ul>
+	<li>One of the modules in erp5 is Web Site Module.</li>
+	<li>We will use it to create simple Web Site for presentation of our result.</li>
+</ul>
+</details>
+  <test>
+    <table cellspacing="1" cellpadding="1" border="1" style="display: none;" class="test">
+      <thead> </thead>
+      <tbody>
+        <tr>
+          <td>open</td>
+          <td>${base_url}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>selectAndWait</td>
+          <td>select_module</td>
+          <td>label=Web Sites</td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Web Sites</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="form_id" and @value="WebSiteModule_viewWebSiteList"]</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </test>
+</section>
+
+<section class="screenshot">
+<h1>WebSite Module</h1>
+
+<ul>
+	<li>Website Module contains websites</li>
+	<li>Open renderjs_runner - ERP5 gadget interface</li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>Front end components are written with two frameworks, <a href="http://www.j-io.org/" style="color: #002e3f; text-decoration: none; background-color: inherit;" title="jIO | Virtual Document Filesystem">jIO</a> and <a href="http://www.renderjs.org/" style="color: #002e3f; text-decoration: none; background-color: inherit;" title="RenderJS | Web Component Framework">renderJS</a></li>
+	<li>jIO (<a href="https://lab.nexedi.com/nexedi/jio" style="color: #002e3f; text-decoration: none; background-color: inherit;" title="jIO | Gitlab Repository">Gitlab</a>) is used to access documents across different storages</li>
+	<li>Storages include: Wendelin, ERP5, Dropbox, webDav, AWS, ...</li>
+	<li>jIO includes querying, offline support, synchronization</li>
+	<li>renderJS (<a href="https://lab.nexedi.com/nexedi/renderjs" style="color: #002e3f; text-decoration: none; background-color: inherit;" title="RenderJS | Gitlab Repository">Gitlab</a>) allows to build apps from reusable components</li>
+	<li>Both jIO/renderJS are asynchronous using promises</li>
+</ul>
+</details>
+  <test>
+    <table cellspacing="1" cellpadding="1" border="1" style="display: none;" class="test">
+      <thead> </thead>
+      <tbody>
+        <tr>
+          <td>type</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[2]/input</td>
+          <td>renderjs_runner</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[1]/input</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/tbody/tr/td[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/tbody/tr/td[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="form_id" and @value="WebSite_view"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>RenderJS Runner</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </test>
+</section>
+
+<section class="screenshot">
+<h1>Renderjs Runner</h1>
+
+<ul>
+	<li>Parameters for website module</li>
+	<li>see ERP5 Application Launcher - base gadget</li>
+	<li>Open new tab: http://softinstxxxx/erp5/web_site_module/renderjs_runner/</li>
+	<li>It is important not to forget / at the end of the url, otherwise it will not work</li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>Apps from gadgets are built as a tree structure, the application launcher is the top gadget</li>
+	<li>All other gadgets are child gadgets of this one</li>
+	<li>RenderJS allows to publish/aquire methods from other gadget to keep functionality encapsulated</li>
+</ul>
+</details>
+  <test>
+    <table cellspacing="1" cellpadding="1" border="1" style="display: none;" class="test">
+      <thead> </thead>
+      <tbody>
+        <tr>
+          <td>open</td>
+          <td>${base_url}/web_site_module/renderjs_runner/</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>pause</td>
+          <td>15000</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Worklist</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>open</td>
+          <td>${base_url}/web_site_module/renderjs_runner?ignore_layout:int=1&editable_mode:int=1&selection_name=web_site_module_view_web_site_list_selection</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </test>
+</section>
+
+<section class="screenshot">
+<h1>Renderjs Web App</h1>
+
+<ul>
+	<li>ERP5 interface as responsive application</li>
+	<li>We will now create an application like this to display our data</li>
+</ul>
+
+</section>
+
+<section class="screenshot">
+<h1>Clone Website</h1>
+
+<ul>
+	<li>Go back to renderjs_runner website</li>
+	<li>Clone the website</li>
+</ul>
+
+  <test>
+    <table cellspacing="1" cellpadding="1" border="1" style="display: none;" class="test">
+      <thead> </thead>
+      <tbody>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//button[@type="submit" and @title="Clone"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Created Clone Web Site.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="form_id" and @value="WebSite_view"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>pause</td>
+          <td>10000</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </test>
+</section>
+
+<section class="screenshot">
+<h1>Rename Website</h1>
+
+<ul>
+	<li>Change id to <strong>pydata_runner</strong></li>
+	<li>Change name to <strong>PyData Runner</strong></li>
+	<li>Save</li>
+</ul>
+
+  <test>
+    <table cellspacing="1" cellpadding="1" border="1" style="display: none;" class="test">
+      <thead> </thead>
+      <tbody>
+        <tr>
+          <td>type</td>
+          <td>field_my_id</td>
+          <td>pydata_runner</td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>field_my_title</td>
+          <td>Pydata Runner<td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//button[@type="submit" and @title="Save"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Data updated.</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </test>
+</section>
+
+<section class="screenshot">
+<h1>Publish Website</h1>
+
+<ul>
+	<li>Select action <strong>Publish</strong> and publish the site</li>
+	<li>This changes object state from embedded to published</li>
+	<li>Try to access: http://softinstxxxx/erp5/web_site_module/pydata_runner/</li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>Every object in ERP5 has a state (For example draft, published,...).</li>
+	<li>Workflows are used to change the state of objects.</li>
+	<li>A workflow in this case is to publish a webpage, which means changing its status from Embedded to Published.</li>
+	<li>Workflows (among other properties) can be security restricted. For example, everybody can see Web Site in published state, but only its creator can see it while it is still in draft state.</li>
+	<li>This concept applies to all documents in ERP5.</li>
+</ul>
+</details>
+  <test>
+    <table cellspacing="1" cellpadding="1" border="1" style="display: none;" class="test">
+      <thead> </thead>
+      <tbody>
+        <tr>
+          <td>selectAndWait</td>
+          <td>select_action</td>
+          <td>label=Publish</td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="dialog_id" and @value="Base_viewWorkflowActionDialog"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="dialog_submit_button"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Status changed.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Published</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>open</td>
+          <td>${base_url}/web_site_module/pydata_runner?ignore_layout:int=1&editable_mode:int=1&selection_name=web_site_module_view_web_site_list_selection</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </test>
+</section>
+
+<section class="screenshot">
+<h1>Layout Properties</h1>
+
+<ul>
+	<li>Change to Tab &quot;Layout Properties tab&quot;</li>
+	<li>Update front page gadget to pydata</li>
+	<li>Refresh your app (disable cache), it will be broken, as pydata page gadget doesn&#39;t exist</li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>One advantage working with an aync promise-chain based framework like renderJS is the ability to capture errors</li>
+	<li>It is possible to capture errors on client side, send report to ERP5 (stack-trace, browser) and not fail the app</li>
+	<li>Much more fine-grainded control, we currently just dump to screen/console</li>
+</ul>
+</details>
+  <test>
+    <table cellspacing="1" cellpadding="1" border="1" style="display: none;" class="test">
+      <thead> </thead>
+      <tbody>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/div/div[1]/ul/li[3]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Front Page Gadget</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>field_my_configuration_frontpage_gadget_url</td>
+          <td>pydata</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/div/div[1]/button</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Data updated.</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </test>
+</section>
+
+<section class="screenshot">
+<h1>Web Page Module</h1>
+
+<ul>
+	<li>Change to web page module</li>
+	<li>Search for reference %worklist%</li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>The web page module includes html, js and css files used to build the frontend UI</li>
+	<li>The usual way of working with static files is to clone a file, rename its reference and publish it alive (still editable)</li>
+</ul>
+</details>
+  <test>
+    <table cellspacing="1" cellpadding="1" border="1" style="display: none;" class="test">
+      <thead> </thead>
+      <tbody>
+        <tr>
+          <td>open</td>
+          <td>${base_url}/</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>selectAndWait</td>
+          <td>select_module</td>
+          <td>label=Web Pages</td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="form_id" and @value="WebPageModule_viewWebPageList"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[2]/input</td>
+          <td>gadget_erp5_page_worklist.html</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[1]/input</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/tbody/tr/td[2]/a</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </test>
+</section>
+
+<section class="screenshot">
+<h1>Clone Worklist gadgets</h1>
+
+<ul>
+	<li>Open both files in new tabs, clone, change title</li>
+	<li>Replace &quot;worklist&quot; in references and titles with &quot;pydata&quot;, save and publish</li>
+	<li>We will now edit both files to display our graph</li>
+</ul>
+
+  <test>
+    <table cellspacing="1" cellpadding="1" border="1" style="display: none;" class="test">
+      <thead> </thead>
+      <tbody>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/tbody/tr/td[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="form_id" and @value="WebPage_view"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Gadget ERP5 Worklist</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="context_bar"]/span[4]/span[1]/button[3]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Created Clone Web Page.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>field_my_title</td>
+          <td>Gadget ERP5 PyData</td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>field_my_reference</td>
+          <td>gadget_erp5_page_pydata.html</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/div/div[1]/button</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Data updated.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>selectAndWait</td>
+          <td>select_action</td>
+          <td>label=Publish Document Alive</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="dialog_submit_button"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Status changed.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Published Alive</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>open</td>
+          <td>${base_url}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>selectAndWait</td>
+          <td>select_module</td>
+          <td>label=Web Pages</td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[2]/input</td>
+          <td>gadget_erp5_page_worklist.js</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[1]/input</td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/tbody/tr/td[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/tbody/tr/td[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="form_id" and @value="WebPage_view"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Gadget ERP5 Worklist JS</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="context_bar"]/span[4]/span[1]/button[3]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Created Clone Web Script.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>field_my_title</td>
+          <td>Gadget ERP5 PyData JS</td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>field_my_reference</td>
+          <td>gadget_erp5_page_pydata.js</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/div/div[1]/button</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Data updated.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>selectAndWait</td>
+          <td>select_action</td>
+          <td>label=Publish Document Alive</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="dialog_submit_button"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Status changed.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Published Alive</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </test>
+</section>
+
+<section class="screenshot">
+<h1>Pydata Gadget HTML</h1>
+
+<ul>
+	<li>Go to edit tab on html gadget.</li>
+	<li>Copy and paste this <a href="https://gist.github.com/frequent/794f8374560380a39c74718736c08ced" style="color: #002e3f; text-decoration: none; background-color: inherit;" target="_blank">script</a> to the contents of the gadget.</li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>This is a default gadget setup with some HTML.</li>
+	<li>Gadgets should be self containable so they always include all dependencies</li>
+	<li>RenderJS is using a custom version of RSVP for promises (we can cancel promises)</li>
+	<li>The global gadget includes promisified event binding (single, infinite event listener)</li>
+	<li>We are using RenderJS and jIO javascript libraries.</li>
+	<li>More info:
+	<ul>
+		<li><a href="https://renderjs.nexedi.com/" style="color: #002e3f; text-decoration: none; background-color: inherit;">RenderJS Website</a></li>
+		<li><a href="https://renderjs.nexedi.com/" style="color: #002e3f; text-decoration: none; background-color: inherit;">jIO Website</a></li>
+	</ul>
+	</li>
+	<li>This is a default gadget setup with some HTML.</li>
+	<li>Gadgets should be self containable so they always include all dependencies</li>
+	<li>RenderJS is using a custom version of RSVP for promises (we can cancel promises)</li>
+	<li>The global gadget includes promisified event binding (single, infinite event listener)</li>
+</ul>
+</details>
+  <test>
+    <table cellspacing="1" cellpadding="1" border="1" style="display: none;" class="test">
+      <thead> </thead>
+      <tbody>
+        <tr>
+          <td>open</td>
+          <td>${base_url}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>selectAndWait</td>
+          <td>select_module</td>
+          <td>label=Web Pages</td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[2]/input</td>
+          <td>gadget_erp5_page_pydata.html</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[1]/input</td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/tbody/tr/td[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="form_id" and @value="WebPage_view"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/div/div[1]/ul/li[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>pause</td>
+          <td>5000</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>//*[@id="master"]/div/div[2]/fieldset[2]/div/div/div/textarea</td>
+          <td tal:content="python: '%s' % ('''<html>
+<head>
+  <meta http-equiv='Content-type' content='text/html; charset=utf-8' />
+  <meta name='viewport' content='width=device-width, user-scalable=no' />
+  <title>PyData Graph</title>
+  <script src='rsvp.js' type='text/javascript'></script>
+  <script src='renderjs.js' type='text/javascript'></script>
+  <script src='gadget_global.js' type='text/javascript'></script>
+  <script src='gadget_erp5_page_pydata.js' type='text/javascript'></script>
+</head>
+<body>
+</body>
+</html>''')"> </td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/div/div[1]/button</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Data updated.</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </test>
+</section>
+
+<section class="screenshot">
+<h1>Pydata Gadget JS</h1>
+
+<ul>
+	<li>Same with javascript gadget.</li>
+	<li>Copy and paste this <a href="https://gist.github.com/frequent/1d12343b86332d43f4262ab6dda5e415" style="color: #002e3f; text-decoration: none; background-color: inherit;" target="_blank">script</a> to the javascript gadget (in the edit tab).</li>
+</ul>
+
+  <test>
+    <table cellspacing="1" cellpadding="1" border="1" style="display: none;" class="test">
+      <thead> </thead>
+      <tbody>
+        <tr>
+          <td>open</td>
+          <td>${base_url}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>selectAndWait</td>
+          <td>select_module</td>
+          <td>label=Web Pages</td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[2]/input</td>
+          <td>gadget_erp5_page_pydata.js</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[1]/input</td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/tbody/tr/td[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="form_id" and @value="WebPage_view"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/div/div[1]/ul/li[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>pause</td>
+          <td>5000</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>//*[@id="master"]/div/div[2]/fieldset[2]/div/div/div/textarea</td>
+          <td>/*global window, rJS, RSVP, URI */
+/*jslint nomen: true, indent: 2, maxerr: 3 */
+(function (window, rJS, RSVP, URI) {
+  "use strict";
+  rJS(window)
+    // Init local properties
+    .ready(function (g) {
+      g.props = {};
+    })
+    // Assign the element to a variable
+    .ready(function (g) {
+      return g.getElement()
+        .push(function (element) {
+          g.props.element = element;
+        });
+    })
+    // Acquired methods
+    .declareAcquiredMethod("updateHeader", "updateHeader")
+
+    // declared methods
+    .declareMethod("render", function () {
+      var gadget = this;
+      return gadget.updateHeader({
+        page_title: 'PyData'
+      })
+    });
+}(window, rJS, RSVP, URI));</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/div/div[1]/button</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>assertTextPresent</td>
+          <td>Data updated.</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </test>
+</section>
+
+<section class="screenshot">
+<h1>Save, refresh web app</h1>
+
+<ul>
+	<li>Once you saved your files, go back to the web app and refresh</li>
+	<li>You should now have a blank page with header set correctly</li>
+	<li>This are just default template gadgets.</li>
+	<li>We will now update our gadgets to fetch our graph and display it</li>
+</ul>
+
+  <test>
+    <table cellspacing="1" cellpadding="1" border="1" style="display: none;" class="test">
+      <thead> </thead>
+      <tbody>
+        <tr>
+          <td>open</td>
+          <td>${base_url}/web_site_module/pydata_runner/</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>pause</td>
+          <td>15000</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>PyData</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </test>
+</section>
+
+<section class="screenshot">
+<h1>Update Pydata Gadget HTML</h1>
+
+<ul>
+	<li>Update html gadget with this <a href="https://gist.github.com/frequent/1269cadfcda31ec6a03fc0778d55c3dd" style="color: #002e3f; text-decoration: none; background-color: inherit;" target="_blank">script</a>.</li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>Took from existing project, HTML was created to fit a responsive grid of graphs</li>
+	<li>Added JS library for multidimensional arrays: <a href="https://github.com/scijs/ndarray" style="color: #002e3f; text-decoration: none; background-color: inherit;">NDArray</a></li>
+	<li>Added JS libarary for displaying graphs: <a href="https://github.com/danvk/dygraphs" style="color: #002e3f; text-decoration: none; background-color: inherit;">Dygraph</a></li>
+</ul>
+</details>
+  <test>
+    <table cellspacing="1" cellpadding="1" border="1" style="display: none;" class="test">
+      <thead> </thead>
+      <tbody>
+        <tr>
+          <td>open</td>
+          <td>${base_url}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>selectAndWait</td>
+          <td>select_module</td>
+          <td>label=Web Pages</td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[2]/input</td>
+          <td>gadget_erp5_page_pydata.html</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[1]/input</td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/tbody/tr/td[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="form_id" and @value="WebPage_view"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/div/div[1]/ul/li[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>pause</td>
+          <td>5000</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>//*[@id="master"]/div/div[2]/fieldset[2]/div/div/div/textarea</td>
+          <td tal:content="python: '%s' % ('''<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv='Content-type' content='text/html; charset=utf-8' />
+  <meta name='viewport' content='width=device-width, user-scalable=no' />
+  <title>PyData Graph</title>
+  
+  <!-- renderjs -->
+  <script src='rsvp.js' type='text/javascript'></script>
+  <script src='renderjs.js' type='text/javascript'></script>
+  <!-- custom script -->
+  <script src='dygraph.js' type='text/javascript'></script>
+  <script src='gadget_global.js' type='text/javascript'></script>
+  <script src='gadget_erp5_page_pydata.js' type='text/javascript'></script>
+</head>
+<body>
+  <div class='custom-grid-wrap'>
+    <div class='custom-grid ui-corner-all ui-body-inherit ui-shadow ui-corner-all'></div>
+  </div>
+   <div data-gadget-url='gadget_ndarray.html'
+        data-gadget-scope='ndarray'
+        data-gadget-sandbox='public'>
+  </div>
+</body>
+</html>''')"> </td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/div/div[1]/button</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>assertTextPresent</td>
+          <td>Data updated.</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </test>
+</section>
+
+<section class="screenshot">
+<h1>Pydata Gadget JS (1)</h1>
+
+<ul>
+	<li>Update js gadget with this <a href="https://gist.github.com/frequent/da0dd977fb0cf0e9177a32f9a08fd379" style="color: #002e3f; text-decoration: none; background-color: inherit;" target="_blank">script</a> (screanshots on this and next slides).</li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>First we only defined options for the Dygraph plugin</li>
+	<li>In production system these are either set as defaults or stored along with respective data</li>
+</ul>
+</details>
+  <test>
+    <table cellspacing="1" cellpadding="1" border="1" style="display: none;" class="test">
+      <thead> </thead>
+      <tbody>
+        <tr>
+          <td>open</td>
+          <td>${base_url}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>selectAndWait</td>
+          <td>select_module</td>
+          <td>label=Web Pages</td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[2]/input</td>
+          <td>gadget_erp5_page_pydata.js</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[1]/input</td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/tbody/tr/td[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="form_id" and @value="WebPage_view"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/div/div[1]/ul/li[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>pause</td>
+          <td>5000</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>//*[@id="master"]/div/div[2]/fieldset[2]/div/div/div/textarea</td>
+          <td>/*global window, rJS, console, RSVP, Dygraph */
+/*jslint indent: 2, maxerr: 3 */
+(function (rJS) {
+  "use strict";
+
+  var ARRAY_VALUE_LENGTH = 8,
+    OPTION_DICT = {
+      start_date: 0,
+      time_factor: 1000,
+      resolution: 1,
+      xlabel: 'x',
+      ylabel: 'y',
+      key_list: ["Channel 1", "Date"],
+      label_list: ["Date", "Channel 1"],
+      series_dict: {
+        "Channel 1": {
+          axis : "y",
+          color: "#00884B",
+          pointSize: 1,
+          visible : true,
+          connectSeparatedPoints: true
+        }
+      },
+      axis_dict: {
+        y: {
+          position : "left",
+          axisLabelColor: "grey",
+          axisLabelWidth : 40,
+          pixelsPerLabel : 30
+        },
+        x: {
+          drawAxis : true,
+          axisLabelWidth : 60,
+          axisLabelColor: "grey",
+          pixelsPerLabel : 30
+        }
+      },
+      connectSeparatedPoints: true
+    };
+
+  function generateInitialGraphData(label_list) {
+    var i,
+      data = [[]];
+    for (i = 0; i < label_list.length; i += 1) {
+      data[0].push(0);
+    }
+    return data;
+  }
+
+  function convertDateColToDate(gadget, array) {
+    var label_list = gadget.property_dict.option_dict.label_list,
+      time_factor = gadget.property_dict.option_dict.time_factor,
+      time_offset = gadget.property_dict.option_dict.time_offset || 0,
+      i,
+      k;
+
+    for (k = 0; k < label_list.length; k += 1) {
+      if (label_list[k] === "Date") {
+        for (i = 0; i < array.length; i += 1) {
+          array[i] = [i, array[i]];
+        }
+      }
+    }
+    return array;
+  }
+
+  rJS(window)
+
+    .ready(function (gadget) {
+      gadget.property_dict = {};
+      return gadget.getElement()
+        .push(function (element) {
+          gadget.property_dict.element = element;
+          gadget.property_dict.option_dict = OPTION_DICT;
+        });
+    })
+
+    .declareAcquiredMethod("jio_getAttachment", "jio_getAttachment")
+
+    // render gadget
+    .declareMethod('render', function () {
+      var gadget = this,
+        interaction_model = Dygraph.Interaction.defaultModel,
+        option_dict = {},
+        url;
+
+      url = "${base_url}/web_site_module/pydata_runner/hateoas/data_array_module/wendelin-Tutorial.Installation.Usage.Test.Spectrum";
+
+      return new RSVP.Queue()
+        .push(function () {
+          return gadget.jio_getAttachment("erp5", url, {
+            start : 0,
+            format : "array_buffer"
+          });
+        })
+        .push(function (buffer) {
+          var array_length,
+          length,
+          array,
+          array_width = 1;
+
+        array_length = Math.floor(
+          buffer.byteLength / array_width / ARRAY_VALUE_LENGTH
+        );
+        length = buffer.byteLength - (buffer.byteLength % ARRAY_VALUE_LENGTH);
+        if (length === buffer.byteLength) {
+          array = new Float64Array(buffer);
+        } else {
+          array = new Float64Array(buffer, 0, length);
+        }
+        return nj.ndarray(array, [array_length, array_width]);
+      })
+      .push(function (result) {
+        var i,
+          data = [],
+          ndarray = result,
+          label_list =  gadget.property_dict.option_dict.label_list,
+          key_list = gadget.property_dict.option_dict.key_list;
+
+        for (i = 1; i < label_list.length; i += 1) {
+          data = data.concat(
+            nj.unpack(
+              ndarray.pick(
+                null,
+                key_list.indexOf(label_list[i])
+              )
+            )
+          );
+        }
+
+        data = convertDateColToDate(gadget, data);
+
+        gadget.property_dict.data = data;
+        return gadget
+      });
+    })
+
+    .declareService(function () {
+      var gadget = this;
+
+      return gadget.property_dict.graph = new Dygraph(
+        gadget.property_dict.element,
+        gadget.property_dict.data,
+        gadget.property_dict.option_dict
+      );
+    });
+
+}(rJS));</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/div/div[1]/button</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Data updated.</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </test>
+</section>
+
+<section class="screenshot">
+<h1>Pydata Gadget JS (2)</h1>
+
+<details open="open">
+<ul>
+	<li>Add methods outside of the promise chain</li>
+	<li>Simplified (removed actual creation of date objects)</li>
+</ul>
+</details>
+</section>
+
+<section class="screenshot">
+<h1>Pydata Gadget JS (3)</h1>
+
+<ul>
+	<li>Edit url variable for your instance and for id of your spectrum2 Data Array!</li>
+</ul>
+
+<details open="open">
+<ul>
+	<li>&quot;ready&quot; triggered once gadget is loaded</li>
+	<li>define gadget specific parameters</li>
+	<li>&quot;render&quot; called by parent gadget or automatically</li>
+	<li>we hardcode url parameter, by default it would be URL based</li>
+</ul>
+</details>
+</section>
+
+<section class="screenshot">
+<h1>Pydata Gadget JS (4)</h1>
+
+<details open="open">
+<ul>
+	<li>Orchestrated process starting with a cancellable promise queue</li>
+	<li>First step requesting the full file (NOT OUT-OF-CORE compliant - we load the whole file)</li>
+	<li>Return file converted into ndarray</li>
+	<li>Convert data into graph compatible format, store onto gadget</li>
+	<li>&quot;declareService&quot; triggered once UI is built</li>
+	<li>Graph will be rendered there.</li>
+</ul>
+</details>
+</section>
+
+<section class="screenshot">
+<h1>Refresh Web Application</h1>
+
+<ul>
+	<li>Example computes client-side as project requires to work offline &quot;in the field&quot;</li>
+</ul>
+
+  <test>
+    <table cellspacing="1" cellpadding="1" border="1" style="display: none;" class="test">
+      <thead> </thead>
+      <tbody>
+        <tr style="opacity: 1; z-index: 0;">
+          <td>open</td>
+          <td>${base_url}/web_site_module/pydata_runner/</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>pause</td>
+          <td>15000</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </test>
+</section>
+
+<section>
+<h1>Summary: What did we do?</h1>
+
+<ul>
+	<li>We installed Wendelin on our KVM and configured it.</li>
+	<li>We ingested data with Fluentd.</li>
+	<li>We work with data using Jupyter Notebook.</li>
+	<li>We presented data in Wendelin using RenderJS and jIO javascript libraries.</li>
+</ul>
+</section>

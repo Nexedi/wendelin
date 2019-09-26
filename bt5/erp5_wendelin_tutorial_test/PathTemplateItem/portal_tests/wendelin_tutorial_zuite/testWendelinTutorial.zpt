@@ -1,0 +1,650 @@
+<html xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Test Wendelin Tutorial</title>
+  </head>
+  <body>
+    <table cellpadding="1" cellspacing="1" border="1">
+      <thead>
+        <tr><td rowspan="1" colspan="3">Wendelin Tutorial Zuite</td></tr>
+      </thead><tbody>
+        <tal:block metal:use-macro="here/Zuite_CommonTemplate/macros/init" />
+<!--    (1) Create Ingestion Policy    -->
+        <tr>
+          <td>open</td>
+          <td>${base_url}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Welcome to ERP5</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>open</td>
+          <td>${base_url}/portal_ingestion_policies</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="form_id" and @value="IngestionPolicyTool_view"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="context_bar"]/span[4]/span[1]/a[3]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="dialog_id" and @value="IngestionPolicyTool_viewAddIngestionPolicyActionDialog"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>field_your_title</td>
+          <td>Pydata</td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>field_your_reference</td>
+          <td>pydata</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//button[@name="Base_callDialogMethod:method" and @id="dialog_submit_button"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>pause</td>
+          <td>3000</td>
+          <td></td>
+        </tr>
+<!--    (2) Present data on Web Site    -->
+<!--    (2.1) Create Web Site    -->
+        <tr>
+          <td>open</td>
+          <td>${base_url}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>selectAndWait</td>
+          <td>select_module</td>
+          <td>label=Web Sites</td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Web Sites</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="form_id" and @value="WebSiteModule_viewWebSiteList"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[2]/input</td>
+          <td>renderjs_runner</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[1]/input</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/tbody/tr/td[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/tbody/tr/td[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="form_id" and @value="WebSite_view"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>RenderJS Runner</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>open</td>
+          <td>${base_url}/web_site_module/renderjs_runner/</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>pause</td>
+          <td>15000</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Worklist</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>open</td>
+          <td>${base_url}/web_site_module/renderjs_runner?ignore_layout:int=1&amp;editable;_mode:int=1&amp;selection;_name=web_site_module_view_web_site_list_selection</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//button[@type="submit" and @title="Clone"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Created Clone Web Site.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="form_id" and @value="WebSite_view"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>pause</td>
+          <td>3000</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>field_my_id</td>
+          <td>pydata_runner</td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>field_my_title</td>
+          <td>Pydata Runner</td><td>
+        </td></tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//button[@name="Base_edit:method" and @title="Save"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>selectAndWait</td>
+          <td>select_action</td>
+          <td>label=Publish</td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="dialog_id" and @value="Base_viewWorkflowActionDialog"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="dialog_submit_button"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Status changed.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Published</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//div[@class="actions"]/ul/li[3]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Front Page Gadget</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>field_my_configuration_frontpage_gadget_url</td>
+          <td>pydata</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/div/div[1]/button</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Data updated.</td>
+          <td></td>
+        </tr>
+<!--    (2.2) Create Web Page Gadgets    -->
+<!--    (2.2.1) html gadget    -->
+        <tr>
+          <td>open</td>
+          <td>${base_url}/</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>selectAndWait</td>
+          <td>select_module</td>
+          <td>label=Web Pages</td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="form_id" and @value="WebPageModule_viewWebPageList"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[2]/input</td>
+          <td>gadget_erp5_page_worklist.html</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[1]/input</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/tbody/tr/td[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/tbody/tr/td[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="form_id" and @value="WebPage_view"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Gadget ERP5 Worklist</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//button[@name="Base_createCloneDocument:method"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Created Clone Web Page.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>field_my_title</td>
+          <td>Gadget ERP5 PyData</td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>field_my_reference</td>
+          <td>gadget_erp5_page_pydata.html</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//button[@name="Base_edit:method" and @title="Save"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Data updated.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>selectAndWait</td>
+          <td>select_action</td>
+          <td>label=Publish Document Alive</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="dialog_submit_button"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Status changed.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Published Alive</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//div[@class="actions"]/ul/li[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>pause</td>
+          <td>3000</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>//*[@data-gadget-editable="field_my_text_content"]/div</td>
+          <td tal:content="python: '%s' % ('''&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta http-equiv='Content-type' content='text/html; charset=utf-8' /&gt;
+  &lt;meta name='viewport' content='width=device-width, user-scalable=no' /&gt;
+  &lt;title&gt;PyData Graph&lt;/title&gt;
+  
+  <!-- renderjs -->
+  &lt;script src='rsvp.js' type='text/javascript'&gt;&lt;/script&gt;
+  &lt;script src='renderjs.js' type='text/javascript'&gt;&lt;/script&gt;
+  <!-- custom script -->
+  &lt;script src='dygraph.js' type='text/javascript'&gt;&lt;/script&gt;
+  &lt;script src='gadget_global.js' type='text/javascript'&gt;&lt;/script&gt;
+  &lt;script src='gadget_erp5_page_pydata.js' type='text/javascript'&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class='custom-grid-wrap'&gt;
+    &lt;div class='custom-grid ui-corner-all ui-body-inherit ui-shadow ui-corner-all'&gt;&lt;/div&gt;
+  &lt;/div&gt;
+   &lt;div data-gadget-url='gadget_ndarray.html'
+        data-gadget-scope='ndarray'
+        data-gadget-sandbox='public'&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;''')"> </td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//button[@name="Base_edit:method" and @title="Save"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Data updated.</td>
+          <td></td>
+        </tr>
+<!--    (2.2.2) javascript gadget    -->
+        <tr>
+          <td>open</td>
+          <td>${base_url}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>selectAndWait</td>
+          <td>select_module</td>
+          <td>label=Web Pages</td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[2]/input</td>
+          <td>gadget_erp5_page_worklist.js</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/thead/tr[2]/th[1]/input</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/tbody/tr/td[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/fieldset/div/div/div/div[2]/div[2]/table/tbody/tr/td[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@name="form_id" and @value="WebPage_view"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Gadget ERP5 Worklist JS</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//button[@name="Base_createCloneDocument:method"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Created Clone Web Script.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>field_my_title</td>
+          <td>Gadget ERP5 PyData JS</td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>field_my_reference</td>
+          <td>gadget_erp5_page_pydata.js</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/div/div[1]/button</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Data updated.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>selectAndWait</td>
+          <td>select_action</td>
+          <td>label=Publish Document Alive</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="dialog_submit_button"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Status changed.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyTextPresent</td>
+          <td>Published Alive</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//*[@id="master"]/div/div[1]/ul/li[2]/a</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>pause</td>
+          <td>3000</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>type</td>
+          <td>//*[@data-gadget-editable="field_my_text_content"]/div</td>
+          <td>/*global window, rJS, console, RSVP, Dygraph */
+/*jslint indent: 2, maxerr: 3 */
+(function (rJS) {
+  "use strict";
+
+  var ARRAY_VALUE_LENGTH = 8,
+    OPTION_DICT = {
+      start_date: 0,
+      time_factor: 1000,
+      resolution: 1,
+      xlabel: 'x',
+      ylabel: 'y',
+      key_list: ["Channel 1", "Date"],
+      label_list: ["Date", "Channel 1"],
+      series_dict: {
+        "Channel 1": {
+          axis : "y",
+          color: "#00884B",
+          pointSize: 1,
+          visible : true,
+          connectSeparatedPoints: true
+        }
+      },
+      axis_dict: {
+        y: {
+          position : "left",
+          axisLabelColor: "grey",
+          axisLabelWidth : 40,
+          pixelsPerLabel : 30
+        },
+        x: {
+          drawAxis : true,
+          axisLabelWidth : 60,
+          axisLabelColor: "grey",
+          pixelsPerLabel : 30
+        }
+      },
+      connectSeparatedPoints: true
+    };
+
+  function generateInitialGraphData(label_list) {
+    var i,
+      data = [[]];
+    for (i = 0; i &lt; label_list.length; i += 1) {
+      data[0].push(0);
+    }
+    return data;
+  }
+
+  function convertDateColToDate(gadget, array) {
+    var label_list = gadget.property_dict.option_dict.label_list,
+      time_factor = gadget.property_dict.option_dict.time_factor,
+      time_offset = gadget.property_dict.option_dict.time_offset || 0,
+      i,
+      k;
+
+    for (k = 0; k &lt; label_list.length; k += 1) {
+      if (label_list[k] === "Date") {
+        for (i = 0; i &lt; array.length; i += 1) {
+          array[i] = [i, array[i]];
+        }
+      }
+    }
+    return array;
+  }
+
+  rJS(window)
+
+    .ready(function (gadget) {
+      gadget.property_dict = {};
+      return gadget.getElement()
+        .push(function (element) {
+          gadget.property_dict.element = element;
+          gadget.property_dict.option_dict = OPTION_DICT;
+        });
+    })
+
+    .declareAcquiredMethod("jio_getAttachment", "jio_getAttachment")
+
+    // render gadget
+    .declareMethod('render', function () {
+      var gadget = this,
+        interaction_model = Dygraph.Interaction.defaultModel,
+        option_dict = {},
+        url;
+
+      url = "${base_url}/web_site_module/pydata_runner/hateoas/data_array_module/wendelin-Tutorial.Installation.Usage.Test.Spectrum";
+
+      return new RSVP.Queue()
+        .push(function () {
+          return gadget.jio_getAttachment("erp5", url, {
+            start : 0,
+            format : "array_buffer"
+          });
+        })
+        .push(function (buffer) {
+          var array_length,
+          length,
+          array,
+          array_width = 1;
+
+        array_length = Math.floor(
+          buffer.byteLength / array_width / ARRAY_VALUE_LENGTH
+        );
+        length = buffer.byteLength - (buffer.byteLength % ARRAY_VALUE_LENGTH);
+        if (length === buffer.byteLength) {
+          array = new Float64Array(buffer);
+        } else {
+          array = new Float64Array(buffer, 0, length);
+        }
+        return nj.ndarray(array, [array_length, array_width]);
+      })
+      .push(function (result) {
+        var i,
+          data = [],
+          ndarray = result,
+          label_list =  gadget.property_dict.option_dict.label_list,
+          key_list = gadget.property_dict.option_dict.key_list;
+
+        for (i = 1; i &lt; label_list.length; i += 1) {
+          data = data.concat(
+            nj.unpack(
+              ndarray.pick(
+                null,
+                key_list.indexOf(label_list[i])
+              )
+            )
+          );
+        }
+
+        data = convertDateColToDate(gadget, data);
+
+        gadget.property_dict.data = data;
+        return gadget
+      });
+    })
+
+    .declareService(function () {
+      var gadget = this;
+
+      return gadget.property_dict.graph = new Dygraph(
+        gadget.property_dict.element,
+        gadget.property_dict.data,
+        gadget.property_dict.option_dict
+      );
+    });
+
+}(rJS));</td>
+        </tr>
+        <tr>
+          <td>clickAndWait</td>
+          <td>//button[@name="Base_edit:method" and @title="Save"]</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>assertTextPresent</td>
+          <td>Data updated.</td>
+          <td></td>
+        </tr>
+<!--    (2.3) Open Web Site    -->
+        <tr>
+          <td>open</td>
+          <td>${base_url}/web_site_module/pydata_runner/</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>pause</td>
+          <td>15000</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>verifyElementPresent</td>
+          <td>//*[@data-gadget-url="https://softinst116522.host.vifib.net/erp5/web_site_module/pydata_runner/gadget_jio.html"]</td>
+          <td></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </body>
+</html>

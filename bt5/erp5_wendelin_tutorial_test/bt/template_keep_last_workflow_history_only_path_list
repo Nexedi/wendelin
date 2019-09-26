@@ -1,0 +1,5 @@
+portal_tests/wendelin_tutorial_zuite
+portal_tests/wendelin_tutorial_zuite/**
+test_page_module/wendelin-Tutorial.Installation.Usage.KVM
+test_page_module/wendelin-Tutorial.Installation.Usage.Linux.machine
+test_page_module/wendelin-Tutorial.Installation.Usage.Webrunner

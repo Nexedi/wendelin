@@ -1,0 +1,75 @@
+<html xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Test Wendelin Configurator</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Wendelin Configurator Zuite</td></tr>
+</thead><tbody>
+<tal:block metal:use-macro="here/Zuite_CommonTemplate/macros/init" />
+<tr>
+  <td>setTimeout</td>
+  <td>1800000</td>
+  <td></td>
+</tr>
+<tr>
+  <td>openAndWait</td>
+  <td>${base_url}</td>
+  <td></td>
+</tr>
+<tr>
+  <td>verifyTextPresent</td>
+  <td>Welcome to ERP5</td>
+  <td></td>
+</tr>
+<tr>
+  <td>openAndWait</td>
+  <td>${base_url}/portal_configurator</td>
+  <td></td>
+</tr>
+<tr>
+  <td>verifyTextPresent</td>
+  <td>ERP5 Configuration</td>
+  <td></td>
+</tr>
+<tr>
+  <td>verifyTextPresent</td>
+  <td>Welcome to Configurator</td>
+  <td></td>
+</tr>
+<tr>
+  <td>clickAndWait</td>
+  <td>//*[@id="dialog-submit-button" and @value="business_configuration_module/wendelin_configuration"]</td>
+  <td></td>
+</tr>
+<tr>
+  <td>clickAndWait</td>
+  <td>//*[@type="Submit" and @value="Setup data notebook module"]</td>
+  <td></td>
+</tr>
+<tr>
+  <td>click</td>
+  <td>//*[@type="Submit" and @value="Install"]</td>
+  <td></td>
+<tr>
+  <td>pause</td>
+  <td>1200000</td>
+  <td></td>
+</tr>
+<tr>
+  <td>open</td>
+  <td>${base_url}</td>
+  <td></td>
+</tr>
+<tr>
+  <td>verifyTextPresent</td>
+  <td>Welcome to ERP5</td>
+  <td></td>
+</tr>
+
+
+</tbody></table>
+</body></html>
