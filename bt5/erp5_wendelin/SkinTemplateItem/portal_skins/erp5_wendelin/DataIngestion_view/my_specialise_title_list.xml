@@ -11,13 +11,14 @@
             <value>
               <list>
                 <string>portal_type</string>
+                <string>proxy_listbox_ids</string>
                 <string>title</string>
               </list>
             </value>
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>my_causality_title</string> </value>
+            <value> <string>my_specialise_title_list</string> </value>
         </item>
         <item>
             <key> <string>message_values</string> </key>
@@ -74,7 +75,7 @@
               <dictionary>
                 <item>
                     <key> <string>field_id</string> </key>
-                    <value> <string>my_relation_field</string> </value>
+                    <value> <string>my_multi_relation_field</string> </value>
                 </item>
                 <item>
                     <key> <string>form_id</string> </key>
@@ -85,12 +86,19 @@
                     <value>
                       <list>
                         <tuple>
-                          <string>Data Ingestion</string>
-                          <string>Data Ingestion</string>
+                          <string>Data Supply</string>
+                          <string>Data Supply</string>
                         </tuple>
+                      </list>
+                    </value>
+                </item>
+                <item>
+                    <key> <string>proxy_listbox_ids</string> </key>
+                    <value>
+                      <list>
                         <tuple>
-                          <string>Data Analysis</string>
-                          <string>Data Analysis</string>
+                          <string>DataSupplyModule_viewDataSupplyList/listbox</string>
+                          <string>Data Supply</string>
                         </tuple>
                       </list>
                     </value>
@@ -101,7 +109,7 @@
                 </item>
                 <item>
                     <key> <string>title</string> </key>
-                    <value> <string>Causality</string> </value>
+                    <value> <string>Data Supply</string> </value>
                 </item>
               </dictionary>
             </value>
