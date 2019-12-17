@@ -160,13 +160,31 @@ class DataArray(BigFile):
     # chunk out of our data.
     # convert ranges from bytes to array indices
     slice_index = REQUEST.get('slice_index', None)
-    if slice_index is not None:
+    start_date = REQUEST.get('start_date', None)
+    stop_date = REQUEST.get('stop_date', None)
+    if slice_index is not None or (start_date is not None and stop_date is not None):
       RESPONSE.setHeader("Content-Type", "application/octet-stream")
-      slice_index_list = []
-      for index in slice_index:
-        slice_index_list.append(slice(index.get('start'),
-                                      index.get('stop'),
-                                      index.get('step')))
+      if slice_index is not None:
+        slice_index_list = []
+        for index in slice_index:
+          slice_index_list.append(slice(index.get('start'),
+                                        index.get('stop'),
+                                        index.get('step')))
+      elif start_date is not None and stop_date is not None:
+        import numpy as np
+        import pandas as pd
+        start_date_vector = self.getArray()[:]['start_date']
+        stop_date_vector = self.getArray()[:]['stop_date']
+        valid_start_idx = np.where(start_date_vector >= np.datetime64(start_date))[0]
+        valid_stop_idx = np.where(stop_date_vector <=  np.datetime64(stop_date))[0]
+
+        if len(valid_start_idx) != 0 and len(valid_stop_idx) != 0:
+          start_index = valid_start_idx[start_date_vector[valid_start_idx].argmin()]
+          stop_index = valid_stop_idx[stop_date_vector[valid_stop_idx].argmax()]
+          slice_index_list = [slice(start_index, stop_index+1)]
+        else:
+          slice_index_list = [slice(0, 0)]
+
       list_index = REQUEST.get('list_index', None)
       if list_index is not None:
         RESPONSE.write(self.getArray()[tuple(slice_index_list)][list_index].tobytes())
