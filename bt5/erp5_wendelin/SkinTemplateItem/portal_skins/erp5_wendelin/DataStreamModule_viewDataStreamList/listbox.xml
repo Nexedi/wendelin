@@ -84,6 +84,10 @@
                           <string>modification_date</string>
                           <string>Modification Date</string>
                         </tuple>
+                        <tuple>
+                          <string>portal_type</string>
+                          <string>Portal Type</string>
+                        </tuple>
                       </list>
                     </value>
                 </item>
