@@ -11,5 +11,5 @@ io.seek(0)
 npy_data = io.read()
 io.close()
 
-crc = struct.pack('<i', binascii.crc32(npy_data))
+crc = struct.pack('<I', binascii.crc32(npy_data) & 0xffffffff)
 return b''.join([MAGIC_HEADER, crc, npy_data])

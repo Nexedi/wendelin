@@ -16,8 +16,8 @@ major, minor = map(ord, magic_str[-2:]) #python2
 assert major == 0 and minor == 1
 
 # verify crc32 checksum
-checksum = struct.unpack('<i', data[MAGIC_LEN:HEADER_LEN])[0]
-assert checksum == binascii.crc32(data[HEADER_LEN:])
+checksum = struct.unpack('<I', data[MAGIC_LEN:HEADER_LEN])[0]
+assert checksum == binascii.crc32(data[HEADER_LEN:]) & 0xffffffff
 io = StringIO()
 io.write(data[HEADER_LEN:])
 io.seek(0)
