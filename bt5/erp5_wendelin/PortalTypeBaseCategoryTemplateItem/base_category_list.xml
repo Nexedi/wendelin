@@ -66,6 +66,9 @@
  <portal_type id="Data Supply Module">
   <item>business_application</item>
  </portal_type>
+ <portal_type id="Data Transformation">
+  <item>resolution</item>
+ </portal_type>
  <portal_type id="Data Transformation Module">
   <item>business_application</item>
  </portal_type>
