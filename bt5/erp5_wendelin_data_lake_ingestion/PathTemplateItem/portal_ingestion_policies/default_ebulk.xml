@@ -60,15 +60,15 @@
         </item>
         <item>
             <key> <string>default_reference</string> </key>
-            <value> <string>default_embulk</string> </value>
+            <value> <string>default_ebulk</string> </value>
         </item>
         <item>
             <key> <string>description</string> </key>
-            <value> <string>Handles ingestion of raw files bytes sent to us from embulk.</string> </value>
+            <value> <string>Handles ingestion of raw files bytes sent to us from ebulk.</string> </value>
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>default_embulk</string> </value>
+            <value> <string>default_ebulk</string> </value>
         </item>
         <item>
             <key> <string>portal_type</string> </key>
@@ -80,7 +80,7 @@
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>Default Embulk Ingestion Policy</string> </value>
+            <value> <string>Default Ebulk Ingestion Policy</string> </value>
         </item>
         <item>
             <key> <string>version</string> </key>
@@ -154,7 +154,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>983.65063.13238.38656</string> </value>
+                      <value> <string>984.990.49194.19609</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -172,7 +172,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1589898789.46</float>
+                              <float>1589986625.99</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
