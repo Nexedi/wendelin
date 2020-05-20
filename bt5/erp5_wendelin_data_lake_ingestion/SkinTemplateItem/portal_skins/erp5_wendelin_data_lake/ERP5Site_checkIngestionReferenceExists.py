@@ -10,9 +10,9 @@ TRUE = "TRUE"
 portal = context.getPortalObject()
 portal_catalog = portal.portal_catalog
 
-reference_separator = portal.DataLake_getIngestionReferenceDictionary()["reference_separator"]
-reference_end_single = portal.DataLake_getIngestionReferenceDictionary()["single_end_suffix"]
-reference_end_split = portal.DataLake_getIngestionReferenceDictionary()["split_end_suffix"]
+reference_separator = portal.ERP5Site_getIngestionReferenceDictionary()["reference_separator"]
+reference_end_single = portal.ERP5Site_getIngestionReferenceDictionary()["single_end_suffix"]
+reference_end_split = portal.ERP5Site_getIngestionReferenceDictionary()["split_end_suffix"]
 
 # remove supplier and eof from reference
 data_ingestion_reference = reference_separator.join(reference.split(reference_separator)[1:-3])
