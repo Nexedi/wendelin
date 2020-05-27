@@ -82,18 +82,22 @@ for data_ingestion in portal_catalog(portal_type = "Data Ingestion",
             log("It is base data stream")
             full_data_stream = data_stream
           else:
-            log("It is not base data stream, it is a part")
             if full_data_stream != None:
-              log("appending content to base data stream...")
-              full_data_stream.appendData(data_stream.getData())
+              #DON'T APPEND ANYMORE
+              #log("appending content to base data stream...")
+              #full_data_stream.appendData(data_stream.getData())
               last_data_stream_id = data_stream.getId()
-              portal.data_stream_module.deleteContent(data_stream.getId())
+              #DON'T DELETE CONTENT
+              #portal.data_stream_module.deleteContent(data_stream.getId())
+              data_stream.validate()
         if last_data_stream_id.endswith(reference_end_split):
           portal.ERP5Site_invalidateSplitIngestions(data_ingestion.getReference(), success=True)
           hash = getHash(full_data_stream)
           full_data_stream.setVersion(hash)
           if full_data_stream.getValidationState() != "validated":
             full_data_stream.validate()
+            #only one published data stream for the split file
+            full_data_stream.publish()
           related_split_ingestions = portal_catalog(portal_type = "Data Ingestion",
                                                     simulation_state = "started",
                                                     reference = data_ingestion.getReference())
@@ -105,5 +109,5 @@ for data_ingestion in portal_catalog(portal_type = "Data Ingestion",
               portal.ERP5Site_invalidateReference(ingestion)
               ingestion.deliver()
       except Exception as e:
-        context.logEntry("ERROR appending split data streams for ingestion: %s - reference: %s." % (data_ingestion.getId(), data_ingestion.getReference()))
-        context.logEntry(e)
+        context.log("ERROR appending split data streams for ingestion: %s - reference: %s." % (data_ingestion.getId(), data_ingestion.getReference()))
+        context.log(e)
