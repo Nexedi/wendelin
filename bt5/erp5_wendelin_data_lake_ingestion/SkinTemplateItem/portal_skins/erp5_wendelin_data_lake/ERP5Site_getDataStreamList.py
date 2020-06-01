@@ -20,14 +20,20 @@ if data_set is None:
   return []
 
 data_stream_list = []
+data_stream_dict = {}
 for stream in data_set.DataSet_getDataStreamList():
-  if stream.getVersion() == "":
-    return { "status_code": 2, "result": [] }
   if not portal.ERP5Site_checkReferenceInvalidated(stream):
     data_stream_list.append({ 'id': 'data_stream_module/'+stream.getId(),
                               'reference': stream.getReference(),
                               'size': stream.getSize(),
                               'hash': stream.getVersion() })
+    data_stream_info_dict = { 'id': 'data_stream_module/'+stream.getId(),
+                              'size': stream.getSize(),
+                              'hash': stream.getVersion() }
+    if stream.getReference() in data_stream_dict:
+      data_stream_dict[stream.getReference()].append(data_stream_info_dict)
+    else:
+      data_stream_dict[stream.getReference()] = [data_stream_info_dict]
 
-result_dict = { 'status_code': 0, 'result': data_stream_list }
+result_dict = { 'status_code': 0, 'result': data_stream_list, 'result_dict': data_stream_dict }
 return json.dumps(result_dict)
