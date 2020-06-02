@@ -31,9 +31,13 @@ for stream in data_set.DataSet_getDataStreamList():
                               'size': stream.getSize(),
                               'hash': stream.getVersion() }
     if stream.getReference() in data_stream_dict:
-      data_stream_dict[stream.getReference()].append(data_stream_info_dict)
+      data_stream_dict[stream.getReference()]['data-stream-list'].append(data_stream_info_dict)
+      data_stream_dict[stream.getReference()]['large-hash'] = data_stream_dict[stream.getReference()]['large-hash'] + str(stream.getVersion())
+      data_stream_dict[stream.getReference()]['full-size'] = int(data_stream_dict[stream.getReference()]['full-size']) + int(stream.getSize())
     else:
-      data_stream_dict[stream.getReference()] = [data_stream_info_dict]
+      data_stream_dict[stream.getReference()] = { 'data-stream-list': [data_stream_info_dict],
+                                                        'large-hash': stream.getVersion(),
+                                                        'full-size': stream.getSize() }
 
-result_dict = { 'status_code': 0, 'result': data_stream_list, 'result_dict': data_stream_dict }
+result_dict = { 'status_code': 0, 'result': data_stream_list, 'result_dict': data_stream_dict}
 return json.dumps(result_dict)
