@@ -70,7 +70,6 @@ for data_ingestion in portal_catalog(portal_type = "Data Ingestion",
                                      id = "%"+reference_first_split):
   if not portal.ERP5Site_checkReferenceInvalidated(data_ingestion):
     if isInterruptedAbandonedSplitIngestion(data_ingestion.getReference()):
-      #TODO invalidate the corresponding datastreams too
       portal.ERP5Site_invalidateSplitIngestions(data_ingestion.getReference(), success=False)
     else:
       try:
