@@ -22,6 +22,16 @@ def getHash(data_stream):
     n_chunk += 1
   return hash_md5.hexdigest()
 
+def isFinishedSplitIngestion(reference):
+  #check if all chunks of a split file were ingested
+  #that is if EOF chunk was ingested
+  reference_end_split = portal.ERP5Site_getIngestionReferenceDictionary()["split_end_suffix"]
+  eof_ingestion = portal_catalog(portal_type = "Data Ingestion",
+                                 simulation_state = "started",
+                                 reference = reference,
+                                 id = "%"+reference_end_split)
+  return len(eof_ingestion) == 1
+
 def isInterruptedAbandonedSplitIngestion(reference):
   from DateTime import DateTime
   day_hours = 1.0/24/60*60*24
@@ -69,33 +79,31 @@ for data_ingestion in portal_catalog(portal_type = "Data Ingestion",
                                      simulation_state = "started",
                                      id = "%"+reference_first_split):
   if not portal.ERP5Site_checkReferenceInvalidated(data_ingestion):
-    if isInterruptedAbandonedSplitIngestion(data_ingestion.getReference()):
-      portal.ERP5Site_invalidateSplitIngestions(data_ingestion.getReference(), success=False)
-    else:
+    if isFinishedSplitIngestion(data_ingestion.getReference()):
       try:
         query = Query(portal_type="Data Stream", reference=data_ingestion.getReference(), validation_state="draft")
-        result_list = portal_catalog(query=query, sort_on=(('creation_date', 'ascending'),))
-        for data_stream in result_list:
-          log(''.join(["Data stream for split ingestion: ", data_stream.getId()]))
-          last_data_stream = data_stream
+        ingestion_data_stream_list = portal_catalog(query=query, sort_on=(('creation_date', 'ascending'),))
+        for data_stream in ingestion_data_stream_list:
           hash_value = getHash(data_stream)
           data_stream.setVersion(hash_value)
-        if last_data_stream and last_data_stream.getId().endswith(reference_end_split):
-          #validate all chunk data streams of the split file
-          for chunk_data_stream in result_list:
-            chunk_data_stream.validate()
-          #publish only one data stream (EOF) for the split file
-          if last_data_stream.getValidationState() != "published":
-            last_data_stream.publish()
-          related_split_ingestions = portal_catalog(portal_type = "Data Ingestion",
-                                                    simulation_state = "started",
-                                                    reference = data_ingestion.getReference())
-          for ingestion in related_split_ingestions:
-            if ingestion.getId() == last_data_stream.getId():
-              if ingestion.getSimulationState() == "started":
-                ingestion.stop()
-            else:
-              ingestion.deliver()
+          if data_stream.getValidationState() != "validated":
+            data_stream.validate()
+          if data_stream.getId().endswith(reference_end_split):
+            if data_stream.getValidationState() != "published":
+              data_stream.publish()
+            last_data_stream_id = data_stream.getId()
+        related_split_ingestions = portal_catalog(portal_type = "Data Ingestion",
+                                                  simulation_state = "started",
+                                                  reference = data_ingestion.getReference())
+        for ingestion in related_split_ingestions:
+          if ingestion.getId() == last_data_stream_id:
+            if ingestion.getSimulationState() == "started":
+              ingestion.stop()
+          else:
+            ingestion.deliver()
       except Exception as e:
         context.log("ERROR handling split data streams for ingestion: %s - reference: %s." % (data_ingestion.getId(), data_ingestion.getReference()))
         context.log(e)
+    else:
+      if isInterruptedAbandonedSplitIngestion(data_ingestion.getReference()):
+        portal.ERP5Site_invalidateSplitIngestions(data_ingestion.getReference(), success=False)
