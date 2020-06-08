@@ -80,9 +80,11 @@ for data_ingestion in portal_catalog(portal_type = "Data Ingestion",
           last_data_stream = data_stream
           hash_value = getHash(data_stream)
           data_stream.setVersion(hash_value)
-          data_stream.validate()
         if last_data_stream and last_data_stream.getId().endswith(reference_end_split):
-          #only one published data stream (EOF) for the split file
+          #validate all chunk data streams of the split file
+          for chunk_data_stream in result_list:
+            chunk_data_stream.validate()
+          #publish only one data stream (EOF) for the split file
           if last_data_stream.getValidationState() != "published":
             last_data_stream.publish()
           related_split_ingestions = portal_catalog(portal_type = "Data Ingestion",
