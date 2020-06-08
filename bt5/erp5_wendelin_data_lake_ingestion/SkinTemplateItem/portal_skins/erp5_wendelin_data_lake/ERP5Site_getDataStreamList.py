@@ -22,7 +22,7 @@ if data_set is None:
 data_stream_list = []
 data_stream_dict = {}
 for stream in data_set.DataSet_getDataStreamList():
-  if not portal.ERP5Site_checkReferenceInvalidated(stream):
+  if not portal.ERP5Site_checkReferenceInvalidated(stream) and stream.getValidationState() != "draft":
     data_stream_list.append({ 'id': 'data_stream_module/'+stream.getId(),
                               'reference': stream.getReference(),
                               'size': stream.getSize(),
