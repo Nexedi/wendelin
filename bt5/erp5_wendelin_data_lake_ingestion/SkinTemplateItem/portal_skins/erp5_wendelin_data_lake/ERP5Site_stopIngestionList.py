@@ -65,8 +65,9 @@ for data_ingestion in portal_catalog(portal_type = "Data Ingestion",
         portal_type = 'Data Stream',
         reference = data_ingestion.getReference())
       if data_stream is not None:
-        hash_value = getHash(data_stream)
-        data_stream.setVersion(hash_value)
+        if data_stream.getVersion() is None:
+          hash_value = getHash(data_stream)
+          data_stream.setVersion(hash_value)
         if data_stream.getValidationState() != "validated":
           data_stream.validate()
         if data_stream.getValidationState() != "published":
