@@ -10,7 +10,7 @@ portal = context.getPortalObject()
 try:
   data_set = portal.data_set_module.get(data_set_reference)
   if data_set is None or portal.ERP5Site_checkReferenceInvalidated(data_set):
-    return { "status_code": 0, "result": [], 'result_dict': [] }
+    return { "status_code": 0, "result": [] }
 except Exception as e: # fails because unauthorized access
   log("Unauthorized access to getDataStreamList: " + str(e))
   return { "status_code": 1, "error_message": "401 - Unauthorized access. Please check your user credentials and try again." }
@@ -19,14 +19,9 @@ data_set = portal.data_set_module.get(data_set_reference)
 if data_set is None:
   return []
 
-data_stream_list = []
 data_stream_dict = {}
 for stream in data_set.DataSet_getDataStreamList():
   if not portal.ERP5Site_checkReferenceInvalidated(stream) and stream.getValidationState() != "draft":
-    data_stream_list.append({ 'id': 'data_stream_module/'+stream.getId(),
-                              'reference': stream.getReference(),
-                              'size': stream.getSize(),
-                              'hash': stream.getVersion() })
     data_stream_info_dict = { 'id': 'data_stream_module/'+stream.getId(),
                               'size': stream.getSize(),
                               'hash': stream.getVersion() }
@@ -41,5 +36,5 @@ for stream in data_set.DataSet_getDataStreamList():
                                                         'large-hash': stream.getVersion(),
                                                         'full-size': stream.getSize() }
 
-result_dict = { 'status_code': 0, 'result': data_stream_list, 'result_dict': data_stream_dict.values()}
+result_dict = { 'status_code': 0, 'result': data_stream_dict.values()}
 return json.dumps(result_dict)
