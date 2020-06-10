@@ -20,8 +20,6 @@ supplier = movement_dict.get('supplier', None)
 extension = movement_dict.get('extension', None)
 dataset_reference = movement_dict.get('dataset_reference', None)
 data_ingestion_id =  '%s_%s_%s_%s' %(supplier, dataset_reference, now_string, eof)
-#size = movement_dict.get('size', None) if movement_dict.get('size', None) != "" else None
-#hash_value = movement_dict.get('hash', None) if movement_dict.get('hash', None) != "" else None
 
 # search for applicable data ingestion
 data_ingestion = portal_catalog.getResultValue(
@@ -85,12 +83,9 @@ for supply_line in composed.objectValues(portal_type = 'Data Supply Line'):
 input_line.setAggregateSet(
   input_line.getAggregateList() + operation_line.getAggregateList())
 
-#if hash_value is None or eof != reference_end_single: # do not set hash if split, calculate when append
-#  hash_value = ""
 data_stream = portal.data_stream_module.newContent(
   portal_type = "Data Stream",
   id = data_ingestion_id,
-  #version = hash_value,
   title = "%s%s" % (data_ingestion.getTitle(), "."+extension if extension != none_extension else ""),
   reference = data_ingestion_reference)
 
