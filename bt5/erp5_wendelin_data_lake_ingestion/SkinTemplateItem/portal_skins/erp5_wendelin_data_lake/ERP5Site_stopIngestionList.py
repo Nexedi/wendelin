@@ -61,19 +61,25 @@ for data_ingestion in portal_catalog(portal_type = "Data Ingestion",
     related_split_ingestions = portal_catalog(portal_type = "Data Ingestion",
                                               reference = data_ingestion.getReference())
     if len(related_split_ingestions) == 1:
-      data_stream = portal_catalog.getResultValue(
-        portal_type = 'Data Stream',
-        reference = data_ingestion.getReference())
-      if data_stream is not None:
-        if data_stream.getVersion() is None:
-          hash_value = getHash(data_stream)
-          data_stream.setVersion(hash_value)
-        if data_stream.getValidationState() != "validated" and data_stream.getValidationState() != "published":
-          data_stream.validate()
-        if data_stream.getValidationState() != "published":
-          data_stream.publish()
-        if data_ingestion.getSimulationState() == "started":
-          data_ingestion.stop()
+      try:
+        data_stream = portal_catalog.getResultValue(
+          portal_type = 'Data Stream',
+          reference = data_ingestion.getReference())
+        if data_stream is not None:
+          if data_stream.getVersion() is None:
+            hash_value = getHash(data_stream)
+            data_stream.setVersion(hash_value)
+          if data_stream.getValidationState() != "validated" and data_stream.getValidationState() != "published":
+            data_stream.validate()
+          if data_stream.getValidationState() != "published":
+            data_stream.publish()
+          if data_ingestion.getSimulationState() == "started":
+            data_ingestion.stop()
+      except Exception as e:
+        context.log("ERROR stoping single ingestion: %s - reference: %s." % (data_ingestion.getId(), data_ingestion.getReference()))
+        context.log(e)
+  else:
+    data_ingestion.deliver()
 
 # handle split ingestions
 for data_ingestion in portal_catalog(portal_type = "Data Ingestion",
