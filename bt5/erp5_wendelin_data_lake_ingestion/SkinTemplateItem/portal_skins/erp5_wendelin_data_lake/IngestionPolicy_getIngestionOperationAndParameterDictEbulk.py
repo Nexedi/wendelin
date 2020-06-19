@@ -104,7 +104,7 @@ if dataset_reference is not None:
       # when a data set is uploaded from ebulk this means that "validation" is done at client side
       # thus set set accordingly
       data_set.validate()
-  except:
+  except Exception:
     data_set = portal.data_set_module.get(dataset_reference)
   if portal.ERP5Site_checkReferenceInvalidated(data_set):
     portal.ERP5Site_revalidateReference(data_set)
@@ -117,6 +117,7 @@ data_ingestion.start()
 data_operation = operation_line.getResourceValue()
 data_stream = input_line.getAggregateDataStreamValue()
 
+# if not split (one single ingestion) validate and publish the data stream
 if eof == reference_end_single:
   data_stream.validate()
   data_stream.publish()
