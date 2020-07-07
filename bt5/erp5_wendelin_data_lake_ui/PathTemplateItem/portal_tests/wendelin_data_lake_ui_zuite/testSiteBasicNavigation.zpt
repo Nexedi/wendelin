@@ -26,7 +26,7 @@
 <!-- Initialize
 <tr>
   <td>open</td>
-  <td>${base_url}/portal_skins/erp5_web_project_test/ERP5Site_createTestDataSet</td>
+  <td>${base_url}/portal_skins/erp5_wendelin_data_lake_test/ERP5Site_createTestDataSet</td>
   <td></td>
 </tr>
 <tr>
@@ -74,6 +74,37 @@
 <tr>
   <td>assertElementPresent</td>
  <td>//div[@data-gadget-url='${base_url}/web_site_module/default_wendelin_data_lake/fif_gadget_erp5_panel.html']//a[text()='Logout' and contains(@href, '#!display') and contains(@href, 'n.page=logout')]</td>
+  <td></td>
+</tr>
+<!-- Check links -->
+<tr>
+  <td>waitForElementPresent</td>
+  <td>//div[@data-gadget-url='${base_url}/web_site_module/default_wendelin_data_lake/gadget_erp5_page_home.html']//a[@id='home_link' and contains(@href, '#!display') and contains(@href, 'p.page=home')]</td>
+  <td></td>
+</tr>
+<tr>
+  <td>waitForElementPresent</td>
+  <td>//div[@data-gadget-url='${base_url}/web_site_module/default_wendelin_data_lake/gadget_erp5_page_home.html']//a[@id='download_link' and contains(@href, '#!display') and contains(@href, 'n.page=download')]</td>
+  <td></td>
+</tr>
+<tr>
+  <td>waitForElementPresent</td>
+  <td>//div[@data-gadget-url='${base_url}/web_site_module/default_wendelin_data_lake/gadget_erp5_page_home.html']//a[@id='download_ebulk_link' and contains(@href, '#!display') and contains(@href, 'n.page=download')]</td>
+  <td></td>
+</tr>
+<tr>
+  <td>waitForElementPresent</td>
+  <td>//div[@data-gadget-url='${base_url}/web_site_module/default_wendelin_data_lake/gadget_erp5_page_home.html']//a[@id='dataset_link' and contains(@href, '#!display') and contains(@href, 'n.page=fifdata')]</td>
+  <td></td>
+</tr>
+<tr>
+  <td>waitForElementPresent</td>
+  <td>//div[@data-gadget-url='${base_url}/web_site_module/default_wendelin_data_lake/gadget_erp5_page_home.html']//a[@id='register_link' and contains(@href, '#!display') and contains(@href, 'n.page=register')]</td>
+  <td></td>
+</tr>
+<tr>
+  <td>waitForElementPresent</td>
+  <td>//div[@data-gadget-url='${base_url}/web_site_module/default_wendelin_data_lake/gadget_erp5_page_home.html']//a[@id='documentation_link' and contains(@href, '#!display') and contains(@href, 'n.page=ebulk_doc')]</td>
   <td></td>
 </tr>
 </tbody></table>
