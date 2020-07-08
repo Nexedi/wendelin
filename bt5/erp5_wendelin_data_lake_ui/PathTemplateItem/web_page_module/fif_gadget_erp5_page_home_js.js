@@ -1,6 +1,6 @@
-/*global window, rJS, RSVP, URI, document */
+/*global window, rJS, URI, document */
 /*jslint nomen: true, indent: 2, maxerr: 3 */
-(function (window, rJS, RSVP, document) {
+(function (window, rJS, document) {
   "use strict";
 
   rJS(window)
@@ -51,4 +51,4 @@
         });
     });
 
-}(window, rJS, RSVP, document));
+}(window, rJS, document));
