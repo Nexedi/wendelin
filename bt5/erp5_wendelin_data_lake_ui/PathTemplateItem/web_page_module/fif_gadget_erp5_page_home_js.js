@@ -15,33 +15,34 @@
       });
     })
     .declareService(function () {
-      var gadget = this;
-      var url_parameter_list = [];
+      var gadget = this,
+        url_parameter_list = [];
       url_parameter_list.push({
-          command: 'display'
-        });
+        command: 'display'
+      });
       url_parameter_list.push({
-          command: 'display_stored_state',
-          options: {page: 'download'}
-        });
+        command: 'display_stored_state',
+        options: {page: 'download'}
+      });
       url_parameter_list.push({
-          command: 'display_stored_state',
-          options: {page: 'fifdata'}
-        });
+        command: 'display_stored_state',
+        options: {page: 'fifdata'}
+      });
       url_parameter_list.push({
-          command: 'display_stored_state',
-          options: {page: 'register'}
-        });
+        command: 'display_stored_state',
+        options: {page: 'register'}
+      });
       url_parameter_list.push({
-          command: 'display_stored_state',
-          options: {page: 'ebulk_doc'}
-        });
+        command: 'display_stored_state',
+        options: {page: 'ebulk_doc'}
+      });
       return gadget.getUrlForList(url_parameter_list)
         .push(function (url_list) {
           document.querySelector("#home_link").href = url_list[0];
           document.querySelector("#download_link").href = url_list[1];
           document.querySelector("#download_ebulk_link").href = url_list[1];
           document.querySelector("#dataset_link").href = url_list[2];
+          document.querySelector("#dataset_link_img").href = url_list[2];
           document.querySelector("#register_link").href = url_list[3];
           document.querySelector("#documentation_link").href = url_list[4];
         })
