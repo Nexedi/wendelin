@@ -57,6 +57,8 @@ sz = np.array([('2017-07-12T12:30:20',)], dtype=[('date', 'M8[s]')])
 allow_type(type(sz[0]['date']))
 
 allow_module('sklearn')
+allow_module('sklearn.model_selection')
+allow_module('sklearn.linear_model')
 allow_module('scipy')
 
 allow_module('wendelin.bigarray.array_zodb')
@@ -76,6 +78,8 @@ allow_type(pd.Index)
 allow_type(pd.core.groupby.DataFrameGroupBy)
 allow_class(pd.DataFrame)
 
+import sklearn.linear_model
+allow_class(sklearn.linear_model.LinearRegression)
 
 # Modify 'safetype' dict in full_write_guard function
 # of RestrictedPython (closure) directly To allow
