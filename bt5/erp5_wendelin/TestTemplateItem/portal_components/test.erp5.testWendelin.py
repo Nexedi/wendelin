@@ -125,7 +125,7 @@ class Test(ERP5TypeTestCase):
 
     # clean up
     data_array.invalidate()
-    data_stream.setData('')
+    data_stream.setData(None)
     self.tic()
 
 
@@ -439,5 +439,5 @@ class Test(ERP5TypeTestCase):
     self.assertEqual(body, data_stream_data)
 
     # clean up
-    data_stream.setData('')
+    data_stream.setData(None)
     self.tic()
