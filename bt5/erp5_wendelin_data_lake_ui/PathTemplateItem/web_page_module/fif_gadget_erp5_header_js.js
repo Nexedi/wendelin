@@ -237,7 +237,6 @@
           });
         })
         .push(function (result) {
-          console.log("[HEADER] ERP5Site_getUserName: ", result.target.response);
           state.user = result.target.response;
           return gadget.changeState(state);
         });
@@ -361,18 +360,11 @@
       } else {
         promise_list.push(null);
       }
-    
-    
-    
-    
-      console.log("[HEADER!] gadget.state.user:", gadget.state.user);
       if (gadget.state.user) {
-        console.log("user logged in!!!");
-        var logged_in_div = document.querySelector("#logged_in_as");
-        var logged_in_span = document.querySelector("#logged_in_user");
-        console.log("logged_in_div:", logged_in_div);
-        console.log("logged_in_span:", logged_in_span);
-        logged_in_span.innerHTML = gadget.state.user;
+        var logged_in_div = document.querySelector("#logged_in_div"),
+          logged_in_user = document.querySelector("#logged_in_user");
+        logged_in_div.classList.remove("ui-screen-hidden");
+        logged_in_user.innerHTML = gadget.state.user;
       }
 
       return new RSVP.Queue()
