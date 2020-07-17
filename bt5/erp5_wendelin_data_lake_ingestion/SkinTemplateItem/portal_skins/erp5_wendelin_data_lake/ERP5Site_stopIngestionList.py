@@ -95,11 +95,12 @@ for data_ingestion in portal_catalog(portal_type = "Data Ingestion",
             ingestion.deliver()
         #link split datastreams
         related_split_streams = portal_catalog(portal_type = "Data Stream",
-                                               reference = data_ingestion.getReference())
+                                               reference = data_ingestion.getReference(),
+                                               sort_on=[('creation_date', 'ascending')])
         predecessor = None
         for stream in related_split_streams:
           if predecessor:
-            predecessor.setPredecessorValue(stream)
+            predecessor.setSuccessorValue(stream)
             stream.setPredecessorValue(predecessor)
           predecessor = stream
       except Exception as e:
