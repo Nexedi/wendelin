@@ -7,6 +7,9 @@ import time
 import numpy as np
 import base64
 
+def id_generator(size=8, chars=string.digits):
+  return ''.join(random.choice(chars) for x in range(size))
+
 class TestDataIngestion(SecurityTestCase):
 
   REFERENCE_SEPARATOR = "/"
@@ -22,6 +25,7 @@ class TestDataIngestion(SecurityTestCase):
   REF_PREFIX = "fake-supplier" + REFERENCE_SEPARATOR
   REF_SUPPLIER_PREFIX = "fake-supplier" + REFERENCE_SEPARATOR
   INVALID = "_invalid"
+  USER_ID = "test_user"
 
   def getTitle(self):
     return "DataIngestionTest"
@@ -218,9 +222,9 @@ class TestDataIngestion(SecurityTestCase):
     self.assertNotEqual(None,
            getattr(self.portal.data_supply_module, "embulk", None))
 
-  def test_04_DefaultModelSecurityModel(self):
+  def test_04_DatasetAndDatastreamsConsistency(self):
     """
-      Test default security model : 'All can download, only contributors can upload.'
+      Test that data set state transition also changes its data streams states
     """
     data_set, data_stream_list = self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)
     self.tic()
@@ -280,5 +284,73 @@ class TestDataIngestion(SecurityTestCase):
     self.assertEqual(data_set.getValidationState(), 'published')
     self.assertEqual(first_file_stream.getValidationState(), 'published')
     self.assertEqual(second_file_stream.getValidationState(), 'published')
+
+  def test_06_DefaultModelSecurityModel(self):
+    """
+      Test default security model : 'All can download, only contributors can upload.'
+    """
+    data_set, data_stream_list = self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)
+    self.tic()
+    data_stream = data_stream_list[0]
+    data_ingestion = self.getDataIngestion(data_stream.getReference())
+    checkPermission = self.portal.portal_membership.checkPermission
+
+    #anonymous can't access modules or not published data
+    self.logout()
+    self.assertFalse(checkPermission("View", self.portal.data_set_module))
+    self.assertFalse(checkPermission("View", self.portal.data_stream_module))
+    self.assertFalse(checkPermission("View", self.portal.data_ingestion_module))
+    self.assertFalse(checkPermission("View", data_set))
+    self.assertFalse(checkPermission("View", data_stream))
+    self.assertFalse(checkPermission("View", data_ingestion))
+    #publish dataset
+    self.login()
+    data_set.publish()
+    self.tic()
+    #anonymous can access published data set and data stream
+    self.logout()
+    self.assertTrue(checkPermission("View", data_set))
+    self.assertTrue(checkPermission("View", data_stream))
+    #anonymous can't ingest
+    module = self.portal.getDefaultModule(portal_type='Data Ingestion')
+    self.assertEqual(None, checkPermission('View', module))
+    self.assertEqual(None, checkPermission('Access Contents Information', module))
+    self.assertEqual(None, checkPermission('Modify portal content', module))
+
+    #create test user if not exists
+    module = self.portal.getDefaultModule(portal_type='Credential Request')
+    portal_preferences = self.portal.portal_preferences
+    category_list = portal_preferences.getPreferredSubscriptionAssignmentCategoryList()
+    if self.portal.CredentialRequest_checkLoginAvailability(self.USER_ID):
+      credential_request = module.newContent(
+        portal_type="Credential Request",
+        first_name="test",
+        last_name="user",
+        reference=self.USER_ID,
+        password="test_password",
+        default_email_text="test@user.com"
+      )
+      self.tic()
+      credential_request.setCategoryList(category_list)
+      # Same tag is used as in ERP5 Login._setReference, in order to protect against
+      # concurrency between Credential Request and Person object too
+      tag = 'set_login_%s' % self.USER_ID.encode('hex')
+      credential_request.reindexObject(activate_kw={'tag': tag})
+      self.tic()
+      credential_request.submit("Automatic submit")
+      self.tic()
+    self.loginByUserName(user_name=self.USER_ID)
+    #user can access data
+    self.assertTrue(checkPermission("View", self.portal.data_set_module))
+    self.assertTrue(checkPermission("View", self.portal.data_stream_module))
+    self.assertTrue(checkPermission("View", self.portal.data_ingestion_module))
+    self.assertTrue(checkPermission("View", data_set))
+    self.assertTrue(checkPermission("View", data_stream))
+    self.assertTrue(checkPermission("View", data_ingestion))
+    #user can ingest
+    self.assertEqual(True, checkPermission('Access Contents Information', self.portal.data_ingestion_module))
+    self.assertEqual(True, checkPermission('Modify portal content', self.portal.data_ingestion_module))
+    data_set, data_stream_list = self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)
+    self.tic()
 
   # XXX: new test which simulates download / upload of Data Set and increase DS version
