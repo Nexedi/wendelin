@@ -1,4 +1,5 @@
 from Products.ERP5Type.tests.SecurityTestCase import SecurityTestCase
+from zExceptions import Unauthorized
 import string
 import random
 import csv
@@ -22,6 +23,8 @@ class TestDataIngestion(SecurityTestCase):
   REF_PREFIX = "fake-supplier" + REFERENCE_SEPARATOR
   REF_SUPPLIER_PREFIX = "fake-supplier" + REFERENCE_SEPARATOR
   INVALID = "_invalid"
+  DOWNLOADER_USER_ID = 'test_downloader'
+  CONTRIBUTOR_USER_ID = 'test_contributor'
 
   def getTitle(self):
     return "DataIngestionTest"
@@ -135,6 +138,41 @@ class TestDataIngestion(SecurityTestCase):
 
     return data_set, [data_stream]
 
+  def createUserAndCredentials(self, user_id, roles):
+    #create user credentials
+    module = self.portal.getDefaultModule(portal_type='Credential Request')
+    portal_preferences = self.portal.portal_preferences
+    category_list = portal_preferences.getPreferredSubscriptionAssignmentCategoryList()
+    if self.portal.CredentialRequest_checkLoginAvailability(user_id):
+      credential_request = module.newContent(
+        portal_type="Credential Request",
+        first_name="test",
+        last_name="user",
+        reference=user_id,
+        password="test_password",
+        default_email_text="test@user.com"
+      )
+      self.tic()
+      credential_request.setCategoryList(category_list)
+      tag = 'set_login_%s' % user_id.encode('hex')
+      credential_request.reindexObject(activate_kw={'tag': tag})
+      credential_request.submit("Automatic submit")
+      self.tic()
+    #create user
+    acl_users = self.portal.acl_users
+    acl_users._doAddUser(user_id, '', roles, [])
+
+  def failUnlessUserCanCreateViewAndValidate(self, user_id, container_portal_type, workflow_transition=None):
+    reference_base = ''.join(random.choice(string.digits) for x in range(8))
+    self.login(user_id)
+
+    new_container = self.portal.getDefaultModule(container_portal_type
+                            ).newContent(portal_type=container_portal_type,
+                                         title=self.id() + reference_base)
+
+    self.failUnlessUserCanViewDocument(user_id, new_container)
+    self.failUnlessUserCanModifyDocument(user_id, new_container)
+
   def test_01_DefaultEbulkIngestion(self):
     """
       Test default ingestion with ebulk too.
@@ -218,9 +256,9 @@ class TestDataIngestion(SecurityTestCase):
     self.assertNotEqual(None,
            getattr(self.portal.data_supply_module, "embulk", None))
 
-  def test_04_DefaultModelSecurityModel(self):
+  def test_04_DatasetAndDatastreamsConsistency(self):
     """
-      Test default security model : 'All can download, only contributors can upload.'
+      Test that data set state transition also changes its data streams states
     """
     data_set, data_stream_list = self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)
     self.tic()
@@ -280,5 +318,70 @@ class TestDataIngestion(SecurityTestCase):
     self.assertEqual(data_set.getValidationState(), 'published')
     self.assertEqual(first_file_stream.getValidationState(), 'published')
     self.assertEqual(second_file_stream.getValidationState(), 'published')
+
+  def test_06_DefaultModelSecurityModel(self):
+    """
+      Test default security model : 'All can download, only contributors can upload.'
+    """
+    #ingest to generate some documents
+    self.login()
+    data_set, data_stream_list = self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)
+    self.tic()
+    data_stream = data_stream_list[0]
+    data_ingestion = self.getDataIngestion(data_stream.getReference())
+    checkPermission = self.portal.portal_membership.checkPermission
+
+    #create users
+    self.createUserAndCredentials(self.DOWNLOADER_USER_ID, ['Auditor'])
+    self.createUserAndCredentials(self.CONTRIBUTOR_USER_ID, ['Assignor', 'Auditor', 'Author'])
+
+    #anonymous can't access modules or not published data
+    self.logout()
+    self.assertFalse(checkPermission("View", self.portal.data_set_module))
+    self.assertFalse(checkPermission("View", self.portal.data_stream_module))
+    self.assertFalse(checkPermission("View", self.portal.data_ingestion_module))
+    self.assertFalse(checkPermission("View", data_set))
+    self.assertFalse(checkPermission("View", data_stream))
+    self.assertFalse(checkPermission("View", data_ingestion))
+    #publish dataset
+    self.login()
+    data_set.publish()
+    self.tic()
+    #anonymous can access published data set and data stream
+    self.logout()
+    self.assertTrue(checkPermission("View", data_set))
+    self.assertTrue(checkPermission("View", data_stream))
+    #anonymous can't ingest
+    try:
+      self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)
+      self.tic()
+      raise AssertionError("Anonymous user should not be able to ingest")
+    except Unauthorized:
+      pass
+
+    #users can access data
+    for user in [self.DOWNLOADER_USER_ID, self.CONTRIBUTOR_USER_ID]:
+      self.login(user)
+      self.failUnlessUserHavePermissionOnDocument('View', user, self.portal.data_set_module)
+      self.failUnlessUserHavePermissionOnDocument('View', user, self.portal.data_stream_module)
+      self.failUnlessUserHavePermissionOnDocument('View', user, self.portal.data_ingestion_module)
+      self.failUnlessUserHavePermissionOnDocument('View', user, data_set)
+      self.failUnlessUserHavePermissionOnDocument('View', user, data_stream)
+      self.failUnlessUserHavePermissionOnDocument('View', user, data_ingestion)
+
+    #downloader can't ingest
+    self.login(self.DOWNLOADER_USER_ID)
+    try:
+      self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)
+      self.tic()
+      raise AssertionError("Downloader user should not be able to ingest")
+    except Unauthorized:
+      pass
+
+    #contributor can ingest
+    self.login(self.CONTRIBUTOR_USER_ID)
+    self.failUnlessUserCanCreateViewAndValidate(self.CONTRIBUTOR_USER_ID, 'Data Ingestion', 'validate_action')
+    self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)
+    self.tic()
 
   # XXX: new test which simulates download / upload of Data Set and increase DS version
