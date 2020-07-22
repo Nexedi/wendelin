@@ -218,9 +218,9 @@ class TestDataIngestion(SecurityTestCase):
     self.assertNotEqual(None,
            getattr(self.portal.data_supply_module, "embulk", None))
 
-  def test_04_DefaultModelSecurityModel(self):
+  def test_04_DatasetAndDatastreamsConsistency(self):
     """
-      Test default security model : 'All can download, only contributors can upload.'
+      Test that data set state transition also changes its data streams states
     """
     data_set, data_stream_list = self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)
     self.tic()
@@ -280,5 +280,10 @@ class TestDataIngestion(SecurityTestCase):
     self.assertEqual(data_set.getValidationState(), 'published')
     self.assertEqual(first_file_stream.getValidationState(), 'published')
     self.assertEqual(second_file_stream.getValidationState(), 'published')
+
+  #def test_06_DefaultModelSecurityModel(self):
+  #  """
+  #    Test default security model : 'All can download, only contributors can upload.'
+  #  """
 
   # XXX: new test which simulates download / upload of Data Set and increase DS version
