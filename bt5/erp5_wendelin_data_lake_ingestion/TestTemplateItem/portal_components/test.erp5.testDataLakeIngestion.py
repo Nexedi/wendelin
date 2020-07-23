@@ -7,6 +7,9 @@ import time
 import numpy as np
 import base64
 
+def id_generator(size=8, chars=string.digits):
+  return ''.join(random.choice(chars) for x in range(size))
+
 class TestDataIngestion(SecurityTestCase):
 
   REFERENCE_SEPARATOR = "/"
@@ -22,6 +25,7 @@ class TestDataIngestion(SecurityTestCase):
   REF_PREFIX = "fake-supplier" + REFERENCE_SEPARATOR
   REF_SUPPLIER_PREFIX = "fake-supplier" + REFERENCE_SEPARATOR
   INVALID = "_invalid"
+  USER_ID = "test_user"
 
   def getTitle(self):
     return "DataIngestionTest"
@@ -31,6 +35,27 @@ class TestDataIngestion(SecurityTestCase):
     self.assertEqual(self.INVALID, self.portal.ERP5Site_getIngestionReferenceDictionary()["invalid_suffix"])
     self.assertEqual(self.EOF, self.REFERENCE_SEPARATOR + self.portal.ERP5Site_getIngestionReferenceDictionary()["split_end_suffix"])
     self.assertEqual(self.PART_1, self.REFERENCE_SEPARATOR + self.portal.ERP5Site_getIngestionReferenceDictionary()["split_first_suffix"])
+    #for security tests
+    portal = self.portal
+    self.test_user = portal.person_module['1']
+    if self.portal.getId()!='erp5':
+      # with live tests we setup these manually
+      acl_users = self.portal.acl_users
+      if 'erp5_users' not in acl_users:
+        acl_users.manage_addProduct['ERP5Security'].addERP5UserManager('erp5_users')
+      acl_users.erp5_users.manage_activateInterfaces([
+        'IAuthenticationPlugin',
+        'IUserEnumerationPlugin',
+      ])
+      erp5_login_users_plugin = getattr(acl_users, "erp5_login_users")
+      erp5_login_users_plugin.manage_activateInterfaces([])
+      self.validateRules()
+      self.setupCloudoo()
+      self.portal.ERP5Site_afterSetup()
+      self.setupCloudoo()
+    uf = self.portal.acl_users
+    if not uf.getUser('manager'):
+      uf._doAddUser('manager', '', ['Manager'], [])
 
   def getRandomReference(self):
     random_string = ''.join([random.choice(string.ascii_letters + string.digits) for _ in xrange(10)])
@@ -281,9 +306,46 @@ class TestDataIngestion(SecurityTestCase):
     self.assertEqual(first_file_stream.getValidationState(), 'published')
     self.assertEqual(second_file_stream.getValidationState(), 'published')
 
-  #def test_06_DefaultModelSecurityModel(self):
-  #  """
-  #    Test default security model : 'All can download, only contributors can upload.'
-  #  """
+  def test_06_DefaultModelSecurityModel(self):
+    """
+      Test default security model : 'All can download, only contributors can upload.'
+    """
+    #create test user if not exists
+    module = self.portal.getDefaultModule(portal_type='Credential Request')
+    portal_preferences = self.portal.portal_preferences
+    category_list = portal_preferences.getPreferredSubscriptionAssignmentCategoryList()
+    if self.portal.CredentialRequest_checkLoginAvailability(self.USER_ID):
+      credential_request = module.newContent(
+        portal_type="Credential Request",
+        first_name="test",
+        last_name="user",
+        reference=self.USER_ID,
+        password="test_password",
+        default_credential_question_question="default_credential_question_question",
+        default_credential_question_question_free_text="default_credential_question_question_free_text",
+        default_credential_question_answer="default_credential_question_answer",
+        default_email_text="test@user.com",
+        default_telephone_text="default_telephone_text",
+        default_mobile_telephone_text="default_mobile_telephone_text",
+        default_fax_text="default_fax_text",
+        default_address_street_address="default_address_street_address",
+        default_address_city="default_address_city",
+        default_address_zip_code="default_address_zip_code",
+        default_address_region="default_address_region"
+      )
+      self.tic()
+      credential_request.setCategoryList(category_list)
+      # Same tag is used as in ERP5 Login._setReference, in order to protect against
+      # concurrency between Credential Request and Person object too
+      tag = 'set_login_%s' % self.USER_ID.encode('hex')
+      credential_request.reindexObject(activate_kw={'tag': tag})
+      self.tic()
+      credential_request.submit("Automatic submit")
+      self.tic()
+
+    for portal_type in ['Data Set']:
+      module = self.portal.getDefaultModule(portal_type)
+      self.failUnlessUserCanAddDocument(self.USER_ID, module)
+    self.assertEqual('b', 'a')
 
   # XXX: new test which simulates download / upload of Data Set and increase DS version
