@@ -340,12 +340,15 @@ class TestDataIngestion(SecurityTestCase):
 
     return
 
+    
     #create person
     # test create / validate assignment
+    from DateTime import DateTime
+    now = DateTime()
     person = self.portal.getDefaultModule('Person').newContent(
                     portal_type='Person',
-                    title = self.id() + '_' +reference_base,
-                    default_email_coordinate_text = 'test@info.com')
+                    title = "Test Person",
+                    default_email_coordinate_text = 'test@person.com')
     assignment = person.newContent(portal_type='Assignment',
                                start_date = now,
                                stop_date = now + 365,
@@ -353,7 +356,7 @@ class TestDataIngestion(SecurityTestCase):
     person.validate()
     self.login('manager')
     assignment.open()
-  
+    
     #create test user if not exists
     module = self.portal.getDefaultModule(portal_type='Credential Request')
     portal_preferences = self.portal.portal_preferences
