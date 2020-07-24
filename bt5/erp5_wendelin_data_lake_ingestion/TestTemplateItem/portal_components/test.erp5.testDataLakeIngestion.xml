@@ -39,15 +39,22 @@
         <item>
             <key> <string>text_content_error_message</string> </key>
             <value>
-              <tuple/>
+              <tuple>
+                <string>E:347, 45: Undefined variable \'reference_base\' (undefined-variable)</string>
+                <string>E:350, 44: Undefined variable \'now\' (undefined-variable)</string>
+                <string>E:351, 43: Undefined variable \'now\' (undefined-variable)</string>
+              </tuple>
             </value>
         </item>
         <item>
             <key> <string>text_content_warning_message</string> </key>
             <value>
               <tuple>
-                <string>W:130, 34: Unused variable \'i\' (unused-variable)</string>
-                <string>W:130, 76: Unused variable \'j\' (unused-variable)</string>
+                <string>W: 39,  4: Unused variable \'portal\' (unused-variable)</string>
+                <string>W:129, 34: Unused variable \'i\' (unused-variable)</string>
+                <string>W:129, 76: Unused variable \'j\' (unused-variable)</string>
+                <string>W:345,  4: Unreachable code (unreachable)</string>
+                <string>W:336,  4: Unused variable \'new_ingestion\' (unused-variable)</string>
               </tuple>
             </value>
         </item>
@@ -73,7 +80,391 @@
         <item>
             <key> <string>data</string> </key>
             <value>
-              <dictionary/>
+              <dictionary>
+                <item>
+                    <key> <string>description</string> </key>
+                    <value> <string></string> </value>
+                </item>
+                <item>
+                    <key> <string>text_content</string> </key>
+                    <value> <string encoding="cdata"><![CDATA[
+
+from Products.ERP5Type.tests.SecurityTestCase import SecurityTestCase\n
+import string\n
+import random\n
+import csv\n
+import os\n
+import time\n
+import numpy as np\n
+import base64\n
+\n
+#import pdb; pdb.set_trace()\n
+\n
+def id_generator(size=8, chars=string.digits):\n
+  return \'\'.join(random.choice(chars) for x in range(size))\n
+\n
+class TestDataIngestion(SecurityTestCase):\n
+\n
+  REFERENCE_SEPARATOR = "/"\n
+  PART_1 = REFERENCE_SEPARATOR + "001"\n
+  PART_2 = REFERENCE_SEPARATOR + "002"\n
+  PART_3 = REFERENCE_SEPARATOR + "003"\n
+  EOF = REFERENCE_SEPARATOR + "EOF"\n
+  FIF = REFERENCE_SEPARATOR + "fif"\n
+  CSV = REFERENCE_SEPARATOR + "csv"\n
+  SIZE_HASH = REFERENCE_SEPARATOR + "fake-size"+ REFERENCE_SEPARATOR + "fake-hash"\n
+  SINGLE_INGESTION_END = REFERENCE_SEPARATOR\n
+  CHUNK_SIZE_CSV = 25\n
+  REF_PREFIX = "fake-supplier" + REFERENCE_SEPARATOR\n
+  REF_SUPPLIER_PREFIX = "fake-supplier" + REFERENCE_SEPARATOR\n
+  INVALID = "_invalid"\n
+  USER_ID = "test_user"\n
+\n
+  def getTitle(self):\n
+    return "DataIngestionTest"\n
+\n
+  def afterSetUp(self):\n
+    self.assertEqual(self.REFERENCE_SEPARATOR, self.portal.ERP5Site_getIngestionReferenceDictionary()["reference_separator"])\n
+    self.assertEqual(self.INVALID, self.portal.ERP5Site_getIngestionReferenceDictionary()["invalid_suffix"])\n
+    self.assertEqual(self.EOF, self.REFERENCE_SEPARATOR + self.portal.ERP5Site_getIngestionReferenceDictionary()["split_end_suffix"])\n
+    self.assertEqual(self.PART_1, self.REFERENCE_SEPARATOR + self.portal.ERP5Site_getIngestionReferenceDictionary()["split_first_suffix"])\n
+    #for security tests\n
+    portal = self.portal\n
+    if self.portal.getId()!=\'erp5\':\n
+      # with live tests we setup these manually\n
+      acl_users = self.portal.acl_users\n
+      if \'erp5_users\' not in acl_users:\n
+        acl_users.manage_addProduct[\'ERP5Security\'].addERP5UserManager(\'erp5_users\')\n
+      acl_users.erp5_users.manage_activateInterfaces([\n
+        \'IAuthenticationPlugin\',\n
+        \'IUserEnumerationPlugin\',\n
+      ])\n
+      erp5_login_users_plugin = getattr(acl_users, "erp5_login_users")\n
+      erp5_login_users_plugin.manage_activateInterfaces([])\n
+      self.validateRules()\n
+      self.setupCloudoo()\n
+      self.portal.ERP5Site_afterSetup()\n
+      self.setupCloudoo()\n
+    uf = self.portal.acl_users\n
+    if not uf.getUser(\'manager\'):\n
+      uf._doAddUser(\'manager\', \'\', [\'Manager\'], [])\n
+\n
+  def getRandomReference(self):\n
+    random_string = \'\'.join([random.choice(string.ascii_letters + string.digits) for _ in xrange(10)])\n
+    return \'UNIT-TEST-\' + random_string\n
+\n
+  def getIngestionReference(self, reference, extension, randomize_ingestion_reference=False, data_set_reference=False):\n
+    if not data_set_reference:\n
+      data_set_reference = "fake-dataset"\n
+    if not randomize_ingestion_reference:\n
+      # return hard coded which results in one Data Set and multiple Data Streams (in context of test)\n
+      return self.REF_PREFIX + data_set_reference + self.REFERENCE_SEPARATOR + reference + extension\n
+    else:\n
+      # create random one\n
+      random_string = self.getRandomReference()\n
+      return "%s/%s/%s/csv//fake-size/fake-hash" %(random_string, random_string, random_string)\n
+\n
+  def sanitizeReference(self, reference):\n
+    ingestion_reference = self.REFERENCE_SEPARATOR.join(reference.split(self.REFERENCE_SEPARATOR)[1:])\n
+    data_stream = self.getDataStream(ingestion_reference)\n
+    ingestion_id = data_stream.getId()\n
+    return ingestion_id, ingestion_reference\n
+\n
+  def getFullReference(self, ingestion_reference, size, hash_value):\n
+    return self.REF_SUPPLIER_PREFIX + ingestion_reference + self.REFERENCE_SEPARATOR +  self.REFERENCE_SEPARATOR + str("") +  self.REFERENCE_SEPARATOR + ""\n
+\n
+  def chunks(self, l, n):\n
+    for i in xrange(0, len(l), n):\n
+      yield l[i:i+n]\n
+\n
+  def getDataIngestion(self, reference):\n
+    data_ingestion = self.portal.portal_catalog.getResultValue(\n
+                    portal_type = \'Data Ingestion\',\n
+                    reference = reference)\n
+    return data_ingestion\n
+\n
+  def getDataStream(self, reference):\n
+    data_stream = self.portal.portal_catalog.getResultValue(\n
+                    portal_type = \'Data Stream\',\n
+                    reference = reference)\n
+    return data_stream\n
+\n
+  def getDataStreamChunkList(self, reference):\n
+    data_stream_list = self.portal.portal_catalog(\n
+                        portal_type = \'Data Stream\',\n
+                        reference = reference,\n
+                        sort_on=[(\'creation_date\', \'ascending\')])\n
+    return data_stream_list\n
+\n
+  def ingestRequest(self, reference, eof, data_chunk, ingestion_policy):\n
+    encoded_data_chunk = base64.b64encode(data_chunk)\n
+    request = self.portal.REQUEST\n
+    # only POST for Wendelin allowed\n
+    request.environ["REQUEST_METHOD"] = \'POST\'\n
+    reference = reference + eof + self.SIZE_HASH\n
+    self.portal.log("Ingest with reference=%s" %reference)\n
+    request.set(\'reference\', reference)\n
+    request.set(\'data_chunk\', encoded_data_chunk)\n
+    ingestion_policy.ingest()\n
+    self.tic()\n
+\n
+  def ingest(self, data_chunk, reference, extension, eof, randomize_ingestion_reference=False, data_set_reference=False):\n
+    ingestion_reference = self.getIngestionReference(reference, extension, randomize_ingestion_reference, data_set_reference)\n
+    # use default ebulk policy\n
+    ingestion_policy = self.portal.portal_ingestion_policies.default_ebulk\n
+    self.ingestRequest(ingestion_reference, eof, data_chunk, ingestion_policy)\n
+    _, ingestion_reference = self.sanitizeReference(ingestion_reference)\n
+    return ingestion_reference\n
+\n
+  def stepIngest(self, extension, delimiter, randomize_ingestion_reference=False, data_set_reference=False):\n
+    file_name = "file_name.csv"\n
+    reference = self.getRandomReference()\n
+    array = [[random.random() for i in range(self.CHUNK_SIZE_CSV + 10)] for j in range(self.CHUNK_SIZE_CSV + 10)]\n
+    np.savetxt(file_name, array, delimiter=delimiter)\n
+    chunk = []\n
+    with open(file_name, \'r\') as csv_file:\n
+      data_chunk = csv_file.read()\n
+      csv_file.seek(0)\n
+      reader = csv.reader(csv_file, delimiter=delimiter)\n
+      for index, line in enumerate(reader):\n
+        if (index < self.CHUNK_SIZE_CSV):\n
+          chunk.append(line)\n
+        else:\n
+          break\n
+    ingestion_reference = self.ingest(data_chunk, reference, extension, self.SINGLE_INGESTION_END,\n
+                                      randomize_ingestion_reference=randomize_ingestion_reference, data_set_reference=data_set_reference)\n
+\n
+    if os.path.exists(file_name):\n
+      os.remove(file_name)\n
+\n
+    # test properly ingested\n
+    data_ingestion = self.getDataIngestion(ingestion_reference)\n
+    self.assertNotEqual(None, data_ingestion)\n
+\n
+    data_ingestion_line = [x for x in data_ingestion.objectValues() \\\n
+                            if x.getReference() == \'out_stream\'][0]\n
+    data_set = data_ingestion_line.getAggregateValue(portal_type=\'Data Set\')\n
+    data_stream = data_ingestion_line.getAggregateValue(portal_type=\'Data Stream\')\n
+    self.assertNotEqual(None, data_stream)\n
+\n
+    data_stream_data = data_stream.getData()\n
+    self.assertEqual(data_chunk, data_stream_data)\n
+\n
+    return data_set, [data_stream]\n
+\n
+  def test_01_DefaultEbulkIngestion(self):\n
+    """\n
+      Test default ingestion with ebulk too.\n
+    """\n
+    data_set, data_stream_list = self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)\n
+\n
+    # check Data Set and Data Stream is validated\n
+    self.assertEqual(\'validated\', data_set.getValidationState())\n
+    self.assertSameSet([\'validated\' for x in data_stream_list],\n
+                       [x.getValidationState() for x in data_stream_list])\n
+\n
+  def test_02_DefaultSplitIngestion(self):\n
+    """\n
+      Test multiple uploads from ebulk end up in multiple Data Streams\n
+      (in case of large file upload when ebluk by default splits file to 50MBs\n
+      chunks).\n
+    """\n
+    data_chunk_1 = \'\'.join([random.choice(string.ascii_letters + string.digits) \\\n
+                              for _ in xrange(250)])\n
+    data_chunk_2 = \'\'.join([random.choice(string.ascii_letters + string.digits) \\\n
+                              for _ in xrange(250)])\n
+    data_chunk_3 = \'\'.join([random.choice(string.ascii_letters + string.digits) \\\n
+                              for _ in xrange(250)])\n
+    data_chunk_4 = \'\'.join([random.choice(string.ascii_letters + string.digits) \\\n
+                              for _ in xrange(250)])\n
+\n
+    reference = self.getRandomReference()\n
+\n
+    ingestion_reference = self.ingest(data_chunk_1, reference, self.FIF, self.PART_1)\n
+    time.sleep(1)\n
+    self.tic()\n
+\n
+    ingestion_reference = self.ingest(data_chunk_2, reference, self.FIF, self.PART_2)\n
+    time.sleep(1)\n
+    self.tic()\n
+\n
+    ingestion_reference = self.ingest(data_chunk_3, reference, self.FIF, self.PART_3)\n
+    time.sleep(1)\n
+    self.tic()\n
+\n
+    ingestion_reference = self.ingest(data_chunk_4, reference, self.FIF, self.EOF)\n
+    time.sleep(1)\n
+    self.tic()\n
+\n
+    # call explicitly alarm so all 4 Data Streams are validated and published\n
+    self.portal.portal_alarms.wendelin_handle_analysis.Alarm_handleAnalysis()\n
+    self.tic()\n
+\n
+    # check resulting Data Streams\n
+    data_stream_list = self.getDataStreamChunkList(ingestion_reference)\n
+    #one data stream per chunk\n
+    self.assertEqual(len(data_stream_list), 4)\n
+    #all data streams are validated\n
+    self.assertSameSet([\'validated\' for x in data_stream_list],\n
+                       [x.getValidationState() for x in data_stream_list])\n
+    #data streams are linked\n
+    data_stream_1 = data_stream_list[0].getObject()\n
+    data_stream_2 = data_stream_list[1].getObject()\n
+    data_stream_3 = data_stream_list[2].getObject()\n
+    data_stream_4 = data_stream_list[3].getObject()\n
+    # test successor\n
+    self.assertSameSet(data_stream_2.getRecursiveSuccessorValueList(), \\\n
+                       [data_stream_3, data_stream_4])\n
+    self.assertSameSet(data_stream_4.getRecursiveSuccessorValueList(), \\\n
+                       [])\n
+    # test predecessor\n
+    self.assertSameSet(data_stream_1.getRecursivePredecessorValueList(), \\\n
+                       [])\n
+    self.assertSameSet(data_stream_2.getRecursivePredecessorValueList(), \\\n
+                       [data_stream_1])\n
+    self.assertSameSet(data_stream_4.getRecursivePredecessorValueList(), \\\n
+                       [data_stream_3, data_stream_2, data_stream_1])\n
+\n
+  def test_03_DefaultWendelinConfigurationExistency(self):\n
+    """\n
+      Test that nobody accidently removes needed by HowTo\'s default configurations.\n
+    """\n
+    # test default ebuk ingestion exists\n
+    self.assertNotEqual(None,\n
+           getattr(self.portal.portal_ingestion_policies, "default_ebulk", None))\n
+    self.assertNotEqual(None,\n
+           getattr(self.portal.data_supply_module, "embulk", None))\n
+\n
+  def test_04_DatasetAndDatastreamsConsistency(self):\n
+    """\n
+      Test that data set state transition also changes its data streams states\n
+    """\n
+    data_set, data_stream_list = self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)\n
+    self.tic()\n
+\n
+    # check data relation between Data Set and Data Streams work\n
+    self.assertSameSet(data_stream_list, data_set.DataSet_getDataStreamList())\n
+\n
+    # check data set and all Data Streams states\n
+    self.assertEqual(\'validated\', data_set.getValidationState())\n
+    self.assertSameSet([\'validated\' for x in data_stream_list],\n
+                       [x.getValidationState() for x in data_stream_list])\n
+\n
+    # publish data set and have all Data Streams publsihed automatically\n
+    data_set.publish()\n
+    self.tic()\n
+    self.assertEqual(\'published\', data_set.getValidationState())\n
+    self.assertSameSet([\'published\' for x in data_stream_list],\n
+                       [x.getValidationState() for x in data_stream_list])\n
+\n
+    # invalidate Data Set should invalidate related Data Streams\n
+    data_set.invalidate()\n
+    self.tic()\n
+    self.assertEqual(\'invalidated\', data_set.getValidationState())\n
+    self.assertSameSet([\'invalidated\' for x in data_stream_list],\n
+                       [x.getValidationState() for x in data_stream_list])\n
+\n
+  def test_05_StateConsistencyAlarm(self):\n
+    """\n
+      Test alarm that checks (and fixes) Data set - Data stream state consistency\n
+    """\n
+    data_set_reference = "consistency-dataset-" + self.getRandomReference()\n
+    data_set, data_stream_list = self.stepIngest(self.CSV, ",",\n
+                                      randomize_ingestion_reference=False, data_set_reference=data_set_reference)\n
+    self.tic()\n
+    first_file_stream = data_stream_list[0]\n
+\n
+    # publish Data Set (all Data Streams are published automatically)\n
+    data_set.publish()\n
+    self.tic()\n
+\n
+    # ingest new file\n
+    data_set, data_stream_list = self.stepIngest(self.CSV, ",",\n
+                                      randomize_ingestion_reference=False, data_set_reference=data_set_reference)\n
+    self.tic()\n
+    second_file_stream = data_stream_list[0]\n
+\n
+    # second ingested file stream is in validated state (inconsistent with whole data set state)\n
+    self.assertEqual(data_set.getValidationState(), \'published\')\n
+    self.assertEqual(first_file_stream.getValidationState(), \'published\')\n
+    self.assertEqual(second_file_stream.getValidationState(), \'validated\')\n
+\n
+    # call explicitly alarm to fix the state inconsistency\n
+    self.portal.portal_alarms.wendelin_check_datastream_consistency.Alarm_checkDataStreamStateConsistency()\n
+    self.tic()\n
+\n
+    # check states where updated (all published)\n
+    self.assertEqual(data_set.getValidationState(), \'published\')\n
+    self.assertEqual(first_file_stream.getValidationState(), \'published\')\n
+    self.assertEqual(second_file_stream.getValidationState(), \'published\')\n
+\n
+  def test_06_DefaultModelSecurityModel(self):\n
+    """\n
+      Test default security model : \'All can download, only contributors can upload.\'\n
+    """\n
+    data_set, data_stream_list = self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)\n
+    self.tic()\n
+    data_stream = data_stream_list[0]\n
+    data_ingestion = self.getDataIngestion(data_stream.getReference())\n
+    checkPerm = self.portal.portal_membership.checkPermission\n
+\n
+    #anonymous can\'t access modules or not published data\n
+    self.logout()\n
+    self.assertFalse(checkPerm("View", self.portal.data_set_module))\n
+    self.assertFalse(checkPerm("View", self.portal.data_stream_module))\n
+    self.assertFalse(checkPerm("View", self.portal.data_ingestion_module))\n
+    self.assertFalse(checkPerm("View", data_set))\n
+    self.assertFalse(checkPerm("View", data_stream))\n
+    self.assertFalse(checkPerm("View", data_ingestion))\n
+    #publish dataset\n
+    self.login()\n
+    data_set.publish()\n
+    self.tic()\n
+    #anonymous can access published data set and data stream\n
+    self.logout()\n
+    self.assertTrue(checkPerm("View", data_set))\n
+    self.assertTrue(checkPerm("View", data_stream))\n
+    #anonymous can\'t ingest\n
+    module = self.portal.getDefaultModule(portal_type=\'Data Ingestion\')\n
+    new_ingestion = module.newContent(\n
+      portal_type="Data Ingestion",\n
+      reference="test-anonymous-ingestion"\n
+    )\n
+\n
+    return\n
+\n
+    #create test user if not exists\n
+    module = self.portal.getDefaultModule(portal_type=\'Credential Request\')\n
+    portal_preferences = self.portal.portal_preferences\n
+    category_list = portal_preferences.getPreferredSubscriptionAssignmentCategoryList()\n
+    if self.portal.CredentialRequest_checkLoginAvailability(self.USER_ID):\n
+      credential_request = module.newContent(\n
+        portal_type="Credential Request",\n
+        first_name="test",\n
+        last_name="user",\n
+        reference=self.USER_ID,\n
+        password="test_password",\n
+        default_email_text="test@user.com"\n
+      )\n
+      self.tic()\n
+      credential_request.setCategoryList(category_list)\n
+      # Same tag is used as in ERP5 Login._setReference, in order to protect against\n
+      # concurrency between Credential Request and Person object too\n
+      tag = \'set_login_%s\' % self.USER_ID.encode(\'hex\')\n
+      credential_request.reindexObject(activate_kw={\'tag\': tag})\n
+      self.tic()\n
+      credential_request.submit("Automatic submit")\n
+      self.tic()\n
+\n
+    #self.failUnlessUserCanViewDocument(\'ERP5TypeTestCase\', document)\n
+\n
+    self.login(self.USER_ID)\n
+\n
+  # XXX: new test which simulates download / upload of Data Set and increase DS version
+
+]]></string> </value>
+                </item>
+              </dictionary>
             </value>
         </item>
       </dictionary>
@@ -114,11 +505,11 @@
                 <dictionary>
                   <item>
                       <key> <string>action</string> </key>
-                      <value> <string>validate</string> </value>
+                      <value> <string>modify</string> </value>
                   </item>
                   <item>
                       <key> <string>validation_state</string> </key>
-                      <value> <string>validated</string> </value>
+                      <value> <string>modified</string> </value>
                   </item>
                 </dictionary>
               </list>

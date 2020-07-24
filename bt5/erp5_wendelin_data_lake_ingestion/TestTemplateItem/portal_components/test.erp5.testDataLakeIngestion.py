@@ -37,7 +37,6 @@ class TestDataIngestion(SecurityTestCase):
     self.assertEqual(self.PART_1, self.REFERENCE_SEPARATOR + self.portal.ERP5Site_getIngestionReferenceDictionary()["split_first_suffix"])
     #for security tests
     portal = self.portal
-    self.test_user = portal.person_module['1']
     if self.portal.getId()!='erp5':
       # with live tests we setup these manually
       acl_users = self.portal.acl_users
@@ -310,6 +309,51 @@ class TestDataIngestion(SecurityTestCase):
     """
       Test default security model : 'All can download, only contributors can upload.'
     """
+    data_set, data_stream_list = self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)
+    self.tic()
+    data_stream = data_stream_list[0]
+    data_ingestion = self.getDataIngestion(data_stream.getReference())
+    checkPerm = self.portal.portal_membership.checkPermission
+
+    #anonymous can't access modules or not published data
+    self.logout()
+    self.assertFalse(checkPerm("View", self.portal.data_set_module))
+    self.assertFalse(checkPerm("View", self.portal.data_stream_module))
+    self.assertFalse(checkPerm("View", self.portal.data_ingestion_module))
+    self.assertFalse(checkPerm("View", data_set))
+    self.assertFalse(checkPerm("View", data_stream))
+    self.assertFalse(checkPerm("View", data_ingestion))
+    #publish dataset
+    self.login()
+    data_set.publish()
+    self.tic()
+    #anonymous can access published data set and data stream
+    self.logout()
+    self.assertTrue(checkPerm("View", data_set))
+    self.assertTrue(checkPerm("View", data_stream))
+    #anonymous can't ingest
+    module = self.portal.getDefaultModule(portal_type='Data Ingestion')
+    new_ingestion = module.newContent(
+      portal_type="Data Ingestion",
+      reference="test-anonymous-ingestion"
+    )
+
+    return
+
+    #create person
+    # test create / validate assignment
+    person = self.portal.getDefaultModule('Person').newContent(
+                    portal_type='Person',
+                    title = self.id() + '_' +reference_base,
+                    default_email_coordinate_text = 'test@info.com')
+    assignment = person.newContent(portal_type='Assignment',
+                               start_date = now,
+                               stop_date = now + 365,
+                               agent = 'position_module/mmr_18')
+    person.validate()
+    self.login('manager')
+    assignment.open()
+  
     #create test user if not exists
     module = self.portal.getDefaultModule(portal_type='Credential Request')
     portal_preferences = self.portal.portal_preferences
@@ -321,17 +365,7 @@ class TestDataIngestion(SecurityTestCase):
         last_name="user",
         reference=self.USER_ID,
         password="test_password",
-        default_credential_question_question="default_credential_question_question",
-        default_credential_question_question_free_text="default_credential_question_question_free_text",
-        default_credential_question_answer="default_credential_question_answer",
-        default_email_text="test@user.com",
-        default_telephone_text="default_telephone_text",
-        default_mobile_telephone_text="default_mobile_telephone_text",
-        default_fax_text="default_fax_text",
-        default_address_street_address="default_address_street_address",
-        default_address_city="default_address_city",
-        default_address_zip_code="default_address_zip_code",
-        default_address_region="default_address_region"
+        default_email_text="test@user.com"
       )
       self.tic()
       credential_request.setCategoryList(category_list)
@@ -343,9 +377,8 @@ class TestDataIngestion(SecurityTestCase):
       credential_request.submit("Automatic submit")
       self.tic()
 
-    for portal_type in ['Data Set']:
-      module = self.portal.getDefaultModule(portal_type)
-      self.failUnlessUserCanAddDocument(self.USER_ID, module)
-    self.assertEqual('b', 'a')
+    #self.failUnlessUserCanViewDocument('ERP5TypeTestCase', document)
+
+    self.login(self.USER_ID)
 
   # XXX: new test which simulates download / upload of Data Set and increase DS version
