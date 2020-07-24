@@ -46,11 +46,11 @@
             <key> <string>text_content_warning_message</string> </key>
             <value>
               <tuple>
-                <string>W: 39,  4: Unused variable \'portal\' (unused-variable)</string>
-                <string>W:129, 34: Unused variable \'i\' (unused-variable)</string>
-                <string>W:129, 76: Unused variable \'j\' (unused-variable)</string>
-                <string>W:346,  4: Unreachable code (unreachable)</string>
-                <string>W:336,  4: Unused variable \'new_ingestion\' (unused-variable)</string>
+                <string>W: 40,  4: Unused variable \'portal\' (unused-variable)</string>
+                <string>W:130, 34: Unused variable \'i\' (unused-variable)</string>
+                <string>W:130, 76: Unused variable \'j\' (unused-variable)</string>
+                <string>W:344,  4: Unreachable code (unreachable)</string>
+                <string>W:  9,  0: Unused Unauthorized imported from AccessControl (unused-import)</string>
               </tuple>
             </value>
         </item>

@@ -6,6 +6,7 @@ import os
 import time
 import numpy as np
 import base64
+from AccessControl import Unauthorized
 
 def id_generator(size=8, chars=string.digits):
   return ''.join(random.choice(chars) for x in range(size))
@@ -313,31 +314,28 @@ class TestDataIngestion(SecurityTestCase):
     self.tic()
     data_stream = data_stream_list[0]
     data_ingestion = self.getDataIngestion(data_stream.getReference())
-    checkPerm = self.portal.portal_membership.checkPermission
+    checkPermission = self.portal.portal_membership.checkPermission
 
     #anonymous can't access modules or not published data
     self.logout()
-    self.assertFalse(checkPerm("View", self.portal.data_set_module))
-    self.assertFalse(checkPerm("View", self.portal.data_stream_module))
-    self.assertFalse(checkPerm("View", self.portal.data_ingestion_module))
-    self.assertFalse(checkPerm("View", data_set))
-    self.assertFalse(checkPerm("View", data_stream))
-    self.assertFalse(checkPerm("View", data_ingestion))
+    self.assertFalse(checkPermission("View", self.portal.data_set_module))
+    self.assertFalse(checkPermission("View", self.portal.data_stream_module))
+    self.assertFalse(checkPermission("View", self.portal.data_ingestion_module))
+    self.assertFalse(checkPermission("View", data_set))
+    self.assertFalse(checkPermission("View", data_stream))
+    self.assertFalse(checkPermission("View", data_ingestion))
     #publish dataset
     self.login()
     data_set.publish()
     self.tic()
     #anonymous can access published data set and data stream
     self.logout()
-    self.assertTrue(checkPerm("View", data_set))
-    self.assertTrue(checkPerm("View", data_stream))
+    self.assertTrue(checkPermission("View", data_set))
+    self.assertTrue(checkPermission("View", data_stream))
     #anonymous can't ingest
     module = self.portal.getDefaultModule(portal_type='Data Ingestion')
-    new_ingestion = module.newContent(
-      portal_type="Data Ingestion",
-      reference="test-anonymous-ingestion"
-    )
-
+    self.assertEqual(None, checkPermission('View', module))
+    self.assertEqual(None, checkPermission('Access Contents Information', module))
     return
 
     
