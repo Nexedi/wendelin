@@ -7,9 +7,6 @@ import time
 import numpy as np
 import base64
 
-def id_generator(size=8, chars=string.digits):
-  return ''.join(random.choice(chars) for x in range(size))
-
 class TestDataIngestion(SecurityTestCase):
 
   REFERENCE_SEPARATOR = "/"
