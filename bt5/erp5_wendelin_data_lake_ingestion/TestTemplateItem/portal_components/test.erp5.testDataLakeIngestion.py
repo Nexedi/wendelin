@@ -6,7 +6,6 @@ import os
 import time
 import numpy as np
 import base64
-from AccessControl import Unauthorized
 
 def id_generator(size=8, chars=string.digits):
   return ''.join(random.choice(chars) for x in range(size))
@@ -36,26 +35,6 @@ class TestDataIngestion(SecurityTestCase):
     self.assertEqual(self.INVALID, self.portal.ERP5Site_getIngestionReferenceDictionary()["invalid_suffix"])
     self.assertEqual(self.EOF, self.REFERENCE_SEPARATOR + self.portal.ERP5Site_getIngestionReferenceDictionary()["split_end_suffix"])
     self.assertEqual(self.PART_1, self.REFERENCE_SEPARATOR + self.portal.ERP5Site_getIngestionReferenceDictionary()["split_first_suffix"])
-    #for security tests
-    portal = self.portal
-    if self.portal.getId()!='erp5':
-      # with live tests we setup these manually
-      acl_users = self.portal.acl_users
-      if 'erp5_users' not in acl_users:
-        acl_users.manage_addProduct['ERP5Security'].addERP5UserManager('erp5_users')
-      acl_users.erp5_users.manage_activateInterfaces([
-        'IAuthenticationPlugin',
-        'IUserEnumerationPlugin',
-      ])
-      erp5_login_users_plugin = getattr(acl_users, "erp5_login_users")
-      erp5_login_users_plugin.manage_activateInterfaces([])
-      self.validateRules()
-      self.setupCloudoo()
-      self.portal.ERP5Site_afterSetup()
-      self.setupCloudoo()
-    uf = self.portal.acl_users
-    if not uf.getUser('manager'):
-      uf._doAddUser('manager', '', ['Manager'], [])
 
   def getRandomReference(self):
     random_string = ''.join([random.choice(string.ascii_letters + string.digits) for _ in xrange(10)])
@@ -336,25 +315,8 @@ class TestDataIngestion(SecurityTestCase):
     module = self.portal.getDefaultModule(portal_type='Data Ingestion')
     self.assertEqual(None, checkPermission('View', module))
     self.assertEqual(None, checkPermission('Access Contents Information', module))
-    return
+    self.assertEqual(None, checkPermission('Modify portal content', module))
 
-    
-    #create person
-    # test create / validate assignment
-    from DateTime import DateTime
-    now = DateTime()
-    person = self.portal.getDefaultModule('Person').newContent(
-                    portal_type='Person',
-                    title = "Test Person",
-                    default_email_coordinate_text = 'test@person.com')
-    assignment = person.newContent(portal_type='Assignment',
-                               start_date = now,
-                               stop_date = now + 365,
-                               agent = 'position_module/mmr_18')
-    person.validate()
-    self.login('manager')
-    assignment.open()
-    
     #create test user if not exists
     module = self.portal.getDefaultModule(portal_type='Credential Request')
     portal_preferences = self.portal.portal_preferences
@@ -377,9 +339,18 @@ class TestDataIngestion(SecurityTestCase):
       self.tic()
       credential_request.submit("Automatic submit")
       self.tic()
-
-    #self.failUnlessUserCanViewDocument('ERP5TypeTestCase', document)
-
-    self.login(self.USER_ID)
+    self.loginByUserName(user_name=self.USER_ID)
+    #user can access data
+    self.assertTrue(checkPermission("View", self.portal.data_set_module))
+    self.assertTrue(checkPermission("View", self.portal.data_stream_module))
+    self.assertTrue(checkPermission("View", self.portal.data_ingestion_module))
+    self.assertTrue(checkPermission("View", data_set))
+    self.assertTrue(checkPermission("View", data_stream))
+    self.assertTrue(checkPermission("View", data_ingestion))
+    #user can ingest
+    self.assertEqual(True, checkPermission('Access Contents Information', self.portal.data_ingestion_module))
+    self.assertEqual(True, checkPermission('Modify portal content', self.portal.data_ingestion_module))
+    data_set, data_stream_list = self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)
+    self.tic()
 
   # XXX: new test which simulates download / upload of Data Set and increase DS version
