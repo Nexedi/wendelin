@@ -1,4 +1,5 @@
 from Products.ERP5Type.tests.SecurityTestCase import SecurityTestCase
+from zExceptions import Unauthorized
 import string
 import random
 import csv
@@ -22,7 +23,8 @@ class TestDataIngestion(SecurityTestCase):
   REF_PREFIX = "fake-supplier" + REFERENCE_SEPARATOR
   REF_SUPPLIER_PREFIX = "fake-supplier" + REFERENCE_SEPARATOR
   INVALID = "_invalid"
-  USER_ID = "test_user"
+  DOWNLOADER_USER_ID = 'test_downloader'
+  CONTRIBUTOR_USER_ID = 'test_contributor'
 
   def getTitle(self):
     return "DataIngestionTest"
@@ -135,6 +137,41 @@ class TestDataIngestion(SecurityTestCase):
     self.assertEqual(data_chunk, data_stream_data)
 
     return data_set, [data_stream]
+
+  def createUserAndCredentials(self, user_id, roles):
+    #create user credentials
+    module = self.portal.getDefaultModule(portal_type='Credential Request')
+    portal_preferences = self.portal.portal_preferences
+    category_list = portal_preferences.getPreferredSubscriptionAssignmentCategoryList()
+    if self.portal.CredentialRequest_checkLoginAvailability(user_id):
+      credential_request = module.newContent(
+        portal_type="Credential Request",
+        first_name="test",
+        last_name="user",
+        reference=user_id,
+        password="test_password",
+        default_email_text="test@user.com"
+      )
+      self.tic()
+      credential_request.setCategoryList(category_list)
+      tag = 'set_login_%s' % user_id.encode('hex')
+      credential_request.reindexObject(activate_kw={'tag': tag})
+      credential_request.submit("Automatic submit")
+      self.tic()
+    #create user
+    acl_users = self.portal.acl_users
+    acl_users._doAddUser(user_id, '', roles, [])
+
+  def failUnlessUserCanCreateViewAndValidate(self, user_id, container_portal_type, workflow_transition=None):
+    reference_base = ''.join(random.choice(string.digits) for x in range(8))
+    self.login(user_id)
+
+    new_container = self.portal.getDefaultModule(container_portal_type
+                            ).newContent(portal_type=container_portal_type,
+                                         title=self.id() + reference_base)
+
+    self.failUnlessUserCanViewDocument(user_id, new_container)
+    self.failUnlessUserCanModifyDocument(user_id, new_container)
 
   def test_01_DefaultEbulkIngestion(self):
     """
@@ -294,30 +331,9 @@ class TestDataIngestion(SecurityTestCase):
     data_ingestion = self.getDataIngestion(data_stream.getReference())
     checkPermission = self.portal.portal_membership.checkPermission
 
-    #create user credentials
-    module = self.portal.getDefaultModule(portal_type='Credential Request')
-    portal_preferences = self.portal.portal_preferences
-    category_list = portal_preferences.getPreferredSubscriptionAssignmentCategoryList()
-    if self.portal.CredentialRequest_checkLoginAvailability(self.USER_ID):
-      credential_request = module.newContent(
-        portal_type="Credential Request",
-        first_name="test",
-        last_name="user",
-        reference=self.USER_ID,
-        password="test_password",
-        default_email_text="test@user.com"
-      )
-      self.tic()
-      credential_request.setCategoryList(category_list)
-      tag = 'set_login_%s' % self.USER_ID.encode('hex')
-      credential_request.reindexObject(activate_kw={'tag': tag})
-      credential_request.submit("Automatic submit")
-      self.tic()
-    #create user
-    acl_users = self.portal.acl_users
-    acl_users._doAddUser(self.USER_ID, '',
-                         ['Manager', 'Assignee', 'Assignor',
-                         'Associate', 'Auditor', 'Author'], [])
+    #create users
+    self.createUserAndCredentials(self.DOWNLOADER_USER_ID, ['Auditor'])
+    self.createUserAndCredentials(self.CONTRIBUTOR_USER_ID, ['Assignor', 'Auditor', 'Author'])
 
     #anonymous can't access modules or not published data
     self.logout()
@@ -336,27 +352,36 @@ class TestDataIngestion(SecurityTestCase):
     self.assertTrue(checkPermission("View", data_set))
     self.assertTrue(checkPermission("View", data_stream))
     #anonymous can't ingest
-    module = self.portal.getDefaultModule(portal_type='Data Ingestion')
-    self.assertEqual(None, checkPermission('View', module))
-    self.assertEqual(None, checkPermission('Access Contents Information', module))
-    self.assertEqual(None, checkPermission('Modify portal content', module))
+    try:
+      self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)
+      self.tic()
+      raise AssertionError("Anonymous user should not be able to ingest")
+    except Unauthorized:
+      pass
 
-    #user can access data
-    self.login(self.USER_ID)
-    self.assertTrue(checkPermission("View", self.portal.data_set_module))
-    self.assertTrue(checkPermission("View", self.portal.data_stream_module))
-    self.assertTrue(checkPermission("View", self.portal.data_ingestion_module))
-    self.assertTrue(checkPermission("View", data_set))
-    self.assertTrue(checkPermission("View", data_stream))
-    self.assertTrue(checkPermission("View", data_ingestion))
-    #user can ingest
-    self.assertEqual(True, checkPermission('Access Contents Information', self.portal.data_ingestion_module))
-    self.assertEqual(True, checkPermission('Modify portal content', self.portal.data_ingestion_module))
-    data_set, data_stream_list = self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)
+    #users can access data
+    for user in [self.DOWNLOADER_USER_ID, self.CONTRIBUTOR_USER_ID]:
+      self.login(user)
+      self.failUnlessUserHavePermissionOnDocument('View', user, self.portal.data_set_module)
+      self.failUnlessUserHavePermissionOnDocument('View', user, self.portal.data_stream_module)
+      self.failUnlessUserHavePermissionOnDocument('View', user, self.portal.data_ingestion_module)
+      self.failUnlessUserHavePermissionOnDocument('View', user, data_set)
+      self.failUnlessUserHavePermissionOnDocument('View', user, data_stream)
+      self.failUnlessUserHavePermissionOnDocument('View', user, data_ingestion)
+
+    #downloader can't ingest
+    self.login(self.DOWNLOADER_USER_ID)
+    try:
+      self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)
+      self.tic()
+      raise AssertionError("Downloader user should not be able to ingest")
+    except Unauthorized:
+      pass
+
+    #contributor can ingest
+    self.login(self.CONTRIBUTOR_USER_ID)
+    self.failUnlessUserCanCreateViewAndValidate(self.CONTRIBUTOR_USER_ID, 'Data Ingestion', 'validate_action')
+    self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)
     self.tic()
-
-    #self.failUnlessUserCanAddDocument(self.USER_ID, data_set)
-    #user = acl_users.getUserById(self.USER_ID)
-
 
   # XXX: new test which simulates download / upload of Data Set and increase DS version
