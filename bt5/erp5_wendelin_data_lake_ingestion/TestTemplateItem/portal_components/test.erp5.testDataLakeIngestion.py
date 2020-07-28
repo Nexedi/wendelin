@@ -275,7 +275,7 @@ class TestDataIngestion(SecurityTestCase):
     self.assertNotEqual(None,
            getattr(self.portal.portal_ingestion_policies, "default_ebulk", None))
     self.assertNotEqual(None,
-           getattr(self.portal.data_supply_module, "embulk", None))
+           getattr(self.portal.data_supply_module, "default_ebulk", None))
 
   def test_04_DatasetAndDatastreamsConsistency(self):
     """
