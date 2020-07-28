@@ -286,11 +286,38 @@ class TestDataIngestion(SecurityTestCase):
     """
       Test default security model : 'All can download, only contributors can upload.'
     """
+    #ingest to generate some documents
+    self.login()
     data_set, data_stream_list = self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)
     self.tic()
     data_stream = data_stream_list[0]
     data_ingestion = self.getDataIngestion(data_stream.getReference())
     checkPermission = self.portal.portal_membership.checkPermission
+
+    #create user credentials
+    module = self.portal.getDefaultModule(portal_type='Credential Request')
+    portal_preferences = self.portal.portal_preferences
+    category_list = portal_preferences.getPreferredSubscriptionAssignmentCategoryList()
+    if self.portal.CredentialRequest_checkLoginAvailability(self.USER_ID):
+      credential_request = module.newContent(
+        portal_type="Credential Request",
+        first_name="test",
+        last_name="user",
+        reference=self.USER_ID,
+        password="test_password",
+        default_email_text="test@user.com"
+      )
+      self.tic()
+      credential_request.setCategoryList(category_list)
+      tag = 'set_login_%s' % self.USER_ID.encode('hex')
+      credential_request.reindexObject(activate_kw={'tag': tag})
+      credential_request.submit("Automatic submit")
+      self.tic()
+    #create user
+    acl_users = self.portal.acl_users
+    acl_users._doAddUser(self.USER_ID, '',
+                         ['Manager', 'Assignee', 'Assignor',
+                         'Associate', 'Auditor', 'Author'], [])
 
     #anonymous can't access modules or not published data
     self.logout()
@@ -314,30 +341,8 @@ class TestDataIngestion(SecurityTestCase):
     self.assertEqual(None, checkPermission('Access Contents Information', module))
     self.assertEqual(None, checkPermission('Modify portal content', module))
 
-    #create test user if not exists
-    module = self.portal.getDefaultModule(portal_type='Credential Request')
-    portal_preferences = self.portal.portal_preferences
-    category_list = portal_preferences.getPreferredSubscriptionAssignmentCategoryList()
-    if self.portal.CredentialRequest_checkLoginAvailability(self.USER_ID):
-      credential_request = module.newContent(
-        portal_type="Credential Request",
-        first_name="test",
-        last_name="user",
-        reference=self.USER_ID,
-        password="test_password",
-        default_email_text="test@user.com"
-      )
-      self.tic()
-      credential_request.setCategoryList(category_list)
-      # Same tag is used as in ERP5 Login._setReference, in order to protect against
-      # concurrency between Credential Request and Person object too
-      tag = 'set_login_%s' % self.USER_ID.encode('hex')
-      credential_request.reindexObject(activate_kw={'tag': tag})
-      self.tic()
-      credential_request.submit("Automatic submit")
-      self.tic()
-    self.loginByUserName(user_name=self.USER_ID)
     #user can access data
+    self.login(self.USER_ID)
     self.assertTrue(checkPermission("View", self.portal.data_set_module))
     self.assertTrue(checkPermission("View", self.portal.data_stream_module))
     self.assertTrue(checkPermission("View", self.portal.data_ingestion_module))
@@ -349,5 +354,9 @@ class TestDataIngestion(SecurityTestCase):
     self.assertEqual(True, checkPermission('Modify portal content', self.portal.data_ingestion_module))
     data_set, data_stream_list = self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)
     self.tic()
+
+    #self.failUnlessUserCanAddDocument(self.USER_ID, data_set)
+    #user = acl_users.getUserById(self.USER_ID)
+
 
   # XXX: new test which simulates download / upload of Data Set and increase DS version
