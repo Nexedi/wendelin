@@ -389,14 +389,14 @@ class TestDataIngestion(SecurityTestCase):
       self.failUnlessUserHavePermissionOnDocument(Permissions.View, user, data_stream)
       self.failUnlessUserHavePermissionOnDocument(Permissions.View, user, data_ingestion)
 
-    # XXX: downloader can't ingest
-    '''self.loginByUserName(self.DOWNLOADER_USER_ID)
+    #downloader can't ingest
+    self.loginByUserName(self.DOWNLOADER_USER_ID)
     try:
       self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)
       self.tic()
       raise AssertionError("Downloader user should not be able to ingest")
     except Unauthorized:
-      pass'''
+      pass
 
     #contributor can ingest
     self.loginByUserName(self.CONTRIBUTOR_USER_ID)
