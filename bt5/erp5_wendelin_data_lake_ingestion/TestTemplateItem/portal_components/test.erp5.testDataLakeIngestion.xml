@@ -48,6 +48,7 @@
               <tuple>
                 <string>W:112, 34: Unused variable \'i\' (unused-variable)</string>
                 <string>W:112, 76: Unused variable \'j\' (unused-variable)</string>
+                <string>W:165,  4: Unused variable \'assignment\' (unused-variable)</string>
               </tuple>
             </value>
         </item>
