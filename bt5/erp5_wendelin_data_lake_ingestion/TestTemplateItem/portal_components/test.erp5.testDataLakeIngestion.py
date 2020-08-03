@@ -164,8 +164,9 @@ class TestDataIngestion(SecurityTestCase):
         person = self.portal.portal_catalog.getResultValue(
                    portal_type = 'Person',
                    default_email_text = user_id + "@lake_security_test.com")
-        assignment = self.portal.restrictedTraverse('person_module/%s/1' % person.getId())
-        assignment.setFunction(['downloader'])
+        if person is not None:
+          assignment = self.portal.restrictedTraverse('person_module/%s/1' % person.getId())
+          assignment.setFunction(['downloader'])
 
   def failUnlessUserHavePermissionOnDocument(self, permission_name, username, document):
     sm = getSecurityManager()
