@@ -147,11 +147,11 @@ class TestDataIngestion(SecurityTestCase):
     if self.portal.CredentialRequest_checkLoginAvailability(user_id):
       credential_request = module.newContent(
         portal_type = "Credential Request",
-        first_name = category_list[0].replace("function/", ""),
-        last_name = "test user " + user_id,
+        first_name = "test_user",
+        last_name = user_id,
         reference = user_id,
         password = "test_password",
-        default_email_text = user_id + "@user.com"
+        default_email_text = user_id + "@lake_security_test.com"
       )
       self.tic()
       credential_request.setCategoryList(category_list)
@@ -159,11 +159,13 @@ class TestDataIngestion(SecurityTestCase):
       credential_request.reindexObject(activate_kw={'tag': tag})
       credential_request.submit("Automatic submit")
       self.tic()
-    person = self.portal.portal_catalog.getResultValue(
-               portal_type = 'Person',
-               default_email_text = user_id + "@user.com")
-    assignment = self.portal.restrictedTraverse('person_module/%s/1' % person.getId())
-    # xxx change role assignment to downloader and update/start
+      if category_list[0] == 'function/downloader':
+        # as credential creates contributor assigments by default, change it for downloader user
+        person = self.portal.portal_catalog.getResultValue(
+                   portal_type = 'Person',
+                   default_email_text = user_id + "@lake_security_test.com")
+        assignment = self.portal.restrictedTraverse('person_module/%s/1' % person.getId())
+        assignment.setFunction(['downloader'])
 
   def failUnlessUserHavePermissionOnDocument(self, permission_name, username, document):
     sm = getSecurityManager()
