@@ -14,6 +14,15 @@ import base64
 
 class TestDataIngestion(SecurityTestCase):
 
+  def getBusinessTemplateList(self):
+    return (
+      'erp5_wendelin_data_lake_ingestion',
+      'erp5_credential',
+      'erp5_ui_test_core',
+      'erp5_accounting',
+      'erp5_test_result',
+    )
+
   REFERENCE_SEPARATOR = "/"
   PART_1 = REFERENCE_SEPARATOR + "001"
   PART_2 = REFERENCE_SEPARATOR + "002"
