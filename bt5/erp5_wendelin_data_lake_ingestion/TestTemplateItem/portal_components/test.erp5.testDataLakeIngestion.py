@@ -14,15 +14,6 @@ import base64
 
 class TestDataIngestion(SecurityTestCase):
 
-  def getBusinessTemplateList(self):
-    return (
-      'erp5_wendelin_data_lake_ingestion',
-      'erp5_credential',
-      'erp5_ui_test_core',
-      'erp5_accounting',
-      'erp5_test_result',
-    )
-
   REFERENCE_SEPARATOR = "/"
   PART_1 = REFERENCE_SEPARATOR + "001"
   PART_2 = REFERENCE_SEPARATOR + "002"
@@ -167,6 +158,9 @@ class TestDataIngestion(SecurityTestCase):
       tag = 'set_login_%s' % user_id.encode('hex')
       credential_request.reindexObject(activate_kw={'tag': tag})
       credential_request.submit("Automatic submit")
+      self.tic()
+      # call explicitly alarm to accept credential requests
+      self.portal.portal_alarms.accept_submitted_credentials.Alarm_acceptSubmittedCredentialList()
       self.tic()
       if category_list[0] == 'function/downloader':
         # as credential creates contributor assigments by default, change it for downloader user
