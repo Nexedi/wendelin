@@ -7,4 +7,5 @@ data_supply_module/default_ebulk
 data_supply_module/default_ebulk/**
 portal_ingestion_policies/wendelin_embulk
 portal_ingestion_policies/default_ebulk
+portal_categories/function/**
 portal_categories/use/**
