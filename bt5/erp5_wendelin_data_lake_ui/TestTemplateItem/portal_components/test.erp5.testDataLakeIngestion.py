@@ -27,7 +27,7 @@ class TestDataIngestion(SecurityTestCase):
   REF_PREFIX = "fake-supplier" + REFERENCE_SEPARATOR
   REF_SUPPLIER_PREFIX = "fake-supplier" + REFERENCE_SEPARATOR
   INVALID = "_invalid"
-  DOWNLOADER_USER_ID = 'test_downloader'
+  DOWNLOADER_USER_ID = 'test_downloader_AAAwws_asw'
   CONTRIBUTOR_USER_ID = 'test_contributor'
 
   def getTitle(self):
@@ -160,6 +160,24 @@ class TestDataIngestion(SecurityTestCase):
       credential_request.submit("Automatic submit")
       self.tic()
       # call explicitly alarm to accept credential requests
+      self.portal.log("ROQUE CALLING ALARM")
+      self.portal.log("ROQUE portal preferences getPreferredCredentialRequestAutomaticApproval:")
+      self.portal.log(self.portal.portal_preferences.getPreferredCredentialRequestAutomaticApproval())
+
+      #if self.portal.portal_preferences.getPreferredCredentialRequestAutomaticApproval():
+      
+      self.portal.log("ROQUE SIMULATING ALARM")
+      searchAndActivate_ = self.portal.portal_catalog.searchAndActivate
+      def searchAndActivate(**kw):
+        searchAndActivate_('Credential_accept', **kw)
+      portal_type_list = ['Credential Request']
+      self.portal.log("ROQUE calling searchAndActivate...")
+      searchAndActivate(
+        portal_type=portal_type_list,
+        validation_state='submitted',
+      )
+      self.portal.log("ROQUE searchAndActivate DONE")
+      
       self.portal.portal_alarms.accept_submitted_credentials.Alarm_acceptSubmittedCredentialList()
       self.tic()
       if category_list[0] == 'function/downloader':
@@ -167,6 +185,8 @@ class TestDataIngestion(SecurityTestCase):
         person = self.portal.portal_catalog.getResultValue(
                    portal_type = 'Person',
                    default_email_text = user_id + "@lake_security_test.com")
+        self.portal.log("CREATED CREDENTIAL: " + str(credential_request))
+        self.portal.log("CREATED CREDENTIAL PERSON: " + str(person))
         if person is not None:
           assignment = self.portal.restrictedTraverse('person_module/%s/1' % person.getId())
           assignment.setFunction(['downloader'])
