@@ -1,3 +1,5 @@
+"""This script invalidate all data sets (and corresponding ingestion objects) older than wendelin.io release (<= 2019)"""
+
 portal = context.getPortalObject()
 portal_catalog = portal.portal_catalog
 
