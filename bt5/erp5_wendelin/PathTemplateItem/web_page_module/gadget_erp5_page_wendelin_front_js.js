@@ -131,7 +131,6 @@
                   ['portal_type', 'Portal Type'],
                   ['translated_validation_state_title', 'State']
                 ],
-                "url_columns": ['title', 'Notebook_getRunUrl'],
                 "show_anchor": 0,
                 "default_params": {},
                 "editable": 1,
