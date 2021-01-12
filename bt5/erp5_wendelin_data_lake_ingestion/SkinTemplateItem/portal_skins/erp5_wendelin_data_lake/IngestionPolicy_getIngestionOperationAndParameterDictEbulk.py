@@ -121,6 +121,9 @@ data_ingestion.start()
 data_operation = operation_line.getResourceValue()
 data_stream = input_line.getAggregateDataStreamValue()
 
+# A Data Stream should point to its Data Set
+data_stream.setSetValue(data_set)
+
 # if not split (one single ingestion) validate the data stream
 if eof == reference_end_single:
   data_stream.validate()
