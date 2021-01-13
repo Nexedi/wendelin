@@ -4,7 +4,8 @@
 #
 CREATE TABLE `data_stream` (
   `uid` BIGINT UNSIGNED NOT NULL,
-  `size` BIGINT UNSIGNED NOT NULL,
+  `set_uid` BIGINT UNSIGNED,
+  `size` BIGINT SIGNED,
   `version` varchar(30) default '',
   PRIMARY KEY  (`uid`)
 ) ENGINE=InnoDB;
