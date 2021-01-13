@@ -107,7 +107,13 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>39</string> </value>
+            <value> <string>environment_sensor</string> </value>
+        </item>
+        <item>
+            <key> <string>language</string> </key>
+            <value>
+              <none/>
+            </value>
         </item>
         <item>
             <key> <string>portal_type</string> </key>
@@ -298,7 +304,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>987.60596.11587.45004</string> </value>
+                      <value> <string>989.20458.7765.33297</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -316,7 +322,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1605186492.47</float>
+                              <float>1610565002.57</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
