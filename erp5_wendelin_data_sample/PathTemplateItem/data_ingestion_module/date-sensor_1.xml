@@ -105,7 +105,7 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>20201102-sensor_1</string> </value>
+            <value> <string>date-sensor_1</string> </value>
         </item>
         <item>
             <key> <string>language</string> </key>
@@ -292,7 +292,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>987.60590.47300.45431</string> </value>
+                      <value> <string>989.20458.7765.33297</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -310,7 +310,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1605186713.87</float>
+                              <float>1610564768.21</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
