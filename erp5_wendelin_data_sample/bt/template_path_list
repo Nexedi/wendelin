@@ -3,11 +3,11 @@ data_analysis_module/29
 data_analysis_module/29/**
 data_analysis_module/41
 data_analysis_module/41/**
-data_array_module/46
-data_array_module/92
-data_array_module/93
-data_array_module/94
-data_array_module/95
+data_array_module/convert_environment_raw_data
+data_array_module/resample_generic_interval_array_300
+data_array_module/resample_generic_interval_array_3000
+data_array_module/resample_generic_interval_array_30000
+data_array_module/resample_generic_interval_array_60
 data_ingestion_module/date-sensor_1
 data_ingestion_module/date-sensor_1/**
 data_operation_module/wendelin_ingest_data

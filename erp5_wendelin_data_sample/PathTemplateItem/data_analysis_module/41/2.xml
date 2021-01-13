@@ -14,7 +14,7 @@
                 <string>quantity_unit/unit/piece</string>
                 <string>aggregate/data_acquisition_unit_module/olimex_environment_sensor</string>
                 <string>aggregate/progress_indicator_module/resample_generic_interval_array</string>
-                <string>aggregate/data_array_module/46</string>
+                <string>aggregate/data_array_module/convert_environment_raw_data</string>
               </tuple>
             </value>
         </item>
@@ -104,7 +104,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>989.20536.16142.65331</string> </value>
+                      <value> <string>989.20571.56428.3447</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -122,7 +122,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1610562951.66</float>
+                              <float>1610565690.88</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
