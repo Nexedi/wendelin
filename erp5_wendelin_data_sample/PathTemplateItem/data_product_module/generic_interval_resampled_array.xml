@@ -53,11 +53,27 @@
             </value>
         </item>
         <item>
+            <key> <string>_count</string> </key>
+            <value>
+              <persistent> <string encoding="base64">AAAAAAAAAAI=</string> </persistent>
+            </value>
+        </item>
+        <item>
+            <key> <string>_mt_index</string> </key>
+            <value>
+              <persistent> <string encoding="base64">AAAAAAAAAAM=</string> </persistent>
+            </value>
+        </item>
+        <item>
+            <key> <string>_tree</string> </key>
+            <value>
+              <persistent> <string encoding="base64">AAAAAAAAAAQ=</string> </persistent>
+            </value>
+        </item>
+        <item>
             <key> <string>aggregated_portal_type</string> </key>
             <value>
               <tuple>
-                <string>Data Stream</string>
-                <string>Progress Indicator</string>
                 <string>Data Array</string>
               </tuple>
             </value>
@@ -73,7 +89,7 @@
         </item>
         <item>
             <key> <string>default_reference</string> </key>
-            <value> <string>environment-raw-array</string> </value>
+            <value> <string>GENERIC-INTERVAL-RESAMPLED-ARRAY</string> </value>
         </item>
         <item>
             <key> <string>description</string> </key>
@@ -83,7 +99,21 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>80</string> </value>
+            <value> <string>generic_interval_resampled_array</string> </value>
+        </item>
+        <item>
+            <key> <string>individual_variation_base_category_list</string> </key>
+            <value>
+              <tuple>
+                <string>resolution</string>
+              </tuple>
+            </value>
+        </item>
+        <item>
+            <key> <string>language</string> </key>
+            <value>
+              <none/>
+            </value>
         </item>
         <item>
             <key> <string>portal_type</string> </key>
@@ -91,18 +121,40 @@
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>Environment Raw Array</string> </value>
+            <value> <string>Generic Interval Resampled Array</string> </value>
         </item>
         <item>
             <key> <string>workflow_history</string> </key>
             <value>
-              <persistent> <string encoding="base64">AAAAAAAAAAI=</string> </persistent>
+              <persistent> <string encoding="base64">AAAAAAAAAAU=</string> </persistent>
             </value>
         </item>
       </dictionary>
     </pickle>
   </record>
   <record id="2" aka="AAAAAAAAAAI=">
+    <pickle>
+      <global name="Length" module="BTrees.Length"/>
+    </pickle>
+    <pickle> <int>0</int> </pickle>
+  </record>
+  <record id="3" aka="AAAAAAAAAAM=">
+    <pickle>
+      <global name="OOBTree" module="BTrees.OOBTree"/>
+    </pickle>
+    <pickle>
+      <none/>
+    </pickle>
+  </record>
+  <record id="4" aka="AAAAAAAAAAQ=">
+    <pickle>
+      <global name="OOBTree" module="BTrees.OOBTree"/>
+    </pickle>
+    <pickle>
+      <none/>
+    </pickle>
+  </record>
+  <record id="5" aka="AAAAAAAAAAU=">
     <pickle>
       <global name="PersistentMapping" module="Persistence.mapping"/>
     </pickle>
@@ -115,13 +167,13 @@
                 <item>
                     <key> <string>edit_workflow</string> </key>
                     <value>
-                      <persistent> <string encoding="base64">AAAAAAAAAAM=</string> </persistent>
+                      <persistent> <string encoding="base64">AAAAAAAAAAY=</string> </persistent>
                     </value>
                 </item>
                 <item>
                     <key> <string>validation_workflow</string> </key>
                     <value>
-                      <persistent> <string encoding="base64">AAAAAAAAAAQ=</string> </persistent>
+                      <persistent> <string encoding="base64">AAAAAAAAAAc=</string> </persistent>
                     </value>
                 </item>
               </dictionary>
@@ -130,7 +182,7 @@
       </dictionary>
     </pickle>
   </record>
-  <record id="3" aka="AAAAAAAAAAM=">
+  <record id="6" aka="AAAAAAAAAAY=">
     <pickle>
       <global name="WorkflowHistoryList" module="Products.ERP5Type.Workflow"/>
     </pickle>
@@ -161,7 +213,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>987.57680.55292.37580</string> </value>
+                      <value> <string>989.20458.7765.33297</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -179,7 +231,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1605011571.06</float>
+                              <float>1610565933.7</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
@@ -193,7 +245,7 @@
       </dictionary>
     </pickle>
   </record>
-  <record id="4" aka="AAAAAAAAAAQ=">
+  <record id="7" aka="AAAAAAAAAAc=">
     <pickle>
       <global name="WorkflowHistoryList" module="Products.ERP5Type.Workflow"/>
     </pickle>
@@ -232,7 +284,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1605011574.27</float>
+                              <float>1605277981.23</float>
                               <string>UTC</string>
                             </tuple>
                           </state>

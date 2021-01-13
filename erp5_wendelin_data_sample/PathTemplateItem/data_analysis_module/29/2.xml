@@ -10,7 +10,7 @@
             <key> <string>categories</string> </key>
             <value>
               <tuple>
-                <string>resource/data_product_module/79</string>
+                <string>resource/data_product_module/sample_environment_raw_data</string>
                 <string>quantity_unit/unit/piece</string>
                 <string>aggregate/data_acquisition_unit_module/olimex_environment_sensor</string>
                 <string>aggregate/progress_indicator_module/convert_environment_raw_data</string>
@@ -106,7 +106,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>989.20602.14524.59767</string> </value>
+                      <value> <string>989.20606.9450.6485</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -124,7 +124,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1610565008.63</float>
+                              <float>1610565906.26</float>
                               <string>UTC</string>
                             </tuple>
                           </state>

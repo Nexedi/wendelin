@@ -86,7 +86,7 @@
             <key> <string>categories</string> </key>
             <value>
               <tuple>
-                <string>resource/data_product_module/79</string>
+                <string>resource/data_product_module/sample_environment_raw_data</string>
               </tuple>
             </value>
         </item>
@@ -244,7 +244,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>987.57681.23965.45977</string> </value>
+                      <value> <string>989.20458.7765.33297</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -262,7 +262,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1605011602.82</float>
+                              <float>1610565906.27</float>
                               <string>UTC</string>
                             </tuple>
                           </state>

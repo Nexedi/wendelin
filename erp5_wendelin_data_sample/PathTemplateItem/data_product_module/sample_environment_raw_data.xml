@@ -82,7 +82,13 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>79</string> </value>
+            <value> <string>sample_environment_raw_data</string> </value>
+        </item>
+        <item>
+            <key> <string>language</string> </key>
+            <value>
+              <none/>
+            </value>
         </item>
         <item>
             <key> <string>portal_type</string> </key>
@@ -160,7 +166,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>987.57587.46498.16861</string> </value>
+                      <value> <string>989.20458.7765.33297</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -178,7 +184,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1605005984.05</float>
+                              <float>1610565899.26</float>
                               <string>UTC</string>
                             </tuple>
                           </state>

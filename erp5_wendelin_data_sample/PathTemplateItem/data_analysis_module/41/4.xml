@@ -10,8 +10,8 @@
             <key> <string>categories</string> </key>
             <value>
               <tuple>
-                <string>resource/data_product_module/86</string>
-                <string>resolution/data_product_module/86/2</string>
+                <string>resource/data_product_module/generic_interval_resampled_array</string>
+                <string>resolution/data_product_module/generic_interval_resampled_array/2</string>
                 <string>use/big_data/ingestion/stream</string>
                 <string>quantity_unit/unit/piece</string>
                 <string>aggregate/data_acquisition_unit_module/olimex_environment_sensor</string>
@@ -105,7 +105,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>989.20536.16142.65331</string> </value>
+                      <value> <string>989.20618.22846.53845</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -123,7 +123,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1610565740.91</float>
+                              <float>1610565941.32</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
