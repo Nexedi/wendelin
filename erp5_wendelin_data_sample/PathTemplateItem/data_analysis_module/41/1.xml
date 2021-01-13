@@ -12,7 +12,7 @@
               <tuple>
                 <string>resource/data_operation_module/55</string>
                 <string>quantity_unit/unit/piece</string>
-                <string>aggregate/data_acquisition_unit_module/16</string>
+                <string>aggregate/data_acquisition_unit_module/olimex_environment_sensor</string>
               </tuple>
             </value>
         </item>
@@ -88,11 +88,13 @@
                   </item>
                   <item>
                       <key> <string>actor</string> </key>
-                      <value> <string>System Processes</string> </value>
+                      <value> <string>zope</string> </value>
                   </item>
                   <item>
                       <key> <string>comment</string> </key>
-                      <value> <string></string> </value>
+                      <value>
+                        <none/>
+                      </value>
                   </item>
                   <item>
                       <key> <string>error_message</string> </key>
@@ -100,7 +102,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>0.0.0.0</string> </value>
+                      <value> <string>989.20487.46003.20804</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -118,7 +120,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1605278161.28</float>
+                              <float>1610560814.74</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
