@@ -2,7 +2,7 @@
 <ZopeData>
   <record id="1" aka="AAAAAAAAAAE=">
     <pickle>
-      <global name="Data Product" module="erp5.portal_type"/>
+      <global name="Data Acquisition Unit" module="erp5.portal_type"/>
     </pickle>
     <pickle>
       <dictionary>
@@ -53,27 +53,8 @@
             </value>
         </item>
         <item>
-            <key> <string>aggregated_portal_type</string> </key>
-            <value>
-              <tuple>
-                <string>Data Stream</string>
-                <string>Progress Indicator</string>
-                <string>Data Array</string>
-              </tuple>
-            </value>
-        </item>
-        <item>
-            <key> <string>categories</string> </key>
-            <value>
-              <tuple>
-                <string>use/big_data/ingestion/stream</string>
-                <string>quantity_unit/unit/piece</string>
-              </tuple>
-            </value>
-        </item>
-        <item>
             <key> <string>default_reference</string> </key>
-            <value> <string>environment-raw-array2</string> </value>
+            <value> <string>olimex-environment-sensor</string> </value>
         </item>
         <item>
             <key> <string>description</string> </key>
@@ -83,15 +64,15 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>94</string> </value>
+            <value> <string>16</string> </value>
         </item>
         <item>
             <key> <string>portal_type</string> </key>
-            <value> <string>Data Product</string> </value>
+            <value> <string>Data Acquisition Unit</string> </value>
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>Environment Raw Array 2</string> </value>
+            <value> <string>Olimex Environment Sensor</string> </value>
         </item>
         <item>
             <key> <string>workflow_history</string> </key>
@@ -161,7 +142,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>988.3496.57261.341</string> </value>
+                      <value> <string>987.57588.62234.20565</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -179,7 +160,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1605692700.1</float>
+                              <float>1605006057.36</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
@@ -232,7 +213,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1605692713.69</float>
+                              <float>1605006060.58</float>
                               <string>UTC</string>
                             </tuple>
                           </state>

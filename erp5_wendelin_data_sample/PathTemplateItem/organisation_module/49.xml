@@ -2,7 +2,7 @@
 <ZopeData>
   <record id="1" aka="AAAAAAAAAAE=">
     <pickle>
-      <global name="Data Product" module="erp5.portal_type"/>
+      <global name="Organisation" module="erp5.portal_type"/>
     </pickle>
     <pickle>
       <dictionary>
@@ -14,7 +14,9 @@
                 <string>Assignor</string>
                 <string>Associate</string>
                 <string>Auditor</string>
+                <string>Author</string>
                 <string>Manager</string>
+                <string>Owner</string>
               </tuple>
             </value>
         </item>
@@ -25,7 +27,9 @@
                 <string>Assignee</string>
                 <string>Assignor</string>
                 <string>Associate</string>
+                <string>Author</string>
                 <string>Manager</string>
+                <string>Owner</string>
               </tuple>
             </value>
         </item>
@@ -36,7 +40,9 @@
                 <string>Assignee</string>
                 <string>Assignor</string>
                 <string>Associate</string>
+                <string>Author</string>
                 <string>Manager</string>
+                <string>Owner</string>
               </tuple>
             </value>
         </item>
@@ -48,48 +54,23 @@
                 <string>Assignor</string>
                 <string>Associate</string>
                 <string>Auditor</string>
+                <string>Author</string>
                 <string>Manager</string>
+                <string>Owner</string>
               </tuple>
-            </value>
-        </item>
-        <item>
-            <key> <string>aggregated_portal_type</string> </key>
-            <value>
-              <tuple>
-                <string>Data Stream</string>
-                <string>Progress Indicator</string>
-              </tuple>
-            </value>
-        </item>
-        <item>
-            <key> <string>categories</string> </key>
-            <value>
-              <tuple>
-                <string>use/big_data/ingestion/stream</string>
-              </tuple>
-            </value>
-        </item>
-        <item>
-            <key> <string>default_reference</string> </key>
-            <value> <string>test_product</string> </value>
-        </item>
-        <item>
-            <key> <string>description</string> </key>
-            <value>
-              <none/>
             </value>
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>default</string> </value>
+            <value> <string>49</string> </value>
         </item>
         <item>
             <key> <string>portal_type</string> </key>
-            <value> <string>Data Product</string> </value>
+            <value> <string>Organisation</string> </value>
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>Append to Data Stream</string> </value>
+            <value> <string>Sample Factory</string> </value>
         </item>
         <item>
             <key> <string>workflow_history</string> </key>
@@ -149,9 +130,7 @@
                   </item>
                   <item>
                       <key> <string>comment</string> </key>
-                      <value>
-                        <none/>
-                      </value>
+                      <value> <string></string> </value>
                   </item>
                   <item>
                       <key> <string>error_message</string> </key>
@@ -159,7 +138,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>987.40639.46809.37410</string> </value>
+                      <value> <string>0.0.0.0</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -177,7 +156,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1603989111.37</float>
+                              <float>1605006121.74</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
@@ -204,7 +183,9 @@
                 <dictionary>
                   <item>
                       <key> <string>action</string> </key>
-                      <value> <string>validate</string> </value>
+                      <value>
+                        <none/>
+                      </value>
                   </item>
                   <item>
                       <key> <string>actor</string> </key>
@@ -230,7 +211,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1603989102.84</float>
+                              <float>1605006121.74</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
@@ -239,7 +220,7 @@
                   </item>
                   <item>
                       <key> <string>validation_state</string> </key>
-                      <value> <string>validated</string> </value>
+                      <value> <string>draft</string> </value>
                   </item>
                 </dictionary>
               </list>
