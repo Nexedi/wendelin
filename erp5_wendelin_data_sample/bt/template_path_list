@@ -19,8 +19,8 @@ data_product_module/sample_environment_raw_data
 data_product_module/sample_environment_raw_data/**
 data_stream_module/sensor_1-sample-environment-raw-data
 data_supply_module/environment_sensor
-data_transformation_module/34
-data_transformation_module/39
+data_transformation_module/convert_environment_raw_data
+data_transformation_module/resample_generic_interval_array
 organisation_module/nexedi_data_center
 organisation_module/sample_company
 organisation_module/sample_factory

@@ -86,7 +86,7 @@
             <value>
               <tuple>
                 <string>destination/organisation_module/nexedi_data_center</string>
-                <string>specialise/data_transformation_module/39</string>
+                <string>specialise/data_transformation_module/resample_generic_interval_array</string>
                 <string>specialise/data_supply_module/environment_sensor</string>
                 <string>causality/data_analysis_module/29</string>
                 <string>source/organisation_module/sample_factory</string>
@@ -373,7 +373,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>989.20614.48182.34030</string> </value>
+                      <value> <string>989.20615.9979.36334</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -391,7 +391,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1610565549.12</float>
+                              <float>1610566091.44</float>
                               <string>UTC</string>
                             </tuple>
                           </state>

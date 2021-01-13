@@ -108,7 +108,7 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>39</string> </value>
+            <value> <string>resample_generic_interval_array</string> </value>
         </item>
         <item>
             <key> <string>portal_type</string> </key>
@@ -244,7 +244,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>989.20458.7765.33297</string> </value>
+                      <value> <string>989.20621.23259.59374</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -262,7 +262,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1610565921.29</float>
+                              <float>1610566085.64</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
