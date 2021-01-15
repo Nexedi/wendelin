@@ -54,7 +54,7 @@
         </item>
         <item>
             <key> <string>default_reference</string> </key>
-            <value> <string>olimex-environment-sensor</string> </value>
+            <value> <string>wendelin-environment-sensor</string> </value>
         </item>
         <item>
             <key> <string>description</string> </key>
@@ -64,7 +64,7 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>wendelin_olimex_environment_sensor</string> </value>
+            <value> <string>wendelin_environment_sensor</string> </value>
         </item>
         <item>
             <key> <string>language</string> </key>
@@ -78,7 +78,7 @@
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>Olimex Environment Sensor</string> </value>
+            <value> <string>Environment Sensor</string> </value>
         </item>
         <item>
             <key> <string>workflow_history</string> </key>
@@ -148,7 +148,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>989.20536.6433.29320</string> </value>
+                      <value> <string>989.23202.29991.1399</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -166,7 +166,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1610718571.29</float>
+                              <float>1610720807.64</float>
                               <string>UTC</string>
                             </tuple>
                           </state>

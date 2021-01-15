@@ -14,7 +14,7 @@
                 <string>resolution/data_product_module/wendelin_generic_interval_resampled_array/2</string>
                 <string>use/big_data/ingestion/stream</string>
                 <string>quantity_unit/unit/piece</string>
-                <string>aggregate/data_acquisition_unit_module/wendelin_olimex_environment_sensor</string>
+                <string>aggregate/data_acquisition_unit_module/wendelin_environment_sensor</string>
                 <string>aggregate/data_array_module/wendelin_resample_generic_interval_array_300</string>
               </tuple>
             </value>
@@ -105,7 +105,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>989.23168.36187.27409</string> </value>
+                      <value> <string>989.23171.63786.19677</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -123,7 +123,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1610718958.37</float>
+                              <float>1610720792.51</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
