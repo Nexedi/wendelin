@@ -14,7 +14,7 @@ for line in lines[:]:
   filename = line[32:].strip()
 
   # check Data stream for this hash exists
-  reference = "/%s/jpg" %(data_set_referebce, filename.replace(".jpg", ""))
+  reference = "/%s/jpg" %(data_set_reference, filename.replace(".jpg", ""))
   catalog_kw = {"portal_type": "Data Stream",
                 "reference": reference}
   data_stream = context.portal_catalog.getResultValue(**catalog_kw)
