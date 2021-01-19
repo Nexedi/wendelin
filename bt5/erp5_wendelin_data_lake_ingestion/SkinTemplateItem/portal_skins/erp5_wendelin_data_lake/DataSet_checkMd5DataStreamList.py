@@ -3,18 +3,20 @@
   is properly uploaded to Wendelin Data Lake.
 
   Format of is the same as md5sum's output:
-  <md5_sum>    <filename>
+  <md5_sum>    <filename.extension>
 
 """
 
 data =  str(context.file_system_checksum).strip()
 lines = data.split("\n")
+print "Total files = ", len(lines)
 for line in lines[:]:
   md5_checksum = line[:32].strip()
-  filename = line[32:].strip()
+  full_filename = line[32:].strip()
 
   # check Data stream for this hash exists
-  reference = "/%s/jpg" %(data_set_reference, filename.replace(".jpg", ""))
+  filename, extension = full_filename.split(".")
+  reference = "%s/%s/%s" %(data_set_reference, filename, extension)
   catalog_kw = {"portal_type": "Data Stream",
                 "reference": reference}
   data_stream = context.portal_catalog.getResultValue(**catalog_kw)
