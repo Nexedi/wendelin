@@ -52,6 +52,7 @@
  </portal_type>
  <portal_type id="Data Stream">
   <item>predecessor</item>
+  <item>set</item>
   <item>successor</item>
  </portal_type>
  <portal_type id="Data Stream Module">
