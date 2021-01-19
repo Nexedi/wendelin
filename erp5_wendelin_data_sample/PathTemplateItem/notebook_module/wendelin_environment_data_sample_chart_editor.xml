@@ -147,13 +147,14 @@ var update = false;\n
 var button_element = document.getElementById(\'plot_button_div\');\n
 var displayed_data = [];\n
 var displayed_layout = {};\n
-var graph_data = [];\n
 var label_list = ["date", "humidity_min","humidity_mean","humidity_max", "pressure_min","pressure_mean","pressure_max", "temperature_min","temperature_mean", "temperature_max"];\n
-var array_id = "";\n
-var orig_start_date = "2020-01-20 00:00:00";\n
-var orig_stop_date = "2020-02-20 00:00:00";\n
-var array_start_date = new Date("2020-01-30 16:17:44")\n
+var array_start_date;\n
+var array_last_date;\n
+var orig_start_date = new Date();\n
+var orig_stop_date = new Date();\n
+orig_start_date.setMonth(orig_start_date.getMonth() - 1);\n
 var frequency;\n
+var array_id = "";\n
 \n
 selectorOptions = {\n
     "buttons": [{\n
@@ -175,30 +176,23 @@ selectorOptions = {\n
 }\n
 \n
 function getFrequency(start_date, stop_date) {\n
-  var graph_data=[],\n
-    ratio = screen.availWidth / 1024,\n
-    interval,\n
-    frequency,\n
-    start_index,\n
-    stop_index,\n
-    array_id;\n
-\n
-  if (stop_date === undefined) {\n
-    frequency = 30000;\n
-    start_index = 0;\n
-    stop_index = 0;\n
-  } else {\n
+  var ratio = screen.availWidth / 1024,\n
     interval = stop_date - start_date;\n
-    if (interval >= 1000 * 60 * 60 * 24 * 100 * ratio) {\n
-      frequency = 30000;\n
-    } else if (interval >= 1000 * 60 * 60 * 24 * 28 * ratio) {\n
-      frequency = 3000;\n
-    } else if (interval >= 1000 * 60 * 60 * 24 * 7 * ratio) {\n
-      frequency = 300;\n
-    } else {\n
-      frequency = 60;\n
-    }\n
+  if (stop_date === undefined) {\n
+    return 30000;\n
   }\n
+  if (interval >= 1000 * 60 * 60 * 24 * 100 * ratio) {\n
+    return 30000;\n
+  } else if (interval >= 1000 * 60 * 60 * 24 * 28 * ratio) {\n
+    return 3000;\n
+  } else if (interval >= 1000 * 60 * 60 * 24 * 7 * ratio) {\n
+    return 300;\n
+  } else {\n
+    return 60;\n
+  }\n
+}\n
+\n
+function getArrayId(frequency) {\n
   return jio.allDocs({\n
     query: \'portal_type:"Data Analysis Line" AND \' +\n
            \'title: "Resampled Array (\' + frequency + \' Seconds)" AND \' +\n
@@ -218,37 +212,38 @@ function getFrequency(start_date, stop_date) {\n
     });\n
 }\n
 \n
-function update_graph(start_date, stop_date) {\n
-  displayed_layout.xaxis.range = [start_date, stop_date];\n
-  return getData(start_date, stop_date)\n
-    .push(function (data) {\n
-      for (var i = 0; i < data.length; i+=1) {\n
-        displayed_data[i] = {...displayed_data[i], ...data[i]};\n
-      }\n
-      return Plotly.react(graph,\n
-        displayed_data,\n
-        displayed_layout\n
-      );\n
-    });\n
-}\n
-\n
-\n
 function getData(start_date, stop_date){\n
+  var start_index,\n
+    stop_index;\n
   function unpack(rows, key) {\n
     return rows.map(function(row) { return row[key]; });\n
   }\n
   return new RSVP.Queue()\n
     .push(function() {\n
-      return getFrequency(orig_start_date, undefined);\n
+      return getFrequency(start_date, stop_date);\n
     })\n
-    .push(function(array_id) {\n
-      graph_data=[];\n
-      start_date = new Date(start_date);\n
-      var start_index = Math.max(0, Math.ceil((start_date - array_start_date) / (frequency*1000)))\n
-      var stop_index = Math.ceil((stop_date - array_start_date) / (frequency*1000))\n
-\n
+    .push(function(result) {\n
+      frequency = result;\n
+      return getArrayId(frequency);\n
+    })\n
+    .push(function(result) {\n
+      array_id = result;\n
+      return wendelin.getArrayRawSlice(gadget, array_id, 0, 1);\n
+    })\n
+    .push(function(result) {\n
+      array_start_date = wendelin.convertFirstColToDate([[result.data[0]]])[0][0];\n
+      return wendelin.getArrayLastRow(gadget, array_id);\n
+    })\n
+    .push(function(result) {\n
+      var array_last_date = wendelin.convertFirstColToDate([[result.data[0]]])[0][0];\n
+      stop_date = array_last_date;\n
+      start_date = new Date(array_last_date.getTime());\n
+      start_date.setMonth(start_date.getMonth() - 1);\n
+      start_index = Math.max(0, Math.ceil((start_date - array_start_date) / (frequency*1000)));\n
+      stop_index = Math.ceil((stop_date - array_start_date) / (frequency*1000));\n
       return wendelin.getArrayRawSlice(gadget, array_id, start_index, stop_index)\n
         .push(function(result) {\n
+          graph_data=[];\n
           for (i = 0; i < label_list.length; i += 1) {\n
             graph_data = graph_data.concat(nj.unpack(result.pick( null, label_list[i])));\n
           }\n
@@ -279,222 +274,244 @@ function getData(start_date, stop_date){\n
     });\n
 }\n
 \n
-function plot () {\n
-  var start_date = orig_start_date;\n
-  var stop_date = orig_stop_date;\n
-  return editor_jio.get("olimex-environment-sensor-series")\n
-    .push(function(result) {\n
-      displayed_layout = result.graph_model.layout;\n
-      displayed_data = result.graph_model.data;\n
-      if (displayed_data == undefined) {\n
-        var humidity_trace = {\n
-          type: "scattergl",\n
-          mode: "markers",\n
-          name: \'Humidity(%)\',\n
-          x: [],\n
-          y: [],\n
-          line: {color: \'#17BECF\'}\n
-        };\n
-\n
-        var pressure_trace = {\n
-          type: "scattergl",\n
-          mode: "markers",\n
-          name: \'Pressure(Pa)\',\n
-          x: [],\n
-          y: [],\n
-          line: {color: \'#7F7F7F\'}\n
-        };\n
-\n
-        var temperature_trace = {\n
-          type: "scattergl",\n
-          mode: "markers",\n
-          name: \'Temperature(C°)\',\n
-          x: [],\n
-          y: [],\n
-          line: {color: \'#FF0000\'}\n
-        };\n
-        displayed_data = [humidity_trace,pressure_trace,temperature_trace];\n
-      }\n
-      if (displayed_layout == undefined) {\n
-        displayed_layout = {\n
-          \'title\' :\'Environmental Sensor Data\',\n
-          \'xaxis\': {\n
-            \'autorange\': true,\n
-            \'range\': [start_date, stop_date],\n
-            \'rangeselector\': selectorOptions,\n
-          }\n
-        };\n
-      }\n
-      return getData(start_date, stop_date);\n
-    }, function(error) {\n
-      displayed_layout = {\n
-        \'title\' :\'Environmental Sensor Data\',\n
-        \'xaxis\': {\n
-          \'autorange\': true,\n
-          \'range\': [start_date, stop_date],\n
-          \'rangeselector\': selectorOptions,\n
-        }\n
-      };\n
-      var humidity_trace = {\n
-          type: "scattergl",\n
-          mode: "markers",\n
-          name: \'Humidity(%)\',\n
-          x: [],\n
-          y: [],\n
-          line: {color: \'#17BECF\'}\n
-        };\n
-\n
-        var pressure_trace = {\n
-          type: "scattergl",\n
-          mode: "markers",\n
-          name: \'Pressure(Pa)\',\n
-          x: [],\n
-          y: [],\n
-          line: {color: \'#7F7F7F\'}\n
-        };\n
-\n
-        var temperature_trace = {\n
-          type: "scattergl",\n
-          mode: "markers",\n
-          name: \'Temperature(C°)\',\n
-          x: [],\n
-          y: [],\n
-          line: {color: \'#FF0000\'}\n
-        };\n
-        displayed_data = [humidity_trace,pressure_trace,temperature_trace];\n
-      return getData(start_date, stop_date);\n
-    })\n
-    .push(function (data) {\n
-      for (var i = 0; i < data.length; i+=1) {\n
-        displayed_data[i] = {...displayed_data[i], ...data[i]};\n
-      }\n
-      Plotly.newPlot(\n
-        "plot_div",\n
-        displayed_data,\n
-        displayed_layout\n
-      );\n
-      graph.on(\'plotly_relayout\', function(eventdata) {\n
-        start_date = eventdata["xaxis.range[0]"]\n
-        stop_date = eventdata["xaxis.range[1]"]\n
-\n
-        if(start_date == undefined){\n
-          start_date = orig_start_date\n
-        }\n
-        if(stop_date == undefined){\n
-          stop_date = orig_stop_date\n
-        }\n
-\n
-        start_date = new Date(start_date);\n
-        stop_date = new Date(stop_date);\n
-\n
-        return update_graph(start_date, stop_date);\n
-      });\n
-    });\n
+function update_graph(start_date, stop_date) {\n
+  displayed_layout.xaxis.range = [start_date, stop_date];\n
+  return getData(start_date, stop_date)\n
+    .push(function (data) {\n
+      for (var i = 0; i < data.length; i+=1) {\n
+        displayed_data[i] = {...displayed_data[i], ...data[i]};\n
+      }\n
+      return Plotly.react(graph,\n
+        displayed_data,\n
+        displayed_layout\n
+      );\n
+    });\n
 }\n
 \n
 function renderEditor() {\n
- var props = {\n
-   ref: function ref(element) {\n
-    window.editor = element;\n
-   },\n
-   data: displayed_data,\n
-   layout: displayed_layout,\n
-   frames: [],\n
-   url: ""\n
- };\n
-  ReactDOM.render(React.createElement(EntryPoint.default.App, props, null), graph);\n
+ var props = {\n
+   ref: function ref(element) {\n
+    window.editor = element;\n
+   },\n
+   data: displayed_data,\n
+   layout: displayed_layout,\n
+   frames: [],\n
+   url: ""\n
+ };\n
+  ReactDOM.render(React.createElement(EntryPoint.default.App, props, null), graph);\n
 }\n
 \n
 function editGraph(edit_btn, apply_btn) {\n
-  return new RSVP.Queue()\n
-    .push(function () {\n
-      return Plotly.purge(graph);\n
-    })\n
-    .push(function () {\n
-      return renderEditor();\n
-    })\n
-    .push(function () {\n
-      button_element.replaceChild(apply_btn, edit_btn);\n
-    });\n
-}\n
-\n
-function applyChangesToGraph(edit_btn, apply_btn) {\n
-  var stored_data = [];\n
-  var temp;\n
-  return new RSVP.Queue()\n
-    .push(function () {\n
-      return window.editor.getContent();\n
-    })\n
-    .push(function(result) {\n
-      displayed_data = result.data;\n
-      displayed_layout = result.layout;\n
-      for (var i = 0; i < displayed_data.length; i+=1) {\n
-        stored_data[i] = {};\n
-        for (var key in displayed_data[i]) {\n
-          if (key == "x") {\n
-            stored_data[i][key] = []\n
-          } else if (key == "y") {\n
-            stored_data[i][key] = [];\n
-          } else {\n
-            stored_data[i][key] = displayed_data[i][key];\n
-          }\n
-        }\n
-      }\n
-      editor_jio.put(\n
-        "olimex-environment-sensor-series",\n
-        {graph_model: {\n
-          layout: result.layout,\n
-          data: stored_data\n
-          }\n
-        }\n
-      );\n
-      return ReactDOM.unmountComponentAtNode(graph);\n
-    })\n
-    .push(function () {\n
-      return createGraph();\n
-    })\n
-    .push(function(result) {\n
-      button_element.replaceChild(edit_btn, apply_btn);\n
-    });\n
+  return new RSVP.Queue()\n
+    .push(function () {\n
+      return Plotly.purge(graph);\n
+    })\n
+    .push(function () {\n
+      return renderEditor();\n
+    })\n
+    .push(function () {\n
+      button_element.replaceChild(apply_btn, edit_btn);\n
+    });\n
 }\n
 \n
 function createGraph() {\n
-  var start_date;\n
-  var stop_date;\n
+  var start_date;\n
+  var stop_date;\n
 \n
-  Plotly.newPlot(\n
-    "plot_div",\n
-    displayed_data,\n
-    displayed_layout\n
-  );\n
-  graph.on(\'plotly_relayout\', function(eventdata) {\n
-  start_date = eventdata["xaxis.range[0]"]\n
-  stop_date = eventdata["xaxis.range[1]"]\n
+  Plotly.newPlot(\n
+    "plot_div",\n
+    displayed_data,\n
+    displayed_layout\n
+  );\n
+  graph.on(\'plotly_relayout\', function(eventdata) {\n
+  start_date = eventdata["xaxis.range[0]"]\n
+  stop_date = eventdata["xaxis.range[1]"]\n
 \n
-  if(start_date == undefined){\n
-    start_date = orig_start_date\n
-  }\n
-  if(stop_date == undefined){\n
-    stop_date = orig_stop_date\n
-  }\n
+  if(start_date == undefined){\n
+    start_date = orig_start_date\n
+  }\n
+  if(stop_date == undefined){\n
+    stop_date = orig_stop_date\n
+  }\n
 \n
-  start_date = new Date(start_date);\n
-  stop_date = new Date(stop_date);\n
+  start_date = new Date(start_date);\n
+  stop_date = new Date(stop_date);\n
 \n
-  return update_graph(start_date, stop_date);\n
-  });\n
+  return update_graph(start_date, stop_date);\n
+  });\n
+}\n
+\n
+function applyChangesToGraph(edit_btn, apply_btn) {\n
+  var stored_data = [];\n
+  var temp;\n
+  return new RSVP.Queue()\n
+    .push(function () {\n
+      return window.editor.getContent();\n
+    })\n
+    .push(function(result) {\n
+      displayed_data = result.data;\n
+      displayed_layout = result.layout;\n
+      for (var i = 0; i < displayed_data.length; i+=1) {\n
+        stored_data[i] = {};\n
+        for (var key in displayed_data[i]) {\n
+          if (key == "x") {\n
+            stored_data[i][key] = []\n
+          } else if (key == "y") {\n
+            stored_data[i][key] = [];\n
+          } else {\n
+            stored_data[i][key] = displayed_data[i][key];\n
+          }\n
+        }\n
+      }\n
+      editor_jio.put(\n
+        "olimex-environment-sensor-series",\n
+        {graph_model: {\n
+          layout: result.layout,\n
+          data: stored_data\n
+          }\n
+        }\n
+      );\n
+      return ReactDOM.unmountComponentAtNode(graph);\n
+    })\n
+    .push(function () {\n
+      return createGraph();\n
+    })\n
+    .push(function(result) {\n
+      button_element.replaceChild(edit_btn, apply_btn);\n
+    });\n
 }\n
 \n
 function createButtons() {\n
-  var plotly_apply_btn = document.createElement("BUTTON");\n
-  var plotly_edit_btn = document.createElement("BUTTON");\n
-  plotly_edit_btn.innerHTML = "Edit Chart";\n
-  plotly_edit_btn.type = "button";\n
-  plotly_apply_btn.innerHTML = "Apply";\n
-  plotly_apply_btn.type = "button";\n
-  plotly_edit_btn.addEventListener("click", editGraph.bind(null, plotly_edit_btn, plotly_apply_btn));\n
-  plotly_apply_btn.addEventListener("click", applyChangesToGraph.bind(null, plotly_edit_btn, plotly_apply_btn));\n
-  button_element.appendChild(plotly_edit_btn);\n
+  var plotly_apply_btn = document.createElement("BUTTON");\n
+  var plotly_edit_btn = document.createElement("BUTTON");\n
+  plotly_edit_btn.innerHTML = "Edit Chart";\n
+  plotly_edit_btn.type = "button";\n
+  plotly_apply_btn.innerHTML = "Apply";\n
+  plotly_apply_btn.type = "button";\n
+  plotly_edit_btn.addEventListener("click", editGraph.bind(null, plotly_edit_btn, plotly_apply_btn));\n
+  plotly_apply_btn.addEventListener("click", applyChangesToGraph.bind(null, plotly_edit_btn, plotly_apply_btn));\n
+  button_element.appendChild(plotly_edit_btn);\n
+}\n
+\n
+function plot () {\n
+  var start_date = orig_start_date;\n
+  var stop_date = orig_stop_date;\n
+  return editor_jio.get("olimex-environment-sensor-series")\n
+    .push(function(result) {\n
+      displayed_layout = result.graph_model.layout;\n
+      displayed_data = result.graph_model.data;\n
+      if (displayed_data == undefined) {\n
+        var humidity_trace = {\n
+          type: "scattergl",\n
+          mode: "markers",\n
+          name: \'Humidity(%)\',\n
+          x: [],\n
+          y: [],\n
+          line: {color: \'#17BECF\'}\n
+        };\n
+\n
+        var pressure_trace = {\n
+          type: "scattergl",\n
+          mode: "markers",\n
+          name: \'Pressure(Pa)\',\n
+          x: [],\n
+          y: [],\n
+          line: {color: \'#7F7F7F\'}\n
+        };\n
+\n
+        var temperature_trace = {\n
+          type: "scattergl",\n
+          mode: "markers",\n
+          name: \'Temperature(C°)\',\n
+          x: [],\n
+          y: [],\n
+          line: {color: \'#FF0000\'}\n
+        };\n
+        displayed_data = [humidity_trace,pressure_trace,temperature_trace];\n
+      }\n
+      if (displayed_layout == undefined) {\n
+        displayed_layout = {\n
+          \'title\' :\'Environmental Sensor Data\',\n
+          \'xaxis\': {\n
+            \'autorange\': true,\n
+            \'range\': [start_date, stop_date],\n
+            \'rangeselector\': selectorOptions,\n
+          },\n
+          \'yaxis\': {\n
+            \'autorange\': true,\n
+            \'range\': [0, 1000]\n
+          }\n
+        };\n
+      }\n
+      return getData(start_date, stop_date);\n
+    }, function(error) {\n
+      displayed_layout = {\n
+        \'title\' :\'Environmental Sensor Data\',\n
+        \'xaxis\': {\n
+          \'autorange\': true,\n
+          \'range\': [start_date, stop_date],\n
+          \'rangeselector\': selectorOptions,\n
+        },\n
+        \'yaxis\': {\n
+          \'autorange\': true,\n
+          \'range\': [0, 1000]\n
+        }\n
+      };\n
+      var humidity_trace = {\n
+          type: "scattergl",\n
+          mode: "markers",\n
+          name: \'Humidity(%)\',\n
+          x: [],\n
+          y: [],\n
+          line: {color: \'#17BECF\'}\n
+        };\n
+\n
+        var pressure_trace = {\n
+          type: "scattergl",\n
+          mode: "markers",\n
+          name: \'Pressure(Pa)\',\n
+          x: [],\n
+          y: [],\n
+          line: {color: \'#7F7F7F\'}\n
+        };\n
+\n
+        var temperature_trace = {\n
+          type: "scattergl",\n
+          mode: "markers",\n
+          name: \'Temperature(C°)\',\n
+          x: [],\n
+          y: [],\n
+          line: {color: \'#FF0000\'}\n
+        };\n
+        displayed_data = [humidity_trace,pressure_trace,temperature_trace];\n
+      return getData(start_date, stop_date);\n
+    })\n
+    .push(function (data) {\n
+      for (var i = 0; i < data.length; i+=1) {\n
+        displayed_data[i] = {...displayed_data[i], ...data[i]};\n
+      }\n
+      Plotly.newPlot(\n
+        "plot_div",\n
+        displayed_data,\n
+        displayed_layout\n
+      );\n
+      graph.on(\'plotly_relayout\', function(eventdata) {\n
+        start_date = eventdata["xaxis.range[0]"]\n
+        stop_date = eventdata["xaxis.range[1]"]\n
+\n
+        if(start_date == undefined){\n
+          start_date = orig_start_date\n
+        }\n
+        if(stop_date == undefined){\n
+          stop_date = orig_stop_date\n
+        }\n
+\n
+        start_date = new Date(start_date);\n
+        stop_date = new Date(stop_date);\n
+\n
+        return update_graph(start_date, stop_date);\n
+      });\n
+    });\n
 }\n
 \n
 function main() {\n
@@ -648,7 +665,7 @@ main();
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>989.22057.34079.20309</string> </value>
+                      <value> <string>989.29293.56152.32904</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -666,7 +683,7 @@ main();
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1610720271.71</float>
+                              <float>1611086365.66</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
