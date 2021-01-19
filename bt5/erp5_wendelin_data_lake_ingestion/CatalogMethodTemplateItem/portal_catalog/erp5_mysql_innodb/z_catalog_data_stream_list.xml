@@ -15,7 +15,7 @@
             <value> <string>uid\n
 getSize\n
 getVersion\n
-DataStream_getSetUid</string> </value>
+getSetUid</string> </value>
         </item>
         <item>
             <key> <string>cache_time_</string> </key>
