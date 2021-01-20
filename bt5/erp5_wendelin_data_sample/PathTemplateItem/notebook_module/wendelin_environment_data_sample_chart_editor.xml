@@ -220,7 +220,7 @@ function getData(start_date, stop_date){\n
   }\n
   return new RSVP.Queue()\n
     .push(function() {\n
-      return getFrequency(start_date, stop_date);\n
+      return getFrequency();\n
     })\n
     .push(function(result) {\n
       frequency = result;\n
@@ -228,7 +228,6 @@ function getData(start_date, stop_date){\n
     })\n
     .push(function(result) {\n
       array_id = result;\n
-      array_id = "data_array_module/wendelin_resample_generic_interval_array_30000";\n
       return wendelin.getArrayRawSlice(gadget, array_id, 0, 1);\n
     })\n
     .push(function(result) {\n
@@ -242,12 +241,6 @@ function getData(start_date, stop_date){\n
       start_date.setMonth(start_date.getMonth() - 1);\n
       start_index = Math.max(0, Math.ceil((start_date - array_start_date) / (frequency*1000)));\n
       stop_index = Math.ceil((stop_date - array_start_date) / (frequency*1000));\n
-      console.log("array_start_date", array_start_date);\n
-      console.log("array_last_date", array_last_date);\n
-      console.log("start_date", start_date);\n
-      console.log("stop_date", stop_date);\n
-      console.log("start_index", start_index);\n
-      console.log("stop_index", stop_index);\n
       return wendelin.getArrayRawSlice(gadget, array_id, start_index, stop_index)\n
         .push(function(result) {\n
           graph_data=[];\n
@@ -282,7 +275,6 @@ function getData(start_date, stop_date){\n
 }\n
 \n
 function update_graph(start_date, stop_date) {\n
-  console.log("update graph");\n
   displayed_layout.xaxis.range = [start_date, stop_date];\n
   return getData(start_date, stop_date)\n
     .push(function (data) {\n
@@ -673,7 +665,7 @@ main();
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>989.30489.5730.36744</string> </value>
+                      <value> <string>989.30689.11241.63795</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -691,7 +683,7 @@ main();
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1611158056.76</float>
+                              <float>1611170755.98</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
