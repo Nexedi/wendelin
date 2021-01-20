@@ -228,6 +228,7 @@ function getData(start_date, stop_date){\n
     })\n
     .push(function(result) {\n
       array_id = result;\n
+      array_id = "data_array_module/wendelin_resample_generic_interval_array_30000";\n
       return wendelin.getArrayRawSlice(gadget, array_id, 0, 1);\n
     })\n
     .push(function(result) {\n
@@ -241,6 +242,12 @@ function getData(start_date, stop_date){\n
       start_date.setMonth(start_date.getMonth() - 1);\n
       start_index = Math.max(0, Math.ceil((start_date - array_start_date) / (frequency*1000)));\n
       stop_index = Math.ceil((stop_date - array_start_date) / (frequency*1000));\n
+      console.log("array_start_date", array_start_date);\n
+      console.log("array_last_date", array_last_date);\n
+      console.log("start_date", start_date);\n
+      console.log("stop_date", stop_date);\n
+      console.log("start_index", start_index);\n
+      console.log("stop_index", stop_index);\n
       return wendelin.getArrayRawSlice(gadget, array_id, start_index, stop_index)\n
         .push(function(result) {\n
           graph_data=[];\n
@@ -275,6 +282,7 @@ function getData(start_date, stop_date){\n
 }\n
 \n
 function update_graph(start_date, stop_date) {\n
+  console.log("update graph");\n
   displayed_layout.xaxis.range = [start_date, stop_date];\n
   return getData(start_date, stop_date)\n
     .push(function (data) {\n
@@ -393,7 +401,7 @@ function createButtons() {\n
   button_element.appendChild(plotly_edit_btn);\n
 }\n
 \n
-function plot () {\n
+function plot() {\n
   var start_date = orig_start_date;\n
   var stop_date = orig_stop_date;\n
   return editor_jio.get("olimex-environment-sensor-series")\n
@@ -438,7 +446,7 @@ function plot () {\n
             \'rangeselector\': selectorOptions,\n
           },\n
           \'yaxis\': {\n
-            \'autorange\': true,\n
+            //\'autorange\': true,\n
             \'range\': [0, 1000]\n
           }\n
         };\n
@@ -453,7 +461,7 @@ function plot () {\n
           \'rangeselector\': selectorOptions,\n
         },\n
         \'yaxis\': {\n
-          \'autorange\': true,\n
+          //\'autorange\': true,\n
           \'range\': [0, 1000]\n
         }\n
       };\n
@@ -665,7 +673,7 @@ main();
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>989.29293.56152.32904</string> </value>
+                      <value> <string>989.30489.5730.36744</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -683,7 +691,7 @@ main();
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1611086365.66</float>
+                              <float>1611158056.76</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
