@@ -114,7 +114,7 @@ js: react-dom.development.js\n
 js: static/js/main.8b730bc1.js\n
 \n
 %% js\n
-hateoas_url = "https://softinst130899.host.vifib.net/erp5/web_site_module/renderjs_runner/hateoas/";\n
+hateoas_url = "https://softinstxxxxx.host.vifib.net/erp5/web_site_module/renderjs_runner/hateoas/";\n
 jio = jIO.createJIO({\n
   type: "erp5",\n
   url: hateoas_url,\n
@@ -665,7 +665,7 @@ main();
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>989.30689.11241.63795</string> </value>
+                      <value> <string>989.30701.61257.55722</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -683,7 +683,7 @@ main();
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1611170755.98</float>
+                              <float>1611171808.56</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
