@@ -20,6 +20,8 @@ data_stream_dict = {}
 # XXX: state != draft
 catalog_kw = dict(portal_type = "Data Stream", 
                   set_uid = data_set.getUid(),
+                  #limit=[1000, 20], # XXX: add new script arguments start and offset to script and make ebulk use them!
+                  sort_on=(("creation_date", "ascending",),),
                   validation_state = ['published', 'validated'])
 data_stream_brain_list = portal.portal_catalog(**catalog_kw)
 context.log("Data Streams found=%s" %len(data_stream_brain_list))
