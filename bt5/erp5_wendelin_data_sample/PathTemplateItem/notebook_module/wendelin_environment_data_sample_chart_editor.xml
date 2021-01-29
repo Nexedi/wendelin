@@ -114,6 +114,7 @@ js: react-dom.development.js\n
 js: static/js/main.8b730bc1.js\n
 \n
 %% js\n
+CHART_ID = "my_data_chart";\n
 hateoas_url = "https://softinstxxxxx.host.vifib.net/erp5/web_site_module/renderjs_runner/hateoas/";\n
 jio = jIO.createJIO({\n
   type: "erp5",\n
@@ -142,19 +143,20 @@ gadget = {\n
   jio_get: function(id) {return jio.get(id);}\n
 }\n
 \n
-var graph = document.getElementById(\'plot_div\');\n
-var update = false;\n
-var button_element = document.getElementById(\'plot_button_div\');\n
-var displayed_data = [];\n
-var displayed_layout = {};\n
-var label_list = ["date", "humidity_min","humidity_mean","humidity_max", "pressure_min","pressure_mean","pressure_max", "temperature_min","temperature_mean", "temperature_max"];\n
-var array_start_date;\n
-var array_last_date;\n
-var orig_start_date = new Date();\n
-var orig_stop_date = new Date();\n
+var graph = document.getElementById(\'plot_div\'),\n
+  update = false,\n
+  button_element = document.getElementById(\'plot_button_div\'),\n
+  displayed_data = [],\n
+  displayed_layout = {},\n
+  label_list = ["date", "humidity_min","humidity_mean","humidity_max", "pressure_min","pressure_mean","pressure_max", "temperature_min","temperature_mean", "temperature_max"],\n
+  array_start_date,\n
+  array_last_date,\n
+  orig_start_date = new Date(),\n
+  orig_stop_date = new Date(),\n
+  frequency,\n
+  array_id = "";\n
 orig_start_date.setMonth(orig_start_date.getMonth() - 1);\n
-var frequency;\n
-var array_id = "";\n
+\n
 \n
 selectorOptions = {\n
     "buttons": [{\n
@@ -256,19 +258,16 @@ function getData(start_date, stop_date){\n
           var humidity_trace = {\n
               x: unpack(graph_data, label_list.indexOf("date")),\n
               y: unpack(graph_data, label_list.indexOf("humidity_mean")),\n
-          }\n
-\n
-          var pressure_trace = {\n
+          },\n
+          pressure_trace = {\n
               x: unpack(graph_data, label_list.indexOf("date")),\n
               y: unpack(graph_data, label_list.indexOf("pressure_mean"))\n
-          }\n
-\n
-          var temperature_trace = {\n
+          },\n
+          temperature_trace = {\n
               x: unpack(graph_data, label_list.indexOf("date")),\n
               y: unpack(graph_data, label_list.indexOf("temperature_mean"))\n
-          }\n
-\n
-          var data = [humidity_trace,pressure_trace,temperature_trace];\n
+          },\n
+          data = [humidity_trace,pressure_trace,temperature_trace];\n
           return data\n
         });\n
     });\n
@@ -315,8 +314,8 @@ function editGraph(edit_btn, apply_btn) {\n
 }\n
 \n
 function createGraph() {\n
-  var start_date;\n
-  var stop_date;\n
+  var start_date,\n
+    stop_date;\n
 \n
   Plotly.newPlot(\n
     "plot_div",\n
@@ -342,8 +341,7 @@ function createGraph() {\n
 }\n
 \n
 function applyChangesToGraph(edit_btn, apply_btn) {\n
-  var stored_data = [];\n
-  var temp;\n
+  var stored_data = [], temp;\n
   return new RSVP.Queue()\n
     .push(function () {\n
       return window.editor.getContent();\n
@@ -364,7 +362,7 @@ function applyChangesToGraph(edit_btn, apply_btn) {\n
         }\n
       }\n
       editor_jio.put(\n
-        "olimex-environment-sensor-series",\n
+        CHART_ID,\n
         {graph_model: {\n
           layout: result.layout,\n
           data: stored_data\n
@@ -382,8 +380,8 @@ function applyChangesToGraph(edit_btn, apply_btn) {\n
 }\n
 \n
 function createButtons() {\n
-  var plotly_apply_btn = document.createElement("BUTTON");\n
-  var plotly_edit_btn = document.createElement("BUTTON");\n
+  var plotly_apply_btn = document.createElement("BUTTON"),\n
+    plotly_edit_btn = document.createElement("BUTTON");\n
   plotly_edit_btn.innerHTML = "Edit Chart";\n
   plotly_edit_btn.type = "button";\n
   plotly_apply_btn.innerHTML = "Apply";\n
@@ -393,102 +391,68 @@ function createButtons() {\n
   button_element.appendChild(plotly_edit_btn);\n
 }\n
 \n
+function getDisplayedLayout() {\n
+  return {\n
+    \'title\' :\'Environmental Sensor Data\',\n
+    \'xaxis\': {\n
+      \'autorange\': true,\n
+      \'rangeselector\': selectorOptions,\n
+    },\n
+    \'yaxis\': {\n
+      \'autorange\': true\n
+    }\n
+  };\n
+}\n
+\n
+function getDisplayedDataTemplate() {\n
+    var humidity_trace = {\n
+      type: "scattergl",\n
+      mode: "markers",\n
+      name: \'Humidity(%)\',\n
+      x: [],\n
+      y: [],\n
+      line: {color: \'#17BECF\'}\n
+    }, pressure_trace = {\n
+      type: "scattergl",\n
+      mode: "markers",\n
+      name: \'Pressure(Pa)\',\n
+      x: [],\n
+      y: [],\n
+      line: {color: \'#7F7F7F\'}\n
+    }, temperature_trace = {\n
+      type: "scattergl",\n
+      mode: "markers",\n
+      name: \'Temperature(C°)\',\n
+      x: [],\n
+      y: [],\n
+      line: {color: \'#FF0000\'}\n
+    };\n
+    return [humidity_trace,pressure_trace,temperature_trace];\n
+}\n
+\n
 function plot() {\n
-  var start_date = orig_start_date;\n
-  var stop_date = orig_stop_date;\n
-  return editor_jio.get("olimex-environment-sensor-series")\n
+  var start_date = orig_start_date,\n
+    stop_date = orig_stop_date;\n
+  return editor_jio.get(CHART_ID)\n
     .push(function(result) {\n
       displayed_layout = result.graph_model.layout;\n
       displayed_data = result.graph_model.data;\n
       if (displayed_data == undefined) {\n
-        var humidity_trace = {\n
-          type: "scattergl",\n
-          mode: "markers",\n
-          name: \'Humidity(%)\',\n
-          x: [],\n
-          y: [],\n
-          line: {color: \'#17BECF\'}\n
-        };\n
-\n
-        var pressure_trace = {\n
-          type: "scattergl",\n
-          mode: "markers",\n
-          name: \'Pressure(Pa)\',\n
-          x: [],\n
-          y: [],\n
-          line: {color: \'#7F7F7F\'}\n
-        };\n
-\n
-        var temperature_trace = {\n
-          type: "scattergl",\n
-          mode: "markers",\n
-          name: \'Temperature(C°)\',\n
-          x: [],\n
-          y: [],\n
-          line: {color: \'#FF0000\'}\n
-        };\n
-        displayed_data = [humidity_trace,pressure_trace,temperature_trace];\n
+        displayed_data = getDisplayedDataTemplate();\n
       }\n
       if (displayed_layout == undefined) {\n
-        displayed_layout = {\n
-          \'title\' :\'Environmental Sensor Data\',\n
-          \'xaxis\': {\n
-            \'autorange\': true,\n
-            \'range\': [start_date, stop_date],\n
-            \'rangeselector\': selectorOptions,\n
-          },\n
-          \'yaxis\': {\n
-            //\'autorange\': true,\n
-            \'range\': [0, 1000]\n
-          }\n
-        };\n
+        displayed_layout = getDisplayedLayout();\n
       }\n
       return getData(start_date, stop_date);\n
     }, function(error) {\n
-      displayed_layout = {\n
-        \'title\' :\'Environmental Sensor Data\',\n
-        \'xaxis\': {\n
-          \'autorange\': true,\n
-          \'range\': [start_date, stop_date],\n
-          \'rangeselector\': selectorOptions,\n
-        },\n
-        \'yaxis\': {\n
-          //\'autorange\': true,\n
-          \'range\': [0, 1000]\n
-        }\n
-      };\n
-      var humidity_trace = {\n
-          type: "scattergl",\n
-          mode: "markers",\n
-          name: \'Humidity(%)\',\n
-          x: [],\n
-          y: [],\n
-          line: {color: \'#17BECF\'}\n
-        };\n
-\n
-        var pressure_trace = {\n
-          type: "scattergl",\n
-          mode: "markers",\n
-          name: \'Pressure(Pa)\',\n
-          x: [],\n
-          y: [],\n
-          line: {color: \'#7F7F7F\'}\n
-        };\n
-\n
-        var temperature_trace = {\n
-          type: "scattergl",\n
-          mode: "markers",\n
-          name: \'Temperature(C°)\',\n
-          x: [],\n
-          y: [],\n
-          line: {color: \'#FF0000\'}\n
-        };\n
-        displayed_data = [humidity_trace,pressure_trace,temperature_trace];\n
+      displayed_layout = getDisplayedLayout();\n
+      displayed_data = getDisplayedDataTemplate();\n
       return getData(start_date, stop_date);\n
     })\n
     .push(function (data) {\n
       for (var i = 0; i < data.length; i+=1) {\n
-        displayed_data[i] = {...displayed_data[i], ...data[i]};\n
+        displayed_data[i].x = data[i].x;\n
+        displayed_data[i].y = data[i].y;\n
       }\n
       Plotly.newPlot(\n
         "plot_div",\n
@@ -665,7 +629,7 @@ main();
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>989.30701.61257.55722</string> </value>
+                      <value> <string>989.43413.42884.18705</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -683,7 +647,7 @@ main();
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1611171808.56</float>
+                              <float>1611934522.43</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
