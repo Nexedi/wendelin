@@ -10,10 +10,12 @@
             <key> <string>_Access_contents_information_Permission</string> </key>
             <value>
               <tuple>
+                <string>Anonymous</string>
                 <string>Assignee</string>
                 <string>Assignor</string>
+                <string>Associate</string>
+                <string>Auditor</string>
                 <string>Manager</string>
-                <string>Owner</string>
               </tuple>
             </value>
         </item>
@@ -24,7 +26,6 @@
                 <string>Assignee</string>
                 <string>Assignor</string>
                 <string>Manager</string>
-                <string>Owner</string>
               </tuple>
             </value>
         </item>
@@ -44,7 +45,6 @@
                 <string>Assignee</string>
                 <string>Assignor</string>
                 <string>Manager</string>
-                <string>Owner</string>
               </tuple>
             </value>
         </item>
@@ -52,10 +52,12 @@
             <key> <string>_View_Permission</string> </key>
             <value>
               <tuple>
+                <string>Anonymous</string>
                 <string>Assignee</string>
                 <string>Assignor</string>
+                <string>Associate</string>
+                <string>Auditor</string>
                 <string>Manager</string>
-                <string>Owner</string>
               </tuple>
             </value>
         </item>
@@ -552,9 +554,7 @@ main();
                 <dictionary>
                   <item>
                       <key> <string>action</string> </key>
-                      <value>
-                        <none/>
-                      </value>
+                      <value> <string>publish_alive</string> </value>
                   </item>
                   <item>
                       <key> <string>actor</string> </key>
@@ -580,7 +580,7 @@ main();
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1610633713.67</float>
+                              <float>1612184485.9</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
@@ -589,7 +589,7 @@ main();
                   </item>
                   <item>
                       <key> <string>validation_state</string> </key>
-                      <value> <string>draft</string> </value>
+                      <value> <string>published_alive</string> </value>
                   </item>
                 </dictionary>
               </list>
@@ -629,7 +629,7 @@ main();
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>989.43413.42884.18705</string> </value>
+                      <value> <string>989.47596.46527.37888</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -647,7 +647,7 @@ main();
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1611934522.43</float>
+                              <float>1612184461.26</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
