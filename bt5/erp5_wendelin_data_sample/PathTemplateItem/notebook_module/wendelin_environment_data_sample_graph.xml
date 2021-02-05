@@ -307,7 +307,7 @@ plot();
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>Salmple Data Chart</string> </value>
+            <value> <string>Sample Data Chart</string> </value>
         </item>
         <item>
             <key> <string>workflow_history</string> </key>
@@ -440,7 +440,7 @@ plot();
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>989.52253.42757.51916</string> </value>
+                      <value> <string>989.52263.31110.597</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -458,7 +458,7 @@ plot();
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1612464448.4</float>
+                              <float>1612530922.1</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
