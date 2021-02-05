@@ -73,7 +73,7 @@
         </item>
         <item>
             <key> <string>description</string> </key>
-            <value> <string>Notebook based on tutorial at https://nexedijs.erp5.net/#/web_page_module/12051. Please check the detailed steps there to make this notebook properly work.</string> </value>
+            <value> <string>Notebook based on tutorial at https://wendelin.nexedi.com/wendelin-Learning.Track/wendelin-HowTo.Create.Notebook.with.Plotly.Chart.Editor/. Please check the detailed steps there to make this notebook properly work.</string> </value>
         </item>
         <item>
             <key> <string>id</string> </key>
@@ -627,7 +627,7 @@ main();
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>989.52263.28374.512</string> </value>
+                      <value> <string>989.53370.50122.49356</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -645,7 +645,7 @@ main();
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1612530885.74</float>
+                              <float>1612537114.81</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
