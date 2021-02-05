@@ -4,23 +4,27 @@ This script is called from ebulk client to get list of Data Streams for a Data s
 import json
 from erp5.component.module.Log import log
 
+limit=[]
+if batch_size:
+  limit=[offset, batch_size]
+
 portal = context.getPortalObject()
 
 try:
   data_set = portal.data_set_module.get(data_set_reference)
   # XXX: why does we need reference= "something_invalidated" when we have Data Set's state ?
   if data_set is None or data_set.getReference().endswith("_invalid"):
-    return { "status_code": 0, "result": [] }
+    return json.dumps({ "status_code": 0, "result": [] })
 except Exception as e: # fails because unauthorized access
   log("Unauthorized access to getDataStreamList: " + str(e))
-  return { "status_code": 1, "error_message": "401 - Unauthorized access. Please check your user credentials and try again." }
+  return json.dumps({ "status_code": 1, "error_message": "401 - Unauthorized access. Please check your user credentials and try again." })
 
 data_stream_dict = {}
 # XXX: reference NOT ending with "_invalidated" -> why is that needed when we can invalidate Data Stream ???
 # XXX: state != draft
-catalog_kw = dict(portal_type = "Data Stream", 
+catalog_kw = dict(portal_type = "Data Stream",
                   set_uid = data_set.getUid(),
-                  #limit=[1000, 20], # XXX: add new script arguments start and offset to script and make ebulk use them!
+                  limit=limit,
                   sort_on=(("creation_date", "ascending",),),
                   validation_state = ['published', 'validated'])
 data_stream_brain_list = portal.portal_catalog(**catalog_kw)
