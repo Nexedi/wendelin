@@ -104,6 +104,10 @@
                           <string>Version</string>
                         </tuple>
                         <tuple>
+                          <string>set</string>
+                          <string>Data Set</string>
+                        </tuple>
+                        <tuple>
                           <string>content_type</string>
                           <string>Content Type</string>
                         </tuple>
