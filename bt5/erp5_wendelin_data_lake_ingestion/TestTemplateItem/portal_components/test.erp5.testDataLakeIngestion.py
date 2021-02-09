@@ -293,4 +293,36 @@ class TestDataIngestion(SecurityTestCase):
     self.assertSameSet([data_set for x in data_stream_list],
                        [x.getSetValue() for x in data_stream_list])
 
+  def test_07_IngestSameElementTwice(self):
+    """
+      Try to ingest same element twice while previous is being processed
+    """
+    reference = self.getRandomReference()
+
+    self.ingest("some-data", reference, self.CSV, self.SINGLE_INGESTION_END)
+    time.sleep(1)
+    self.tic()
+
+    #ingest with same reference while previous was not processed should fail
+    self.assertRaises(Exception, self.ingest, "some-data", reference, self.CSV, self.SINGLE_INGESTION_END)
+
+  def test_08_IngestionReplacesOld(self):
+    """
+      Try to ingest same element twice while previous is being processed
+    """
+    reference = self.getRandomReference()
+    reference = "reemplazable"
+
+    self.ingest("some-data", reference, self.CSV, self.SINGLE_INGESTION_END)
+    time.sleep(1)
+    self.tic()
+
+    # call explicitly alarm to process and validate the ingestion
+    self.portal.portal_alarms.wendelin_handle_analysis.Alarm_handleAnalysis()
+    self.tic()
+
+    self.ingest("some-data", reference, self.CSV, self.SINGLE_INGESTION_END)
+    time.sleep(1)
+    self.tic()
+
   # XXX: new test which simulates download / upload of Data Set and increase DS version
