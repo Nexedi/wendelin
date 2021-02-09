@@ -281,4 +281,16 @@ class TestDataIngestion(SecurityTestCase):
     self.assertEqual(first_file_stream.getValidationState(), 'published')
     self.assertEqual(second_file_stream.getValidationState(), 'published')
 
+  def test_06_DataSetAndDataStreamRelation(self):
+    """
+      Test "Set" relation between Data Set and its Data Streams
+    """
+    data_set, data_stream_list = self.stepIngest(self.CSV, ",", randomize_ingestion_reference=True)
+    self.tic()
+
+    # check data relation between Data Set and Data Streams work
+    self.assertSameSet(data_stream_list, data_set.DataSet_getDataStreamList())
+    self.assertSameSet([data_set for x in data_stream_list],
+                       [x.getSetValue() for x in data_stream_list])
+
   # XXX: new test which simulates download / upload of Data Set and increase DS version
