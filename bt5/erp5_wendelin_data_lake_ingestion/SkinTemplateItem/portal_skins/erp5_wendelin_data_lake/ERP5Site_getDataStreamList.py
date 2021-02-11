@@ -12,30 +12,36 @@ portal = context.getPortalObject()
 
 try:
   data_set = portal.data_set_module.get(data_set_reference)
-  # XXX: why does we need reference= "something_invalidated" when we have Data Set's state ?
   if data_set is None or data_set.getReference().endswith("_invalid"):
     return json.dumps({ "status_code": 0, "result": [] })
 except Exception as e: # fails because unauthorized access
   log("Unauthorized access to getDataStreamList: " + str(e))
   return json.dumps({ "status_code": 1, "error_message": "401 - Unauthorized access. Please check your user credentials and try again." })
 
-data_stream_dict = {}
-# XXX: reference NOT ending with "_invalidated" -> why is that needed when we can invalidate Data Stream ???
-# XXX: state != draft
-catalog_kw = dict(portal_type = "Data Stream",
-                  set_uid = data_set.getUid(),
-                  limit=limit,
-                  sort_on=(("creation_date", "ascending",),),
-                  validation_state = ['published', 'validated'])
-data_stream_brain_list = portal.portal_catalog(**catalog_kw)
-context.log("Data Streams found=%s" %len(data_stream_brain_list))
+data_set_uid = data_set.getUid()
 
-for stream_brain in data_stream_brain_list:
+catalog_kw = {'portal_type': 'Data Ingestion Line',
+              'aggregate_uid': data_set_uid,
+              'limit': limit,
+              #'sort_on': (("creation_date", "ascending",),)
+              }
+data_ingestion_line_list = context.portal_catalog(**catalog_kw)
+#print context.portal_catalog(src__=1, **catalog_kw)
+data_stream_url_list = [x.getAggregateList()[1] for x in data_ingestion_line_list]
+
+catalog_kw = {'portal_type': 'Data Stream',
+              'relative_url': data_stream_url_list,
+              'sort_on': (("creation_date", "ascending",),)
+              }
+data_stream_list = context.portal_catalog(**catalog_kw)
+#print context.portal_catalog(src__=1, **catalog_kw)
+
+data_stream_dict = {}
+for stream_brain in data_stream_list:
   reference = stream_brain.getReference()
   version = stream_brain.version
   size = stream_brain.size
   data_stream_id = "data_stream_module/%s" %stream_brain.id
-  #context.log("id=%s, version=%s, reference=%s, size=%s" %(data_stream_id, version, reference, size))
   data_stream_info_dict = {'id': data_stream_id,
                            'size': size,
                            'hash': version}
