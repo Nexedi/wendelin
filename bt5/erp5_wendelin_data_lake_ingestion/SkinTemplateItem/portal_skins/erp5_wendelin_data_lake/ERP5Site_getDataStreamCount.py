@@ -9,12 +9,13 @@ try:
   data_set = portal.data_set_module.get(data_set_reference)
   if data_set is None or data_set.getReference().endswith("_invalid"):
     return { "status_code": 0, "result": 0 }
-except Exception as e: # fails because unauthorized access
+except Exception as e:
   log("Unauthorized access to getDataStreamList: " + str(e))
   return { "status_code": 1, "error_message": "401 - Unauthorized access. Please check your user credentials and try again." }
 
-catalog_kw = dict(portal_type = "Data Stream",
-                  set_uid = data_set.getUid(),
-                  validation_state = ['published', 'validated'])
-data_stream_brain_list = portal.portal_catalog(**catalog_kw)
-return { "status_code": 0, "result": len(data_stream_brain_list) }
+data_set_uid = data_set.getUid()
+
+catalog_kw = {'portal_type': 'Data Ingestion Line',
+              'aggregate_uid': data_set_uid
+              }
+return { "status_code": 0, "result": len(context.portal_catalog(**catalog_kw)) }
