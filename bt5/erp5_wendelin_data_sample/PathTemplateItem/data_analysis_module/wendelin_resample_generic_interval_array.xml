@@ -88,7 +88,6 @@
                 <string>destination/organisation_module/wendelin_nexedi_data_center</string>
                 <string>specialise/data_transformation_module/wendelin_resample_generic_interval_array</string>
                 <string>specialise/data_supply_module/wendelin_environment_sensor</string>
-                <string>causality/data_analysis_module/29</string>
                 <string>source/organisation_module/wendelin_sample_factory</string>
                 <string>destination_section/organisation_module/wendelin_sample_company</string>
                 <string>source_section/organisation_module/wendelin_sample_company</string>
@@ -373,7 +372,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>989.23196.59864.56490</string> </value>
+                      <value> <string>989.57712.59375.7441</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -391,7 +390,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1610720474.8</float>
+                              <float>1613139660.53</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
