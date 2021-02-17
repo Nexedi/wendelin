@@ -2739,7 +2739,7 @@ QHFki0wTaz9AaxYwzeHfjUBiJNQ8UuCNQK7BnTnT4I1AiBo7lxj1NkAokubo9/c2QEkqBz48/jZA</st
         </item>
         <item>
             <key> <string>default_reference</string> </key>
-            <value> <string>Resample Generic Interval Array-sensor_1</string> </value>
+            <value> <string>Sample Array-sensor_1</string> </value>
         </item>
         <item>
             <key> <string>description</string> </key>
@@ -2763,7 +2763,7 @@ QHFki0wTaz9AaxYwzeHfjUBiJNQ8UuCNQK7BnTnT4I1AiBo7lxj1NkAokubo9/c2QEkqBz48/jZA</st
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>Resample Generic Interval Array</string> </value>
+            <value> <string>Sample Array (3000 Seconds)</string> </value>
         </item>
         <item>
             <key> <string>version</string> </key>
@@ -2837,7 +2837,7 @@ QHFki0wTaz9AaxYwzeHfjUBiJNQ8UuCNQK7BnTnT4I1AiBo7lxj1NkAokubo9/c2QEkqBz48/jZA</st
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>989.50842.62257.45533</string> </value>
+                      <value> <string>989.23168.52606.27033</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -2855,7 +2855,7 @@ QHFki0wTaz9AaxYwzeHfjUBiJNQ8UuCNQK7BnTnT4I1AiBo7lxj1NkAokubo9/c2QEkqBz48/jZA</st
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1613584970.55</float>
+                              <float>1610984683.27</float>
                               <string>UTC</string>
                             </tuple>
                           </state>

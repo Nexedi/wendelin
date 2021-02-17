@@ -508,7 +508,7 @@ yAiJrOWANkBxEc7Vp0Y3QPpKUF4MpDdA</string>
         </item>
         <item>
             <key> <string>default_reference</string> </key>
-            <value> <string>Resample Generic Interval Array-sensor_1</string> </value>
+            <value> <string>Sample Array-sensor_1</string> </value>
         </item>
         <item>
             <key> <string>description</string> </key>
@@ -532,7 +532,7 @@ yAiJrOWANkBxEc7Vp0Y3QPpKUF4MpDdA</string>
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>Resample Generic Interval Array</string> </value>
+            <value> <string>Sample Array (30000 Seconds)</string> </value>
         </item>
         <item>
             <key> <string>version</string> </key>
@@ -606,7 +606,7 @@ yAiJrOWANkBxEc7Vp0Y3QPpKUF4MpDdA</string>
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>990.5402.13028.34696</string> </value>
+                      <value> <string>989.23333.19044.2952</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -624,7 +624,7 @@ yAiJrOWANkBxEc7Vp0Y3QPpKUF4MpDdA</string>
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1613585076.82</float>
+                              <float>1610728763.28</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
