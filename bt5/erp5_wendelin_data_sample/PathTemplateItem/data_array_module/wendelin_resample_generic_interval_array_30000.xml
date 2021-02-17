@@ -508,7 +508,7 @@ yAiJrOWANkBxEc7Vp0Y3QPpKUF4MpDdA</string>
         </item>
         <item>
             <key> <string>default_reference</string> </key>
-            <value> <string>Resample Generic Interval Array-sensor_1</string> </value>
+            <value> <string>Sample Array-sensor_1</string> </value>
         </item>
         <item>
             <key> <string>description</string> </key>
@@ -518,7 +518,7 @@ yAiJrOWANkBxEc7Vp0Y3QPpKUF4MpDdA</string>
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>wendelin_resample_generic_interval_array_30000</string> </value>
+            <value> <string>wendelin_sample_array_interval_30000</string> </value>
         </item>
         <item>
             <key> <string>language</string> </key>
@@ -532,7 +532,7 @@ yAiJrOWANkBxEc7Vp0Y3QPpKUF4MpDdA</string>
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>Resample Generic Interval Array</string> </value>
+            <value> <string>Sample Array (30000 Seconds)</string> </value>
         </item>
         <item>
             <key> <string>version</string> </key>
