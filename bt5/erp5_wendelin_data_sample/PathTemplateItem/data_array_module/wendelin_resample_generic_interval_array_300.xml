@@ -29107,7 +29107,7 @@ QKmsj0/A341ACyFw79HfjUCIGjuXGPU2QH5uhUQT9jZAtr0BELX3NkA=</string>
         </item>
         <item>
             <key> <string>default_reference</string> </key>
-            <value> <string>Resample Generic Interval Array-sensor_1</string> </value>
+            <value> <string>Sample Array-sensor_1</string> </value>
         </item>
         <item>
             <key> <string>description</string> </key>
@@ -29117,7 +29117,7 @@ QKmsj0/A341ACyFw79HfjUCIGjuXGPU2QH5uhUQT9jZAtr0BELX3NkA=</string>
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>wendelin_resample_generic_interval_array_300</string> </value>
+            <value> <string>wendelin_sample_array_interval_300</string> </value>
         </item>
         <item>
             <key> <string>language</string> </key>
@@ -29131,7 +29131,7 @@ QKmsj0/A341ACyFw79HfjUCIGjuXGPU2QH5uhUQT9jZAtr0BELX3NkA=</string>
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>Resample Generic Interval Array</string> </value>
+            <value> <string>Sampled Array (300 Seconds)</string> </value>
         </item>
         <item>
             <key> <string>version</string> </key>
