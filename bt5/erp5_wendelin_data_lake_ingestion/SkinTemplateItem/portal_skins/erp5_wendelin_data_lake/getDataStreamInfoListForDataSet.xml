@@ -105,7 +105,7 @@
         </item>
         <item>
             <key> <string>arguments_src</string> </key>
-            <value> <string>data_ingestion_line_uid_list</string> </value>
+            <value> <string>data_set_uid</string> </value>
         </item>
         <item>
             <key> <string>connection_id</string> </key>
@@ -113,7 +113,7 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>query-get-data-streams-uid-list</string> </value>
+            <value> <string>getDataStreamInfoListForDataSet</string> </value>
         </item>
         <item>
             <key> <string>title</string> </key>
