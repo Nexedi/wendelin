@@ -23,25 +23,22 @@ data_set_uid = data_set.getUid()
 catalog_kw = {'portal_type': 'Data Ingestion Line',
               'aggregate_uid': data_set_uid,
               'limit': limit,
-              #'sort_on': (("creation_date", "ascending",),)
               }
 data_ingestion_line_list = context.portal_catalog(**catalog_kw)
-#print context.portal_catalog(src__=1, **catalog_kw)
-data_stream_url_list = [x.getAggregateList()[1] for x in data_ingestion_line_list]
+data_ingestion_uid_list = [x.getUid() for x in data_ingestion_line_list]
 
-catalog_kw = {'portal_type': 'Data Stream',
-              'relative_url': data_stream_url_list,
-              'sort_on': (("creation_date", "ascending",),)
-              }
-data_stream_list = context.portal_catalog(**catalog_kw)
-#print context.portal_catalog(src__=1, **catalog_kw)
+data_stream_list = context.getPortalObject().portal_catalog(
+  portal_type="Data Stream",
+  aggregate__related__uid=data_ingestion_uid_list,
+  select_list=['reference', 'relative_url', 'data_stream.size', 'data_stream.version'],
+)
 
 data_stream_dict = {}
 for stream_brain in data_stream_list:
-  reference = stream_brain.getReference()
+  reference = stream_brain.reference
   version = stream_brain.version
   size = stream_brain.size
-  data_stream_id = "data_stream_module/%s" %stream_brain.id
+  data_stream_id = stream_brain.relative_url
   data_stream_info_dict = {'id': data_stream_id,
                            'size': size,
                            'hash': version}
