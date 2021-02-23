@@ -1,5 +1,5 @@
 REPLACE INTO
-  data_stream (uid, set_uid, size, version)
+  data_stream (uid, size, version)
 VALUES
 <dtml-in prefix="loop" expr="_.range(_.len(uid))">
 (
