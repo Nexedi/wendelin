@@ -19,8 +19,8 @@ except Exception as e: # fails because unauthorized access
   return json.dumps({ "status_code": 1, "error_message": "401 - Unauthorized access. Please check your user credentials and try again." })
 
 data_set_uid = data_set.getUid()
-
-catalog_kw = {'portal_type': 'Data Ingestion Line',
+data_stream_list = context.getDataStreamsByDataSet(data_set_uid, limit)
+'''catalog_kw = {'portal_type': 'Data Ingestion Line',
               'aggregate_uid': data_set_uid,
               'limit': limit,
               }
@@ -31,7 +31,7 @@ data_stream_list = context.getPortalObject().portal_catalog(
   portal_type="Data Stream",
   aggregate__related__uid=data_ingestion_uid_list,
   select_list=['reference', 'relative_url', 'data_stream.size', 'data_stream.version'],
-)
+)'''
 
 data_stream_dict = {}
 for stream_brain in data_stream_list:
