@@ -7,7 +7,7 @@ if data_ingestion_line_list:
   data_ingestion_uid_list = [x.getUid() for x in data_ingestion_line_list]
   catalog_kw = {'portal_type': 'Data Stream',
                 'aggregate__related__uid': data_ingestion_uid_list,
-                'select_list': ['reference', 'relative_url', 'data_stream.size', 'data_stream.version'],
+                'select_list': ['reference', 'relative_url', 'versioning.size', 'versioning.version'],
                 }
   return context.getPortalObject().portal_catalog(**catalog_kw)
 return data_ingestion_line_list
