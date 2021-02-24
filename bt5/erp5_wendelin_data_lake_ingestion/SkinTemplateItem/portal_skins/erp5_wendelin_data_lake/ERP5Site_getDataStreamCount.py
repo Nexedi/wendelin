@@ -16,15 +16,4 @@ except Exception as e:
 data_set_uid = data_set.getUid()
 data_stream_list = context.getDataStreamsByDataSet(data_set_uid)
 
-'''catalog_kw = {'portal_type': 'Data Ingestion Line',
-              'aggregate_uid': data_set_uid
-              }
-data_ingestion_line_list = context.portal_catalog(**catalog_kw)
-data_ingestion_uid_list = [x.getUid() for x in data_ingestion_line_list]
-
-data_stream_list = context.getPortalObject().portal_catalog(
-  portal_type="Data Stream",
-  aggregate__related__uid=data_ingestion_uid_list
-)'''
-
 return { "status_code": 0, "result": len(data_stream_list) }
