@@ -52,7 +52,10 @@
 
       <h2>Mac OS X</h2>
       <p>Installation on Mac OS can be done via homebrew packages by running:</p>
-      <div class="code"><p>brew install https://github.com/roquegit/homebrew-ebulk/raw/master/ebulk.rb</p></div>
+      <div class="code">
+        <p>curl -L https://github.com/roquegit/homebrew-ebulk/raw/master/ebulk.rb > ebulk.rb</p>
+        <p>brew install ebulk.rb</p>
+      </div>
 
       <h2>Potential installation issues</h2>
       <p>During the package intallation, or during first ebulk execution, the bash script will try to install Embulk automatically (if it is not installed).
