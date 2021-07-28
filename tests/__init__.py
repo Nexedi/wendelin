@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from test_suite import ERP5TypeTestSuite
 import glob
 import os.path
@@ -19,9 +20,24 @@ class WendelinERP5(ERP5TypeTestSuite):
   
   def run(self, full_test):
     test = ':' in full_test and full_test.split(':')[1] or full_test
+    # from https://lab.nexedi.com/nexedi/erp5/commit/530e8b4e:
+    # ---- 8< ----
+    #   Combining Zope and WCFS working together requires data to be on a real
+    #   storage, not on in-RAM MappingStorage inside Zope's Python process.
+    #   Force this via --load --save for now.
+    #
+    #   Also manually indicate via --with_wendelin_core, that this test needs
+    #   WCFS server - corresponding to ZODB test storage - to be launched.
+    #
+    #   In the future we might want to rework custom_zodb.py to always use
+    #   FileStorage on tmpfs instead of δ=MappingStorage in DemoStorage(..., δ),
+    #   and to always spawn WCFS for all tests, so that this hack becomes
+    #   unnecessary.
+    # ---- 8< ----
+    status_dict = self.runUnitTest('--load', '--save', '--with_wendelin_core', full_test)
     if test.startswith('testFunctional'):
-      return self._updateFunctionalTestResponse(self.runUnitTest(full_test))
-    return super(WendelinERP5, self).run(full_test)
+      status_dict = self._updateFunctionalTestResponse(status_dict)
+    return status_dict
 
   ### this is dublicate code from erp5, needed to display functional tests ontestnodes nicely
   def _updateFunctionalTestResponse(self, status_dict):
