@@ -2,118 +2,9 @@
 <test>
   <table style="display: none;" class="test">
     <tbody>
-      <tr>
-        <td>store</td>
-        <td tal:content="python:here.getPortalObject().absolute_url()">http://example.com/erp5</td>
-        <td>base_url_x</td>
+      <tr class="" style="opacity: 1;">
+        <td colspan="3">&lt;span metal:use-macro="container/Zuite_viewWendelinTestMacroLibrary/macros/init_wendelin_test_environment"&gt;Init Wendlin Test Environment&lt;/span&gt;</td>
       </tr>
-      <tr>
-       <td>openAndWait</td>
-       <td>${base_url}/Zuite_createFunctionalTestUserForTutorial</td>
-       <td></td>
-     </tr>
-     <tr>
-      <td>assertTextPresent</td>
-      <td>Done.</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>openAndWait</td>
-      <td>${base_url}/Zuite_waitForActivities</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>assertTextPresent</td>
-      <td>Done.</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>openAndWait</td>
-      <td>${base_url}/Base_clearCache</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>assertTextPresent</td>
-      <td>Cleared.</td>
-      <td></td>
-    </tr>
-    <!-- login with functional test user -->
-    <tr>
-      <td>openAndWait</td>
-      <td>${base_url}/logout</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>openAndWait</td>
-      <td>${base_url}/login_form</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>type</td>
-      <td>//input[@name="__ac_name"]</td>
-      <td>functional_test_tutorial_username</td>
-    </tr>
-    <tr>
-      <td>type</td>
-      <td>//input[@name="__ac_password"]</td>
-      <td>secret</td>
-    </tr>
-    <tr>
-      <td>clickAndWait</td>
-      <td>//input[@name="logged_in:method"]</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>openAndWait</td>
-      <td>${base_url}/view</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>assertTextPresent</td>
-      <td>functional_test_tutorial_username</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>openAndWait</td>
-      <td>${base_url}/Zuite_waitForActivities</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>assertTextPresent</td>
-      <td>Done.</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>openAndWait</td>
-      <td>${base_url}/Base_clearCache</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>assertTextPresent</td>
-      <td>Cleared.</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>openAndWait</td>
-      <td>${base_url}/Zuite_updateUserPreference</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>assertTextPresent</td>
-      <td>Init Ok.</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>openAndWait</td>
-      <td>${base_url}/view</td>
-      <td></td>
-    </tr>
-
-  <tr>
-   <td>openAndWait</td>
-   <td>${base_url}/Zuite_updateUserPreferenceForTutorialTests</td>
-   <td></td>
-  </tr>
     </tbody>
   </table>
 </test>
@@ -208,7 +99,7 @@
     <tbody>
       <tr>
         <td>openAndWait</td>
-        <td>${base_url_x}/web_site_module/default_wendelin_front/</td>
+        <td>${default_front_url}</td>
         <td></td>
       </tr>
       <tr>
@@ -439,12 +330,12 @@
       </tr>
       <tr>
         <td>waitForElementPresent</td>
-        <td>//a[@data-i18n="Preference: Preference for functional_test_tutorial_username"]</td>
+        <td>//a[@data-i18n="Preference: Preference for functional_test_username"]</td>
         <td></td>
       </tr>
       <tr>
         <td>click</td>
-        <td>//a[@data-i18n="Preference: Preference for functional_test_tutorial_username"]</td>
+        <td>//a[@data-i18n="Preference: Preference for functional_test_username"]</td>
         <td></td>
       </tr>
 
@@ -591,7 +482,6 @@
         <td>//input[@type="submit" and @value="Create Document"]</td>
         <td></td>
       </tr>
-      
       <tr>
         <td>waitForElementPresent</td>
         <td>//input[@id="field_my_title"]</td>
@@ -720,9 +610,9 @@
         <td></td>
       </tr>
       <tr>
-        <td>pause</td>
-        <td>3000</td>
-        <td></td>
+        <td colspan="3">&lt;tal:block
+          metal:use-macro=&quot;here/Zuite_CommonTemplateForRenderjsUi/macros/wait_for_content_loaded&quot;&gt;
+          &lt;/tal:block&gt;</td>
       </tr>
       <tr>
         <td>select</td>
@@ -739,7 +629,6 @@
         <td>//input[@type="submit" and @value="Create Document"]</td>
         <td></td>
       </tr>
-      
       <tr>
         <td>waitForElementPresent</td>
         <td>//input[@id="field_my_title"]</td>
@@ -761,9 +650,7 @@
         <td></td>
       </tr>
       <tr>
-        <td>pause</td>
-        <td>3000</td>
-        <td></td>
+        <td colspan="3">&lt;tal:block metal:use-macro=&quot;here/Zuite_CommonTemplateForRenderjsUi/macros/wait_for_content_loaded&quot;&gt; &lt;/tal:block&gt;</td>
       </tr>
       <tr>
         <td>waitForElementPresent</td>
@@ -785,7 +672,7 @@
         <td>3000</td>
         <td></td>
       </tr>
-      
+
       <tr>
         <td>waitForElementPresent</td>
         <td>//a[@data-i18n="Add"]</td>
@@ -816,7 +703,7 @@
         <td>//input[@type="submit" and @value="Create Document"]</td>
         <td></td>
       </tr>
-      
+
       <tr>
         <td>waitForElementPresent</td>
         <td>//input[@id="field_my_title"]</td>
@@ -862,7 +749,7 @@
         <td>3000</td>
         <td></td>
       </tr>
-      
+
       <tr>
         <td>waitForElementPresent</td>
         <td>//a[@data-i18n="Add"]</td>
@@ -893,7 +780,7 @@
         <td>//input[@type="submit" and @value="Create Document"]</td>
         <td></td>
       </tr>
-      
+
       <tr>
         <td>waitForElementPresent</td>
         <td>//input[@id="field_my_title"]</td>
@@ -939,7 +826,7 @@
         <td>3000</td>
         <td></td>
       </tr>
-      
+
       <tr>
         <td>waitForElementPresent</td>
         <td>//a[@data-i18n="Add"]</td>
@@ -970,7 +857,7 @@
         <td>//input[@type="submit" and @value="Create Document"]</td>
         <td></td>
       </tr>
-      
+
       <tr>
         <td>waitForElementPresent</td>
         <td>//input[@id="field_my_title"]</td>
@@ -1016,7 +903,7 @@
         <td>3000</td>
         <td></td>
       </tr>
-      
+
       <tr>
         <td>waitForElementPresent</td>
         <td>//a[contains(@href,'Dvalidate_action')]</td>
@@ -1042,13 +929,13 @@
         <td>//button[@type="submit" and @class="success"]</td>
         <td></td>
       </tr>
-      
+
       <tr>
         <td>waitForElementPresent</td>
         <td>//label[@for="field_my_translated_validation_state_title"]</td>
         <td></td>
       </tr>
-      
+
       <tr>
         <td>assertTextPresent</td>
         <td>Validated</td>
@@ -1282,14 +1169,13 @@ progress_indicator.setIntOffsetIndex(in_zbigarray.shape[0])
         <td>//a[contains(@href,'page=portal_callables')]</td>
         <td></td>
       </tr>
-      
+
       <tr>
         <td>waitForElementPresent</td>
         <td>//a[text()="IngestionPolicy_parseSimpleIngestionTag"]</td>
         <td></td>
       </tr>
-      
-      
+
       <tr>
         <td>waitForElementPresent</td>
         <td>//a[@data-i18n="Add"]</td>
@@ -1320,8 +1206,6 @@ progress_indicator.setIntOffsetIndex(in_zbigarray.shape[0])
         <td>//input[@type="submit" and @value="Create Document"]</td>
         <td></td>
       </tr>
-      
-
      <tr>
         <td>waitForElementPresent</td>
         <td>//input[@id="field_my_title"]</td>
@@ -1342,8 +1226,6 @@ progress_indicator.setIntOffsetIndex(in_zbigarray.shape[0])
         <td>//input[@id="field_my_reference"]</td>
         <td>DataAnalysisLine_resampleRawArrayAll</td>
       </tr>
-      
-      
       <tr>
         <td>pause</td>
         <td>3000</td>
@@ -1376,7 +1258,7 @@ progress_indicator.setIntOffsetIndex(in_zbigarray.shape[0])
       </tr>
       <tr>
         <td>openAndWait</td>
-        <td>${base_url_x}/web_site_module/default_wendelin_front/</td>
+        <td>${default_front_url}</td>
         <td></td>
       </tr>
       <tr>
@@ -1408,7 +1290,7 @@ progress_indicator.setIntOffsetIndex(in_zbigarray.shape[0])
         <td>//a[@data-i18n="Python Script: DataAnalysisLine_resampleRawArrayAll"]</td>
         <td></td>
       </tr>
-       <tr>
+      <tr>
         <td>waitForElementPresent</td>
         <td>//input[@id="editable"]</td>
         <td></td>
@@ -1423,9 +1305,6 @@ progress_indicator.setIntOffsetIndex(in_zbigarray.shape[0])
         <td>//label[@for="field_my_reference"]</td>
         <td></td>
       </tr>
-      
-      
-      
        <tr>
         <td>waitForElementPresent</td>
         <td>//input[@id="field_my_id"]</td>
@@ -1436,20 +1315,13 @@ progress_indicator.setIntOffsetIndex(in_zbigarray.shape[0])
         <td>//input[@id="field_my_id"]</td>
         <td>DataAnalysisLine_resampleRawArrayAll</td>
       </tr>
-      
-      
-       <tr>
+      <tr>
         <td>pause</td>
         <td>3000</td>
         <td></td>
       </tr>
       <tr>
         <td>waitForElementPresent</td>
-        <td>//button[@type="submit" and @data-i18n="Save"]</td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>click</td>
         <td>//button[@type="submit" and @data-i18n="Save"]</td>
         <td></td>
       </tr>
@@ -1473,8 +1345,6 @@ progress_indicator.setIntOffsetIndex(in_zbigarray.shape[0])
         <td>//button[@type="submit" and @class="success"]</td>
         <td></td>
       </tr>
-      
-      
       <tr>
         <td>type</td>
         <td>//input[@id="field_my_parameter_signature"]</td>
@@ -2107,6 +1977,11 @@ progress_indicator.setIntOffsetIndex(in_zbigarray.shape[0])
         <td>click</td>
         <td>//button[@name="submit" and @data-i18n="Save"]</td>
         <td></td>
+      </tr>
+      <tr>
+        <td colspan="3">&lt;tal:block
+          metal:use-macro=&quot;here/Zuite_CommonTemplateForRenderjsUi/macros/wait_for_content_loaded&quot;&gt;
+          &lt;/tal:block&gt;</td>
       </tr>
       <tr>
         <td>pause</td>
@@ -3017,7 +2892,7 @@ progress_indicator.setIntOffsetIndex(in_zbigarray.shape[0])
       </tr>
       <tr>
         <td>openAndWait</td>
-        <td>${base_url_x}/web_site_module/default_wendelin_front/</td>
+        <td>${default_front_url}</td>
         <td></td>
       </tr>
      <tr>
@@ -3120,7 +2995,7 @@ progress_indicator.setIntOffsetIndex(in_zbigarray.shape[0])
       </tr>
       <tr>
         <td>openAndWait</td>
-        <td>${base_url_x}/web_site_module/default_wendelin_front/</td>
+        <td>${default_front_url}</td>
         <td></td>
       </tr>
      <tr>
