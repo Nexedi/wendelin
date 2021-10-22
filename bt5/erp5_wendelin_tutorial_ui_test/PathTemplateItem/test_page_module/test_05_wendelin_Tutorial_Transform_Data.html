@@ -606,9 +606,15 @@
           <td>DataAnalysisLine_convertEnvironmentDataStreamToArray</td>
         </tr>
         <tr>
-          <td colspan="3">&lt;span
-            metal:use-macro=&quot;here/Zuite_CommonTemplateForRenderjsUi/macros/save&quot;&gt;init&lt;/span&gt;</td>
+          <td>click</td>
+          <td>//button[@name="submit" and @data-i18n="Save"]</td>
+          <td></td>
+        </tr>
         <tr>
+          <td colspan="3">&lt;tal:block
+            metal:use-macro=&quot;here/Zuite_CommonTemplateForRenderjsUi/macros/wait_for_content_loaded&quot;&gt;
+            &lt;/tal:block&gt;</td>
+        </tr>
         <tr>
           <td>waitForElementPresent</td>
           <td>//button[@type="submit" and @class="success"]</td>
