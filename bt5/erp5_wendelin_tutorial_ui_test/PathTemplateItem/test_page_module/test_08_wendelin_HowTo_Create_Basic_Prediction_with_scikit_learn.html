@@ -159,7 +159,6 @@
         <td>//input[@type="submit" and @value="Create Document"]</td>
         <td></td>
       </tr>
-      
       <tr>
         <td>waitForElementPresent</td>
         <td>//input[@id="field_my_title"]</td>
@@ -603,8 +602,6 @@ else:
         <td>//input[@type="submit" and @value="Create Document"]</td>
         <td></td>
       </tr>
-      
-      
        <tr>
         <td>waitForElementPresent</td>
         <td>//input[@id="field_my_title"]</td>
@@ -689,7 +686,7 @@ else:
         <td>//a[@data-i18n="Python Script: DataAnalysisLine_predictPressureFromHumidity"]</td>
         <td></td>
       </tr>
-      <tr>
+      <!--tr>
         <td>waitForElementPresent</td>
         <td>//input[@id="editable"]</td>
         <td></td>
@@ -698,7 +695,7 @@ else:
         <td>click</td>
         <td>//input[@id="editable"]</td>
         <td></td>
-      </tr>
+      </tr-->
       <tr>
         <td>waitForElementPresent</td>
         <td>//label[@for="field_my_reference"]</td>
@@ -1323,16 +1320,15 @@ else:
         <td></td>
       </tr>
       <tr>
-        <td>pause</td>
-        <td>3000</td>
-        <td></td>
+        <td colspan="3">&lt;tal:block
+          metal:use-macro=&quot;here/Zuite_CommonTemplateForRenderjsUi/macros/wait_for_content_loaded&quot;&gt;
+          &lt;/tal:block&gt;</td>
       </tr>
       <tr>
         <td>click</td>
         <td>//input[@type="submit" and @value="Create Document"]</td>
         <td></td>
       </tr>
-      
       <tr>
         <td>waitForElementPresent</td>
         <td>//input[@id="field_my_title"]</td>
@@ -1497,9 +1493,9 @@ else:
   <table style="display: none;" class="test">
     <tbody>
       <tr>
-        <td>pause</td>
-        <td>3000</td>
-        <td></td>
+        <td colspan="3">&lt;tal:block
+          metal:use-macro=&quot;here/Zuite_CommonTemplateForRenderjsUi/macros/wait_for_content_loaded&quot;&gt;
+          &lt;/tal:block&gt;</td>
       </tr>
       <tr>
         <td>waitForElementPresent</td>
@@ -1510,6 +1506,11 @@ else:
         <td>click</td>
         <td>//a[@data-i18n="Add"]</td>
         <td></td>
+      </tr>
+      <tr>
+        <td colspan="3">&lt;tal:block
+          metal:use-macro=&quot;here/Zuite_CommonTemplateForRenderjsUi/macros/wait_for_content_loaded&quot;&gt;
+          &lt;/tal:block&gt;</td>
       </tr>
       <tr>
         <td>waitForElementPresent</td>
@@ -1536,7 +1537,11 @@ else:
         <td>//input[@type="submit" and @value="Create Document"]</td>
         <td></td>
       </tr>
-      
+      <tr>
+        <td colspan="3">&lt;tal:block
+          metal:use-macro=&quot;here/Zuite_CommonTemplateForRenderjsUi/macros/wait_for_content_loaded&quot;&gt;
+          &lt;/tal:block&gt;</td>
+      </tr>
       <tr>
         <td>waitForElementPresent</td>
         <td>//input[@id="field_my_title"]</td>
@@ -1578,9 +1583,9 @@ else:
         <td></td>
       </tr>
       <tr>
-        <td>pause</td>
-        <td>3000</td>
-        <td></td>
+        <td colspan="3">&lt;tal:block
+          metal:use-macro=&quot;here/Zuite_CommonTemplateForRenderjsUi/macros/wait_for_content_loaded&quot;&gt;
+          &lt;/tal:block&gt;</td>
       </tr>
       <tr>
         <td>waitForElementPresent</td>
@@ -1618,9 +1623,9 @@ else:
         <td></td>
       </tr>
       <tr>
-        <td>pause</td>
-        <td>3000</td>
-        <td></td>
+        <td colspan="3">&lt;tal:block
+          metal:use-macro=&quot;here/Zuite_CommonTemplateForRenderjsUi/macros/wait_for_content_loaded&quot;&gt;
+          &lt;/tal:block&gt;</td>
       </tr>
       <tr>
         <td>waitForElementPresent</td>
@@ -1722,7 +1727,6 @@ else:
         <td>//label[@for="field_my_translated_validation_state_title"]</td>
         <td></td>
       </tr>
-      
       <tr>
         <td>assertTextPresent</td>
         <td>Validated</td>
