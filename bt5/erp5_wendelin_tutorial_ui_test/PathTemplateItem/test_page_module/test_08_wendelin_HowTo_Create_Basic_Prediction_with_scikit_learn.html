@@ -2,11 +2,6 @@
 <test>
   <table style="display: none;" class="test">
     <tbody>
-      <tr>
-        <td>store</td>
-        <td tal:content="python:here.getPortalObject().absolute_url()"></td>
-        <td>erp5_base_url</td>
-      </tr>
       <tr class="" style="opacity: 1;">
         <td colspan="3">&lt;span metal:use-macro="container/Zuite_viewWendelinTestMacroLibrary/macros/init_wendelin_test_environment"&gt;Init Wendlin Test Environment&lt;/span&gt;</td>
       </tr>
@@ -2303,7 +2298,7 @@ js: https://cdn.plot.ly/plotly-latest.min.js
 
 
 %% js
-hateoas_url = &quot;${erp5_base_url}/web_site_module/renderjs_runner/hateoas/&quot;;
+hateoas_url = &quot;${base_url}/web_site_module/renderjs_runner/hateoas/&quot;;
 jio = jIO.createJIO({
 &nbsp; type: &quot;erp5&quot;,
 &nbsp; url: hateoas_url,

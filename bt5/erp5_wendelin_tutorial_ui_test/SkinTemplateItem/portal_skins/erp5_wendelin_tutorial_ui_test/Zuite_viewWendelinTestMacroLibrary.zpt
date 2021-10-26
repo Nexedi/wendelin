@@ -1,8 +1,13 @@
 <tal:block metal:define-macro="init_wendelin_test_environment">
   <tr>
     <td>store</td>
-    <td tal:content="python:here.getPortalObject().absolute_url() + '/web_site_module/default_wendelin_data_lake/'"></td>
+    <td tal:content="python:here.getPortalObject().absolute_url()"></td>
     <td>base_url</td>
+  </tr>
+  <tr>
+    <td>store</td>
+    <td tal:content="python:here.getPortalObject().absolute_url() + '/web_site_module/default_wendelin_data_lake/'"></td>
+    <td>wendelin_data_lake_url</td>
   </tr>
   <tr>
     <td>store</td>
@@ -54,12 +59,12 @@
   </tr>
   <tr>
     <td>open</td>
-    <td>${base_url}</td>
+    <td>${wendelin_data_lake_url}</td>
     <td></td>
   </tr>
   <tal:block metal:use-macro="here/Zuite_CommonTemplateForRenderjsUi/macros/wait_for_app_loaded" />
   <!-- login with functional test user -->
-  <span metal:use-macro="container/Zuite_viewTestMacroLibrary/macros/logout">Logout</span>
+  <span metal:use-macro="container/Zuite_viewWendelinTestMacroLibrary/macros/logout">Logout</span>
   <tr>
     <td>click</td>
     <td>//a[@data-i18n="Login"]</td>
@@ -112,7 +117,39 @@
   <span metal:use-macro="container/Zuite_viewTestMacroLibrary/macros/wait_for_activities"> Wait for activities</span>
   <tr>
     <td>openAndWait</td>
-    <td>${base_url}</td>
+    <td>${wendelin_data_lake_url}</td>
+    <td></td>
+  </tr>
+  <tal:block metal:use-macro="here/Zuite_CommonTemplateForRenderjsUi/macros/wait_for_app_loaded" />
+</tal:block>
+
+<tal:block metal:define-macro="logout">
+  <tr>
+    <td colspan="3"><b>Logout</b></td>
+  </tr>
+  <!-- Logout -->
+  <tr>
+    <td>open</td>
+    <td>${wendelin_data_lake_url}</td>
+    <td></td>
+  </tr>
+  <tal:block metal:use-macro="here/Zuite_CommonTemplateForRenderjsUi/macros/wait_for_app_loaded" />
+  <tal:block tal:define="click_configuration python: {'text': 'Logout'}">
+    <tal:block metal:use-macro="here/Zuite_CommonTemplateForRenderjsUi/macros/click_on_panel_link" />
+  </tal:block>
+  <tr>
+    <td>waitForElementPresent</td>
+    <td>//h1/a[@data-i18n="Logout"]</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>waitForElementPresent</td>
+    <td>//input[@value="Confirm"]</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>click</td>
+    <td>//input[@value="Confirm"]</td>
     <td></td>
   </tr>
   <tal:block metal:use-macro="here/Zuite_CommonTemplateForRenderjsUi/macros/wait_for_app_loaded" />
