@@ -1,8 +1,13 @@
 <tal:block metal:define-macro="init_wendelin_test_environment">
   <tr>
     <td>store</td>
-    <td tal:content="python:here.getPortalObject().absolute_url() + '/web_site_module/default_wendelin_data_lake/'"></td>
+    <td tal:content="python:here.getPortalObject().absolute_url()"></td>
     <td>base_url</td>
+  </tr>
+  <tr>
+    <td>store</td>
+    <td tal:content="python:here.getPortalObject().absolute_url() + '/web_site_module/default_wendelin_data_lake/'"></td>
+    <td>wendelin_data_lake_url</td>
   </tr>
   <tr>
     <td>store</td>
@@ -54,7 +59,7 @@
   </tr>
   <tr>
     <td>open</td>
-    <td>${base_url}</td>
+    <td>${wendelin_data_lake_url}</td>
     <td></td>
   </tr>
   <tal:block metal:use-macro="here/Zuite_CommonTemplateForRenderjsUi/macros/wait_for_app_loaded" />
@@ -112,7 +117,7 @@
   <span metal:use-macro="container/Zuite_viewTestMacroLibrary/macros/wait_for_activities"> Wait for activities</span>
   <tr>
     <td>openAndWait</td>
-    <td>${base_url}</td>
+    <td>${wendelin_data_lake_url}</td>
     <td></td>
   </tr>
   <tal:block metal:use-macro="here/Zuite_CommonTemplateForRenderjsUi/macros/wait_for_app_loaded" />
