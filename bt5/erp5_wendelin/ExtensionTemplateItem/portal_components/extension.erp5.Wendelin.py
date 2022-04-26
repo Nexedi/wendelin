@@ -2,6 +2,10 @@
 """
  Wendelin extensions code.
 """
+import os
+from urllib.parse import urlparse as parse_url
+from urlparse import uses_relative, uses_netloc, uses_params
+
 from wendelin.bigarray.array_zodb import ZBigArray
 import numpy as np
 import pandas as pd
@@ -63,6 +67,30 @@ def DataStream_copyCSVToDataArray(data_stream, chunk_list, start, end, \
   return start, end
 
 
+# https://github.com/pandas-dev/pandas/blob/12b3264d17780b6b38f747353bc80cfd910e6dc8/pandas/io/common.py#L64
+_VALID_URLS = set(uses_relative + uses_netloc + uses_params)
+_VALID_URLS.discard('')
+
+
+# This is how pandas checks if a string is an url
+# https://github.com/pandas-dev/pandas/blob/12b3264d17780b6b38f747353bc80cfd910e6dc8/pandas/io/common.py#L116
+def _is_url(url):
+    try:
+        return parse_url(url).scheme in _VALID_URLS
+    except:
+        return False
+
+
+# This is how pandas checks if the given string is a file path
+# See https://github.com/pandas-dev/pandas/blob/0.19.x/pandas/io/json.py#L253
+def _does_file_exist(file_path):
+  try:
+    return os.path.exists(file_path)
+  # If the filepath is too long will raise here
+  except (TypeError, ValueError):
+    return False
+
+
 def Base_readJson(json_string, *args, **kwargs):
   """
     Parse json to pandas DataFrame.
@@ -79,23 +107,14 @@ def Base_readJson(json_string, *args, **kwargs):
   https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_json.html#pandas-read-json
   """
 
-  # This is how pandas checks if the given argument
-  # is a file path or an url.
-  # See
-  # https://github.com/pandas-dev/pandas/blob/4bfe3d07b4858144c219b9346329027024102ab6/pandas/io/json/_json.py#L704
-  if any([
-    not isinstance(json_string, str),
-    pd.io.common.is_url(json_string),
-    pd.io.common.is_fsspec_url(json_string),
-    pd.io.common.file_exists(json_string)
-  ]):
-    raise Unauthorized("Can't parse file names.")
+  # File like objects are prohibited
+  if not isinstance(json_string, str) or hasattr(json_string, 'read'):
+    raise Unauthorized("Can only parse str.")
 
-  # This is how pandas checks if the given argument is a
-  # FileLike object.
-  # See https://github.com/pandas-dev/pandas/blob/4bfe3d07b4858144c219b9346329027024102ab6/pandas/io/json/_json.py#L684
-  if hasattr(json_string, "read"):
-    raise Unauthorized("Can't parse file-like objects.")
+  # Prohibit any string which pandas could understand as an url or
+  # as a file path.
+  if _is_url(json_string) or _does_file_exist(json_string):
+    raise Unauthorized("Can't parse file names or urls.")
   
   # If the given argument is neither a file path nor
   # a file, then it must be a json string (or gibberish).
