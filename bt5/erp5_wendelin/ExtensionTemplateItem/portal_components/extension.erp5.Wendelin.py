@@ -4,6 +4,9 @@
 """
 from wendelin.bigarray.array_zodb import ZBigArray
 import numpy as np
+import pandas as pd
+from zExceptions import Unauthorized
+
 
 def DataStream_copyCSVToDataArray(data_stream, chunk_list, start, end, \
                                   data_array_reference=None):
@@ -58,3 +61,43 @@ def DataStream_copyCSVToDataArray(data_stream, chunk_list, start, end, \
   zarray[-ndarray_shape[0]:] = ndarray
   
   return start, end
+
+
+def Base_readJson(json_string, *args, **kwargs):
+  """
+    Parse json to pandas DataFrame.
+  
+  This function is a wrapper of pandas "read_json"
+  which limits the functionality of the wrapped function:
+  only json strings are allowed as inputs, files
+  or file paths or urls are prohibited (due to security
+  concerns).
+
+  Please consult the pandas documentation for arguments
+  and keyword-arguments:
+
+  https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_json.html#pandas-read-json
+  """
+
+  # This is how pandas checks if the given argument
+  # is a file path or an url.
+  # See
+  # https://github.com/pandas-dev/pandas/blob/4bfe3d07b4858144c219b9346329027024102ab6/pandas/io/json/_json.py#L704
+  if any([
+    not isinstance(json_string, str),
+    pd.io.common.is_url(json_string),
+    pd.io.common.is_fsspec_url(json_string),
+    pd.io.common.file_exists(json_string)
+  ]):
+    raise Unauthorized("Can't parse file names.")
+
+  # This is how pandas checks if the given argument is a
+  # FileLike object.
+  # See https://github.com/pandas-dev/pandas/blob/4bfe3d07b4858144c219b9346329027024102ab6/pandas/io/json/_json.py#L684
+  if hasattr(json_string, "read"):
+    raise Unauthorized("Can't parse file-like objects.")
+  
+  # If the given argument is neither a file path nor
+  # a file, then it must be a json string (or gibberish).
+  # We can safely pass it to pandas.
+  return pd.read_json(json_string, *args, **kwargs)

@@ -30,9 +30,11 @@ from wendelin.bigarray.array_zodb import ZBigArray
 from cStringIO import StringIO
 import msgpack
 import numpy as np
+import pandas as pd
 import string
 import random
 import urllib
+from zExceptions import Unauthorized
 
 def getRandomString():
   return 'test_%s' %''.join([random.choice(string.ascii_letters + string.digits) \
@@ -342,8 +344,6 @@ class Test(ERP5TypeTestCase):
     predicted = reg.predict(np.array([[4, 10]]))
     self.assertEqual(predicted.all(),np.array([27.]).all())
 
-
-
   def test_09_IngestionFromFluentdStoreMsgpack(self, old_fluentd=False):
     """
     Test ingestion using a POST Request containing a msgpack encoded message
@@ -410,3 +410,34 @@ class Test(ERP5TypeTestCase):
     # clean up
     data_stream.setData(None)
     self.tic()
+
+  def test_10_Base_readJson(self):
+    """
+    Test utility function to read json string.
+    """
+    portal = self.portal
+
+    # Test if prohibited inputs raises an error
+    for prohibited_input in ('prohibited/path/to/file.json', StringIO("[1, 2, 3]")):
+      self.assertRaise(
+        Unauthorized,
+        lambda: portal.Base_readJson(prohibited_input)
+      )
+
+    # Test if allowed input is correctly parsed
+    pd.testing.assert_frame_equal(
+      portal.Base_readJson("[1, 2, 3]"),
+      pd.DataFrame([1, 2, 3])
+    )
+
+    # Test if gibberish will raise an error
+    self.assertRaise(
+      ValueError,
+      lambda: portal.Base_readJson("__import__('os')")
+    )
+
+    # Ensure kwargs are passed to pandas
+    self.assertEqual(
+      pd.Series,
+      pd.read_json('[1]', typ='series')
+    )
