@@ -439,5 +439,5 @@ class Test(ERP5TypeTestCase):
     # Ensure kwargs are passed to pandas
     self.assertEqual(
       pd.Series,
-      pd.read_json('[1]', typ='series')
+      type(pd.read_json('[1]', typ='series'))
     )
