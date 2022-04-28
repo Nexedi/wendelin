@@ -418,20 +418,25 @@ class Test(ERP5TypeTestCase):
     portal = self.portal
 
     # Test if prohibited inputs raises an error
-    for prohibited_input in ('prohibited/path/to/file.json', StringIO("[1, 2, 3]")):
-      self.assertRaise(
+    for prohibited_input in (r"http://www.nexedi.com", StringIO("[1, 2, 3]")):
+      self.assertRaises(
         Unauthorized,
         lambda: portal.Base_readJson(prohibited_input)
       )
 
     # Test if allowed input is correctly parsed
-    pd.testing.assert_frame_equal(
-      portal.Base_readJson("[1, 2, 3]"),
-      pd.DataFrame([1, 2, 3])
+    # (the following function doesn't exist in the used pandas
+    # version yet: pd.testing.assert_frame_equal)
+    # (furthermore we can't use assertEqual because the equal
+    # value of DataFrames are ambigous)
+    self.assertTrue(
+      portal.Base_readJson("[1, 2, 3]").equals(
+        pd.DataFrame([1, 2, 3])
+      )
     )
 
     # Test if gibberish will raise an error
-    self.assertRaise(
+    self.assertRaises(
       ValueError,
       lambda: portal.Base_readJson("__import__('os')")
     )
