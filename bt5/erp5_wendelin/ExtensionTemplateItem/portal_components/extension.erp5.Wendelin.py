@@ -3,8 +3,8 @@
  Wendelin extensions code.
 """
 import os
-from urllib.parse import urlparse as parse_url
-from urlparse import uses_relative, uses_netloc, uses_params
+import urllib2
+import urlparse
 
 from wendelin.bigarray.array_zodb import ZBigArray
 import numpy as np
@@ -68,18 +68,21 @@ def DataStream_copyCSVToDataArray(data_stream, chunk_list, start, end, \
 
 
 # https://github.com/pandas-dev/pandas/blob/12b3264d17780b6b38f747353bc80cfd910e6dc8/pandas/io/common.py#L64
-_VALID_URLS = set(uses_relative + uses_netloc + uses_params)
+_VALID_URLS = set(
+  urlparse.uses_relative +
+  urlparse.uses_netloc +
+  urlparse.uses_params
+)
 _VALID_URLS.discard('')
 
 
 # This is how pandas checks if a string is an url
 # https://github.com/pandas-dev/pandas/blob/12b3264d17780b6b38f747353bc80cfd910e6dc8/pandas/io/common.py#L116
 def _is_url(url):
-    try:
-        return parse_url(url).scheme in _VALID_URLS
-    except:
-        return False
-
+  try:
+    return urlparse.urlparse(url).scheme in _VALID_URLS
+  except urllib2.URLError:
+    return False
 
 # This is how pandas checks if the given string is a file path
 # See https://github.com/pandas-dev/pandas/blob/0.19.x/pandas/io/json.py#L253
