@@ -31,9 +31,8 @@
             <value>
               <tuple>
                 <string>trade_phase/data/convert</string>
-                <string>resource/data_product_module/woelfel_shm_raw_array</string>
-                <string>use/big_data/analysis/transient</string>
-                <string>use/big_data/ingestion/stream</string>
+                <string>resource/data_product_module/test_wendelin_data_product_array</string>
+                <string>use/big_data/analysis</string>
               </tuple>
             </value>
         </item>
