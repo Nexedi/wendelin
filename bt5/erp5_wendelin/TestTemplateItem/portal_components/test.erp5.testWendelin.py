@@ -488,7 +488,7 @@ class Test(ERP5TypeTestCase):
 
     before_data_analysis_list = set([x.getObject() for x in before_data_analysis_list])
     after_data_analysis_list = set([x.getObject() for x in after_data_analysis_list])
-    self.assertEqual(2, len(after_data_analysis_list) - len(before_data_analysis_list))
+    self.assertEqual(1, len(after_data_analysis_list) - len(before_data_analysis_list))
 
     # check properly created
     to_delete_data_analysis = after_data_analysis_list - before_data_analysis_list
@@ -512,6 +512,3 @@ class Test(ERP5TypeTestCase):
                      len(to_delete_data_analysis.objectValues()))
     self.assertEqual("started", to_delete_data_analysis.getSimulationState())
 
-    # cleanup
-    self.document_to_delete_list.extend([to_delete_data_analysis])
-    self.tic()
