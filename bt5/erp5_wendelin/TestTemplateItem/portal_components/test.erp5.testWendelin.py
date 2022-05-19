@@ -412,8 +412,7 @@ class Test(ERP5TypeTestCase):
     path = document_to_remove.getRelativeUrl()
     container, _, object_id = path.rpartition('/')
     parent = self.portal.unrestrictedTraverse(container)
-    if object_id in parent.objectValues():
-      parent.manage_delObjects([object_id])
+    parent.manage_delObjects([object_id])
     self.commit()
 
   def _addDataIngestionToDataSupply(self, data_supply):
@@ -475,7 +474,6 @@ class Test(ERP5TypeTestCase):
     before_data_analysis_list = portal.portal_catalog(
       portal_type = "Data Analysis",
       simulation_state = "started")
-    # self.assertEqual(3, len(before_data_analysis_list)) 
 
     # create DA from DI
     portal.ERP5Site_createDataAnalysisList()
