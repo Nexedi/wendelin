@@ -135,27 +135,27 @@ for movement in portal_catalog(query = query):
         # the variation nor the related sensor. Data Array Lines are created
         # by Data Operation.
 
-        if item_type not in aggregate_type_set:
-        
+        if all(
+          [
+             # Do not create item if it is a Data Array Line, then it is created by data operation itself.
+             item_type not in aggregate_type_set,
+             # Do not create item if it is a transient Data Array.
+             not (item_type == "Data Array" and "big_data/analysis/transient" in transformation_line.getUseList()),
+             # Do not create item if it is an input Data Array.
+             not (quantity < 0 and item_type == "Data Array")
+          ]
+        ):
+          item = None
+
           if item_type in portal.getPortalDeviceConfigurationTypeList() + portal.getPortalDataConfigurationTypeList():
-            
-            if item_type == "Status Configuration":
-              item = None
-            
-            else:
+            if item_type != "Status Configuration":
               item = portal.portal_catalog.getResultValue(
                 portal_type=item_type,
                 #validation_state="validated",
                 item_project_relative_url=delivery.getDestinationProject(),
                 item_source_relative_url=delivery.getSource())
   
-          elif all(
-            [
-              item_type != "Data Array Line",
-              not (item_type == "Data Array" and "big_data/analysis/transient" in transformation_line.getUseList()),
-              not (quantity < 0 and item_type == "Data Array")
-            ]
-          ):  
+          elif item_type != "Data Array Line":  
             item_query_dict = dict(
               portal_type=item_type,
               validation_state="validated",
@@ -167,6 +167,7 @@ for movement in portal_catalog(query = query):
 
             if data_analysis.getDestinationProjectValue() is not None:
               item_query_dict["item_project_relative_url"] = data_analysis.getDestinationProject()
+
             item = portal.portal_catalog.getResultValue(**item_query_dict)
 
           if item is None:
