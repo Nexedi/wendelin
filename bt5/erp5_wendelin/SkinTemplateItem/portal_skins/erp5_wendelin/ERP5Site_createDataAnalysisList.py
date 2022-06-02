@@ -141,8 +141,6 @@ for movement in portal_catalog(query = query):
              item_type not in aggregate_type_set,
              # Do not create item if it is a transient Data Array.
              not (item_type == "Data Array" and "big_data/analysis/transient" in transformation_line.getUseList()),
-             # Do not create item if it is an input Data Array.
-             not (quantity < 0 and item_type == "Data Array")
           ]
         ):
           item = None
