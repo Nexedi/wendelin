@@ -62,21 +62,9 @@ allow_module('sklearn.linear_model')
 allow_module('scipy')
 
 allow_module('wendelin.bigarray.array_zodb')
-allow_module('pandas')
 
 allow_type(np.timedelta64)
 allow_type(type(np.c_))
-
-import pandas as pd
-allow_type(pd.Series)
-allow_type(pd.Timestamp)
-allow_type(pd.DatetimeIndex)
-# XXX: pd.DataFRame has its own security thus disable until we can fully integrate it
-#allow_type(pd.DataFrame)
-allow_type(pd.MultiIndex)
-allow_type(pd.Index)
-allow_type(pd.core.groupby.DataFrameGroupBy)
-allow_class(pd.DataFrame)
 
 import sklearn.linear_model
 allow_class(sklearn.linear_model.LinearRegression)
@@ -88,14 +76,10 @@ from RestrictedPython.Guards import full_write_guard
 full_write_guard.func_closure[1].cell_contents.__self__[np.ndarray] = True
 full_write_guard.func_closure[1].cell_contents.__self__[np.core.records.recarray] = True
 full_write_guard.func_closure[1].cell_contents.__self__[np.core.records.record] = True
-full_write_guard.func_closure[1].cell_contents.__self__[pd.DataFrame] = True
-full_write_guard.func_closure[1].cell_contents.__self__[pd.tseries.index.DatetimeIndex] = True
-full_write_guard.func_closure[1].cell_contents.__self__[pd.core.indexing._iLocIndexer] = True
-full_write_guard.func_closure[1].cell_contents.__self__[pd.MultiIndex] = True
-full_write_guard.func_closure[1].cell_contents.__self__[pd.Index] = True
 from wendelin.bigarray.array_zodb import ZBigArray
 full_write_guard.func_closure[1].cell_contents.__self__[ZBigArray] = True
 allow_type(ZBigArray)
 from wendelin.bigarray.array_ram import RAMArray
 full_write_guard.func_closure[1].cell_contents.__self__[RAMArray] = True
 allow_type(RAMArray)
+
