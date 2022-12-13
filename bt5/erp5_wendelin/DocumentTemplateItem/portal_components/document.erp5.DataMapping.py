@@ -58,6 +58,8 @@ class DataMapping(Document):
     self._index_to_object_tree = LOBTree()
     Document.__init__(self, *args, **kw)
 
+
+  security.declareProtected(Permissions.AccessContentsInformation, 'addObject')
   def addObject(self, obj):
     if obj in self._object_to_index_tree:
       return self._object_to_index_tree[obj]
@@ -67,18 +69,21 @@ class DataMapping(Document):
     self._last_value +=  1
     return self._object_to_index_tree[obj]
 
+  security.declareProtected(Permissions.AccessContentsInformation, 'getValueFromObject')
   def getValueFromObject(self, obj):
     if obj in self._object_to_index_tree:
       return self._object_to_index_tree[obj]
     else:
       return None
 
+  security.declareProtected(Permissions.AccessContentsInformation, 'getObjectFromValue')
   def getObjectFromValue(self, value):
     if value in self._index_to_object_tree:
       return self._index_to_object_tree[value]
     else:
       return None
 
+  security.declareProtected(Permissions.AccessContentsInformation, 'getData')
   def getData(self):
     data_list = []
     for obj in self._object_to_index_tree.keys():
