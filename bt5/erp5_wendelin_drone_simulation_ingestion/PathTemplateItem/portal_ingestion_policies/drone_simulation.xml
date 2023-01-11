@@ -58,11 +58,17 @@
         </item>
         <item>
             <key> <string>description</string> </key>
-            <value> <string>Handles ingestion of drone simulation logs (txt)</string> </value>
+            <value> <string>Handles ingestion of drone simulation logs (txt)\n
+\n
+</string> </value>
         </item>
         <item>
             <key> <string>id</string> </key>
             <value> <string>drone_simulation</string> </value>
+        </item>
+        <item>
+            <key> <string>script_id</string> </key>
+            <value> <string>IngestionPolicy_parseSimpleFluentdTag</string> </value>
         </item>
         <item>
             <key> <string>title</string> </key>
@@ -70,9 +76,7 @@
         </item>
         <item>
             <key> <string>version</string> </key>
-            <value>
-              <none/>
-            </value>
+            <value> <string>001</string> </value>
         </item>
         <item>
             <key> <string>workflow_history</string> </key>
@@ -142,7 +146,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>1005.40249.41679.5137</string> </value>
+                      <value> <string>1005.40491.30572.16537</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -160,7 +164,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1673448778.26</float>
+                              <float>1673463094.14</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
@@ -213,7 +217,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1673448578.15</float>
+                              <float>1673463087.96</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
