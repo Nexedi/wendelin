@@ -90,7 +90,7 @@ class testWendelinConfiguratorSetupDataLakeAndSecurityModel(WendelinConfigurator
       'erp5_stock_cache',
       'erp5_simulation',
       'erp5_crm',
-      'erp5_ui_test_core'
+      'erp5_ui_test_core',
       'erp5_l10n_fa',
       'erp5_wendelin_data_lake_ui',
       'erp5_wendelin_data_lake_ingestion_default_security_model',
