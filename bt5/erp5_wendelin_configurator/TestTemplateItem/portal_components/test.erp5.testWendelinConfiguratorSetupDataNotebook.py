@@ -80,7 +80,6 @@ class testWendelinConfiguratorSetupDataNotebook(WendelinConfiguratorMixin):
       'erp5_data_notebook',
       'erp5_wendelin_category',
       'erp5_wendelin_configurator',
-      'erp5_configurator_maxma_demo',
       'erp5_accounting',
       'erp5_wendelin_development',
       'erp5_full_text_mroonga_catalog',

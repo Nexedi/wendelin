@@ -81,7 +81,6 @@ class testWendelinConfiguratorSetupDataLakeAndSecurityModel(WendelinConfigurator
       'erp5_data_notebook',
       'erp5_wendelin_category',
       'erp5_wendelin_configurator',
-      'erp5_configurator_maxma_demo',
       'erp5_accounting',
       'erp5_wendelin_development',
       'erp5_full_text_mroonga_catalog',
@@ -90,7 +89,14 @@ class testWendelinConfiguratorSetupDataLakeAndSecurityModel(WendelinConfigurator
       'erp5_jquery_plugin_jqchart',
       'erp5_stock_cache',
       'erp5_simulation',
-      'erp5_crm'
+      'erp5_crm',
+      'erp5_ui_test_core'
+      'erp5_l10n_fa',
+      'erp5_wendelin_data_lake_ui',
+      'erp5_wendelin_data_lake_ingestion_default_security_model',
+      'erp5_ui_test',
+      'erp5_wendelin_data_lake_ingestion',
+      'erp5_credential'
     ]
     self.assertSameSet(expected_business_template_list,
       self.portal.portal_templates.getInstalledBusinessTemplateTitleList())
