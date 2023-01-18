@@ -106,3 +106,12 @@ class testWendelinConfiguratorSetupDataLakeAndSecurityModel(TestWendelinConfigur
                                           'accept_submitted_credentials', None)
     self.assertTrue(accept_submitted_credentials.getEnabled())
     self.assertEqual(accept_submitted_credentials.getPeriodicityMinuteFrequency(), 1)
+
+  def testModuleBusinessApplication(self):
+    super(testWendelinConfiguratorSetupDataLakeAndSecurityModel, self).checkModuleBusinessApplication()
+
+  def testSiteTitle(self):
+    super(testWendelinConfiguratorSetupDataLakeAndSecurityModel, self).checkSiteTitle()
+
+  def testPreference(self):
+    super(testWendelinConfiguratorSetupDataLakeAndSecurityModel, self).checkPreference()

@@ -94,3 +94,12 @@ class testWendelinConfiguratorSetupDataNotebook(TestWendelinConfiguratorMixin):
     self.assertSameSet(expected_business_template_list,
       self.portal.portal_templates.getInstalledBusinessTemplateTitleList())
 
+  def testModuleBusinessApplication(self):
+    super(testWendelinConfiguratorSetupDataNotebook, self).checkModuleBusinessApplication()
+
+  def testSiteTitle(self):
+    super(testWendelinConfiguratorSetupDataNotebook, self).checkSiteTitle()
+
+  def testPreference(self):
+    super(testWendelinConfiguratorSetupDataNotebook, self).checkPreference()
+
