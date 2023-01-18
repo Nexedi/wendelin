@@ -33,7 +33,7 @@ from Products.ERP5Type.Utils import convertToUpperCase
 from AccessControl.SecurityManagement import getSecurityManager, \
     setSecurityManager
 
-class TestWendelinConfiguratorMixin(SecurityTestCase):
+class WendelinConfiguratorMixin(SecurityTestCase):
 
   abort_transaction = 0
 

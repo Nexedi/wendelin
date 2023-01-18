@@ -25,9 +25,9 @@
 #
 ##############################################################################
 
-from erp5.component.test.testWendelinConfiguratorMixin import TestWendelinConfiguratorMixin
+from erp5.component.test.WendelinConfiguratorMixin import WendelinConfiguratorMixin
 
-class testWendelinConfigurator(TestWendelinConfiguratorMixin):
+class testWendelinConfigurator(WendelinConfiguratorMixin):
 
   def getConfiguratorOptions(self):
     return {}
