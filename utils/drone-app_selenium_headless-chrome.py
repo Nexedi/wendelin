@@ -2,10 +2,13 @@ INPUT_ID_LIST=["simulation_speed", "simulation_time", "drone_speed"]
 INPUT_VALUE_LIST=[300, 1000, 10]
 NUMBER_OF_DRONES = 3
 
+import certifi
+import urllib3
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.remote.remote_connection import RemoteConnection
 
 options = Options()
 options.add_argument('headless')
@@ -13,6 +16,27 @@ options.add_argument('window-size=1200x2600')
 d = DesiredCapabilities.CHROME
 d['loggingPrefs'] = { 'browser':'ALL'}
 driver = webdriver.Chrome(options=options, desired_capabilities=d)
+
+print("declaring webdriver remote server")
+server_url = "https://selenium:jvT0SRR9Mtad@[2001:67c:1254:5f:d58a::5933]:9443/wd/hub"
+executor = RemoteConnection(server_url, keep_alive=True)
+cert_reqs = 'CERT_REQUIRED'
+ca_certs = certifi.where()
+#if not test_runner.get('verify-server-certificate', True):
+#  cert_reqs = 'CERT_NONE'
+#  ca_certs = None
+#if test_runner.get('server-ca-certificate'):
+#  ca_certs = os.path.join(ETC_DIRECTORY, "cacerts.pem")
+#  with open(ca_certs, 'w') as f:
+#    f.write(test_runner.get('server-ca-certificate'))
+executor._conn = urllib3.PoolManager(cert_reqs=cert_reqs, ca_certs=ca_certs)
+
+browser = webdriver.Remote(
+    command_executor=executor,
+    desired_capabilities=d,
+)
+
+# if all ok, use 'browser' instead of local webdriver created on var 'driver'
 
 url = "https://dronesimulator.app.officejs.com/"
 driver.get(url)
