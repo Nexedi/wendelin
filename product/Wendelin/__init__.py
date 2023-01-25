@@ -64,17 +64,15 @@ allow_type(type(np.c_))
 import sklearn.linear_model
 allow_class(sklearn.linear_model.LinearRegression)
 
-# Modify 'safetype' dict in full_write_guard function
-# of RestrictedPython (closure) directly To allow
-# write access to ndarray, DataFrame, ZBigArray and RAMArray objects
-from RestrictedPython.Guards import full_write_guard
-full_write_guard.func_closure[1].cell_contents.__self__[np.ndarray] = True
-full_write_guard.func_closure[1].cell_contents.__self__[np.core.records.recarray] = True
-full_write_guard.func_closure[1].cell_contents.__self__[np.core.records.record] = True
+# allow write access to ndarray, DataFrame, ZBigArray and RAMArray objects
+from Products.ERP5Type.patches.Restricted import allow_full_write  # TODO(zope4py2): we need a better place to import this (why not in RestrictedPython ?)
+allow_full_write(np.ndarray)
+allow_full_write(np.core.records.recarray)
+allow_full_write(np.core.records.record)
+
 from wendelin.bigarray.array_zodb import ZBigArray
-full_write_guard.func_closure[1].cell_contents.__self__[ZBigArray] = True
+allow_full_write(ZBigArray)
 allow_type(ZBigArray)
 from wendelin.bigarray.array_ram import RAMArray
-full_write_guard.func_closure[1].cell_contents.__self__[RAMArray] = True
+allow_full_write(RAMArray)
 allow_type(RAMArray)
-
