@@ -43,17 +43,38 @@ allow_module('wendelin.bigarray.array_zodb')
 import sklearn.linear_model
 allow_class(sklearn.linear_model.LinearRegression)
 
-# Modify 'safetype' dict in full_write_guard function
-# of RestrictedPython (closure) directly To allow
-# write access to ndarray, DataFrame, ZBigArray and RAMArray objects
-from RestrictedPython.Guards import full_write_guard
-full_write_guard.func_closure[1].cell_contents.__self__[np.ndarray] = True
-full_write_guard.func_closure[1].cell_contents.__self__[np.core.records.recarray] = True
-full_write_guard.func_closure[1].cell_contents.__self__[np.core.records.record] = True
+# allow write access to ndarray, DataFrame, ZBigArray and RAMArray objects
+def allow_full_write(t):
+  """Allow setting and deleting items and attributes for this type.
+
+  This supports both RestrictedPython-3.6.0, where the safetype is implemented as:
+
+      safetype = {dict: True, list: True}.has_key
+      ...
+      safetype(t)
+
+  and RestrictedPython-5.1, where the safetype is implemented as:
+
+      safetypes = {dict, list}
+      ...
+      safetype(t)
+
+  """
+  from RestrictedPython.Guards import full_write_guard
+  safetype = full_write_guard.__closure__[1].cell_contents
+  if isinstance(safetype, set): # 5.1
+    safetype.add(t)
+  else: # 3.6
+    safetype.__self__.update({t: True})
+
+
+allow_full_write(np.ndarray)
+allow_full_write(np.core.records.recarray)
+allow_full_write(np.core.records.record)
+
 from wendelin.bigarray.array_zodb import ZBigArray
-full_write_guard.func_closure[1].cell_contents.__self__[ZBigArray] = True
+allow_full_write(ZBigArray)
 allow_type(ZBigArray)
 from wendelin.bigarray.array_ram import RAMArray
-full_write_guard.func_closure[1].cell_contents.__self__[RAMArray] = True
+allow_full_write(RAMArray)
 allow_type(RAMArray)
-
