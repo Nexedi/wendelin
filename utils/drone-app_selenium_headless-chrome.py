@@ -13,27 +13,21 @@ from selenium.webdriver.remote.remote_connection import RemoteConnection
 options = Options()
 options.add_argument('headless')
 options.add_argument('window-size=1200x2600')
-d = DesiredCapabilities.CHROME
-d['loggingPrefs'] = { 'browser':'ALL'}
-driver = webdriver.Chrome(options=options, desired_capabilities=d)
+dc = DesiredCapabilities.CHROME
+dc['loggingPrefs'] = { 'browser':'ALL'}
+#local selenium
+#driver = webdriver.Chrome(options=options, desired_capabilities=dc)
 
-print("declaring webdriver remote server")
-server_url = "https://selenium:jvT0SRR9Mtad@[2001:67c:1254:5f:d58a::5933]:9443/wd/hub"
+#selenium remote server
+server_url = "https://selenium:jvT0SRR9Mtad@softinst179949.host.vifib.net/wd/hub"
 executor = RemoteConnection(server_url, keep_alive=True)
 cert_reqs = 'CERT_REQUIRED'
 ca_certs = certifi.where()
-#if not test_runner.get('verify-server-certificate', True):
-#  cert_reqs = 'CERT_NONE'
-#  ca_certs = None
-#if test_runner.get('server-ca-certificate'):
-#  ca_certs = os.path.join(ETC_DIRECTORY, "cacerts.pem")
-#  with open(ca_certs, 'w') as f:
-#    f.write(test_runner.get('server-ca-certificate'))
 executor._conn = urllib3.PoolManager(cert_reqs=cert_reqs, ca_certs=ca_certs)
 
-browser = webdriver.Remote(
+driver = webdriver.Remote(
     command_executor=executor,
-    desired_capabilities=d,
+    desired_capabilities=dc,
 )
 
 # if all ok, use 'browser' instead of local webdriver created on var 'driver'
@@ -80,5 +74,8 @@ for i in range(NUMBER_OF_DRONES):
 #print browser log entries
 for entry in driver.get_log('browser'):
   print(entry)
+
+#screenshot
+#driver.get_screenshot_as_file('main-page.png')
 
 driver.quit()
