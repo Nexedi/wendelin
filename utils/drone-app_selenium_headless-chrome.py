@@ -1,5 +1,6 @@
+NUMBER_OF_DRONES = 1
 INPUT_ID_LIST=["simulation_speed", "simulation_time", "drone_speed", "number_of_drones"]
-INPUT_VALUE_LIST=[300, 1000, 10, 3]
+INPUT_VALUE_LIST=[300, 1000, 10, NUMBER_OF_DRONES]
 
 import certifi
 import urllib3
@@ -12,7 +13,7 @@ from selenium.webdriver.remote.remote_connection import RemoteConnection
 # configure the web driver settings
 options = Options()
 options.add_argument('headless')
-options.add_argument('window-size=1200x2600')
+options.add_argument('window-size=1200x3600')
 dc = DesiredCapabilities.CHROME
 dc['loggingPrefs'] = { 'browser':'ALL'}
 
@@ -50,10 +51,10 @@ for i, input_id in enumerate(INPUT_ID_LIST):
   input.send_keys(INPUT_VALUE_LIST[i])
 
 # fill codemirror editor input
-script = "code..."
+script = 'me.onStart = function () {console.log(111111);};'
 frame = driver.find_element(By.XPATH, '//iframe')
 driver.switch_to.frame(frame)
-driver.execute_script('return document.getElementsByClassName("CodeMirror")[0].CodeMirror.setValue("my amazing AI script")')
+driver.execute_script('return document.getElementsByClassName("CodeMirror")[0].CodeMirror.setValue("' + script + '")')
 driver.switch_to.default_content()
 
 #run the simulation
@@ -71,11 +72,11 @@ for i in range(NUMBER_OF_DRONES):
 
 # at this point, we have all the drone logs generated as txt files in command execution directory
 
+#screenshot
+driver.get_screenshot_as_file('main-page.png')
+
 #print browser log entries
 for entry in driver.get_log('browser'):
   print(entry)
-
-#screenshot
-#driver.get_screenshot_as_file('main-page.png')
 
 driver.quit()
