@@ -13,12 +13,12 @@ from selenium.webdriver.remote.remote_connection import RemoteConnection
 # configure the web driver settings
 options = Options()
 options.add_argument('headless')
-options.add_argument('window-size=1200x3600')
+options.add_argument('window-size=1200x2600')
 dc = DesiredCapabilities.CHROME
 dc['loggingPrefs'] = { 'browser':'ALL'}
 
 # local selenium
-#driver = webdriver.Chrome(options=options, desired_capabilities=dc)
+driver = webdriver.Chrome(options=options, desired_capabilities=dc)
 
 # run selenium remote server
 server_url = "https://selenium:jvT0SRR9Mtad@softinst179949.host.vifib.net/wd/hub"
@@ -26,7 +26,6 @@ executor = RemoteConnection(server_url, keep_alive=True)
 cert_reqs = 'CERT_REQUIRED'
 ca_certs = certifi.where()
 executor._conn = urllib3.PoolManager(cert_reqs=cert_reqs, ca_certs=ca_certs)
-
 driver = webdriver.Remote(
     command_executor=executor,
     desired_capabilities=dc,
@@ -62,7 +61,7 @@ run_button = driver.find_element(By.XPATH, '//input[@type="submit" and @name="ac
 run_button.click()
 
 loading = driver.find_element(By.XPATH, '//span[@id="loading"]')
-driver.implicitly_wait(20)
+driver.implicitly_wait(50)
 
 # download all result logs
 for i in range(NUMBER_OF_DRONES):
