@@ -1,7 +1,7 @@
 NUMBER_OF_DRONES = 1
 INPUT_ID_LIST=["simulation_speed", "simulation_time", "drone_speed", "number_of_drones"]
 INPUT_VALUE_LIST=[300, 1000, 10, NUMBER_OF_DRONES]
-AI_SCRIPT = 'me.onStart = function () {console.log(111111);};'
+AI_SCRIPT = 'me.onStart = function () {console.log("start");};me.onUpdate = function (timestamp) {console.log("update!");};'
 
 import certifi
 import urllib3
