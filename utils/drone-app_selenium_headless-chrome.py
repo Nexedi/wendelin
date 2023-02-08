@@ -1,6 +1,7 @@
 NUMBER_OF_DRONES = 1
 INPUT_ID_LIST=["simulation_speed", "simulation_time", "drone_speed", "number_of_drones"]
 INPUT_VALUE_LIST=[300, 1000, 10, NUMBER_OF_DRONES]
+AI_SCRIPT = 'me.onStart = function () {console.log(111111);};'
 
 import certifi
 import urllib3
@@ -51,10 +52,9 @@ for i, input_id in enumerate(INPUT_ID_LIST):
   input.send_keys(INPUT_VALUE_LIST[i])
 
 # fill codemirror editor input
-script = 'me.onStart = function () {console.log(111111);};'
 frame = driver.find_element(By.XPATH, '//iframe')
 driver.switch_to.frame(frame)
-driver.execute_script('return document.getElementsByClassName("CodeMirror")[0].CodeMirror.setValue("' + script + '")')
+driver.execute_script('return document.getElementsByClassName("CodeMirror")[0].CodeMirror.setValue("' + AI_SCRIPT + '")')
 driver.switch_to.default_content()
 
 #run the simulation
