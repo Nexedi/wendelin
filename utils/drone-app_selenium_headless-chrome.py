@@ -4,6 +4,7 @@ INPUT_VALUE_LIST=[300, 1000, 10, NUMBER_OF_DRONES]
 
 import certifi
 import urllib3
+import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -60,8 +61,12 @@ driver.switch_to.default_content()
 run_button = driver.find_element(By.XPATH, '//input[@type="submit" and @name="action_run"]')
 run_button.click()
 
+driver.implicitly_wait(30)
 loading = driver.find_element(By.XPATH, '//span[@id="loading"]')
-driver.implicitly_wait(50)
+
+time.sleep(20)
+#screenshot
+driver.get_screenshot_as_file('main-page.png')
 
 # download all result logs
 for i in range(NUMBER_OF_DRONES):
