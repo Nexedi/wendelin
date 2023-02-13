@@ -1,6 +1,6 @@
 NUMBER_OF_DRONES = 1
 INPUT_ID_LIST=["simulation_speed", "simulation_time", "drone_speed", "number_of_drones"]
-INPUT_VALUE_LIST=[300, 1000, 10, NUMBER_OF_DRONES]
+INPUT_VALUE_LIST=[300, 1000, 16, NUMBER_OF_DRONES]
 AI_SCRIPT = 'me.onStart = function () {console.log("start");};me.onUpdate = function (timestamp) {console.log("update!");};'
 
 import certifi
@@ -15,6 +15,7 @@ from selenium.webdriver.remote.remote_connection import RemoteConnection
 # configure the web driver settings
 options = Options()
 options.add_argument('headless')
+options.add_argument('incognito')
 options.add_argument('window-size=1200x2600')
 dc = DesiredCapabilities.CHROME
 dc['loggingPrefs'] = { 'browser':'ALL'}
@@ -54,7 +55,7 @@ for i, input_id in enumerate(INPUT_ID_LIST):
 # fill codemirror editor input
 frame = driver.find_element(By.XPATH, '//iframe')
 driver.switch_to.frame(frame)
-driver.execute_script('return document.getElementsByClassName("CodeMirror")[0].CodeMirror.setValue("' + AI_SCRIPT + '")')
+#driver.execute_script('return document.getElementsByClassName("CodeMirror")[0].CodeMirror.setValue("' + AI_SCRIPT + '")')
 driver.switch_to.default_content()
 
 #run the simulation
