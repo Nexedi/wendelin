@@ -21,7 +21,7 @@ dc = DesiredCapabilities.CHROME
 dc['loggingPrefs'] = { 'browser':'ALL'}
 
 # local selenium
-driver = webdriver.Chrome(options=options, desired_capabilities=dc)
+#driver = webdriver.Chrome(options=options, desired_capabilities=dc)
 
 # run selenium remote server
 server_url = "https://selenium:jvT0SRR9Mtad@softinst179949.host.vifib.net/wd/hub"
@@ -36,6 +36,7 @@ driver = webdriver.Remote(
 
 # navigate to drone app
 url = "https://dronesimulator.app.officejs.com/"
+url = "https://softinst157899.host.vifib.net/erp5/web_site_module/officejs_drone_simulator/"
 driver.get(url)
 driver.implicitly_wait(5)
 # skip bootloader
@@ -73,7 +74,12 @@ driver.get_screenshot_as_file('main-page.png')
 for i in range(NUMBER_OF_DRONES):
   text = "Download Simulation LOG " + str(i)
   download_log = driver.find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "' + text + '")]')
-  download_log.click() #saves log txt file in command location
+  #download_log.click() #saves log txt file in command location
+  print("getting result textarea...")
+  result_log = driver.find_element(By.XPATH, '//div[@class="container"]//textarea[@id="log_result_' + str(i) + '"]')
+  print("textarea content:")
+  print(result_log.text())
+  result_list[i] = result_log.text()
 
 # at this point, we have all the drone logs generated as txt files in command execution directory
 
