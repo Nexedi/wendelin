@@ -73,13 +73,11 @@ driver.get_screenshot_as_file('main-page.png')
 # download all result logs
 for i in range(NUMBER_OF_DRONES):
   text = "Download Simulation LOG " + str(i)
+  id_s = "log_result_" + str(i)
   download_log = driver.find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "' + text + '")]')
   #download_log.click() #saves log txt file in command location
-  print("getting result textarea...")
-  result_log = driver.find_element(By.XPATH, '//div[@class="container"]//textarea[@id="log_result_' + str(i) + '"]')
-  print("textarea content:")
-  print(result_log.text())
-  result_list[i] = result_log.text()
+  result_log = driver.find_element(By.XPATH, '//div[@class="container"]//textarea[@id="' + id_s + '"]')
+  result_list[i] = result_log.get_attribute('value')
 
 # at this point, we have all the drone logs generated as txt files in command execution directory
 
