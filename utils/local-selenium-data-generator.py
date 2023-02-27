@@ -13,11 +13,11 @@ print("Start execution at:")
 print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
 NUMBER_OF_DRONES = 1
-GRANULARITY = 3
-GAME_INPUT_ID_LIST=["simulation_speed", "simulation_time", "number_of_drones", "drone_min_speed", "drone_speed", "drone_max_speed", "drone_max_acceleration", "drone_max_deceleration"]
-GAME_INPUT_VALUE_LIST=[300, 1500, NUMBER_OF_DRONES, 10, 15, 30, 6, 1]
-DRONE_INPUT_ID_LIST=["drone_max_roll", "drone_min_pitch", "drone_max_pitch", "drone_max_sink_rate", "drone_max_climb_rate"]
-DRONE_VALUE_RANGE_LIST=[[0, 90], [-50, 0], [0, 50], [-15, 30], [-1, 30]]
+GRANULARITY = 5
+GAME_INPUT_ID_LIST=["simulation_speed", "simulation_time", "number_of_drones", "drone_min_speed", "drone_speed", "drone_max_speed", "drone_max_acceleration", "drone_max_deceleration", "start_AMSL", "init_pos_lat", "init_pos_lon", "init_pos_z", "drone_max_sink_rate", "drone_max_climb_rate"]
+GAME_INPUT_VALUE_LIST=[300, 1500, NUMBER_OF_DRONES, 12, 16, 20, 6, 1, "594.792", "45.6403", "14.2648", "65.668", 3, 8]
+DRONE_INPUT_ID_LIST=["drone_max_roll", "drone_min_pitch", "drone_max_pitch"]
+DRONE_VALUE_RANGE_LIST=[[10, 50], [-35, -10], [10, 40]]
 DRONE_INPUT_VALUE_LIST=[]
 
 def values_in_range(start, end, n):
@@ -51,11 +51,14 @@ url = "https://softinst157899.host.vifib.net/erp5/web_site_module/officejs_drone
 driver.get(url)
 driver.implicitly_wait(5)
 # skip bootloader
-skip = driver.find_element(By.XPATH, '//a[@class="skip-link" and text()="Skip"]')
-skip.click()
+try:
+  skip = driver.find_element(By.XPATH, '//a[@class="skip-link" and text()="Skip"]')
+  skip.click()
+except:
+  pass
 
 # wait for editor iframe content
-driver.implicitly_wait(10)
+driver.implicitly_wait(20)
 iframe = driver.find_element(By.XPATH, '//iframe')
 
 # fill game inputs
@@ -71,8 +74,10 @@ for combination in itertools.product(*DRONE_INPUT_VALUE_LIST):
   for i, input_id in enumerate(DRONE_INPUT_ID_LIST):
     input = driver.find_element(By.ID, input_id)
     input.clear()
-    input.send_keys(int(combination[i]))
+    input.send_keys(str(combination[i]))
+    driver.get_screenshot_as_file(str(combination) + '.png')
 
+  #'''
   #run the simulation
   run_button = driver.find_element(By.XPATH, '//input[@type="submit" and @name="action_run"]')
   run_button.click()
@@ -86,9 +91,8 @@ for combination in itertools.product(*DRONE_INPUT_VALUE_LIST):
     text = "Download Simulation LOG " + str(i)
     download_log = driver.find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "' + text + '")]')
     download_log.click() #saves log txt file in command location
+  #'''
 
 print("End execution at:")
 print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-#screenshot
-#driver.get_screenshot_as_file('main-page.png')
 
