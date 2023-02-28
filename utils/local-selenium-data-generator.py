@@ -47,7 +47,7 @@ driver = webdriver.Chrome(options=options, desired_capabilities=dc)
 
 # navigate to drone app
 url = "https://dronesimulator.app.officejs.com/"
-url = "https://softinst157899.host.vifib.net/erp5/web_site_module/officejs_drone_simulator/"
+#url = "https://softinst157899.host.vifib.net/erp5/web_site_module/officejs_drone_simulator/"
 driver.get(url)
 driver.implicitly_wait(5)
 # skip bootloader
