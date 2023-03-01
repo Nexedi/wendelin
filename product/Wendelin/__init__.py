@@ -40,9 +40,6 @@ allow_module('scipy')
 
 allow_module('wendelin.bigarray.array_zodb')
 
-allow_type(np.timedelta64)
-allow_type(type(np.c_))
-
 import sklearn.linear_model
 allow_class(sklearn.linear_model.LinearRegression)
 
