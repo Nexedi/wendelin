@@ -13,11 +13,12 @@ print("Start execution at:")
 print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
 NUMBER_OF_DRONES = 1
-GRANULARITY = 5
+GRANULARITY = 9
 GAME_INPUT_ID_LIST=["simulation_speed", "simulation_time", "number_of_drones", "drone_min_speed", "drone_speed", "drone_max_speed", "drone_max_acceleration", "drone_max_deceleration", "start_AMSL", "init_pos_lat", "init_pos_lon", "init_pos_z", "drone_max_sink_rate", "drone_max_climb_rate"]
-GAME_INPUT_VALUE_LIST=[300, 1500, NUMBER_OF_DRONES, 12, 16, 20, 6, 1, "594.792", "45.6403", "14.2648", "65.668", 3, 8]
+GAME_INPUT_VALUE_LIST=[1500*60, 1500, NUMBER_OF_DRONES, 12, 16, 20, 6, 1, "594.792", "45.6403", "14.2648", "65.668", 3, 8]
 DRONE_INPUT_ID_LIST=["drone_max_roll", "drone_min_pitch", "drone_max_pitch"]
 DRONE_VALUE_RANGE_LIST=[[10, 50], [-35, -10], [10, 40]]
+#DRONE_VALUE_RANGE_LIST=[[12, 52], [-37, -11], [12, 38]]
 DRONE_INPUT_VALUE_LIST=[]
 
 def values_in_range(start, end, n):
@@ -47,7 +48,7 @@ driver = webdriver.Chrome(options=options, desired_capabilities=dc)
 
 # navigate to drone app
 url = "https://dronesimulator.app.officejs.com/"
-#url = "https://softinst157899.host.vifib.net/erp5/web_site_module/officejs_drone_simulator/"
+url = "https://softinst157899.host.vifib.net/erp5/web_site_module/officejs_drone_simulator/"
 driver.get(url)
 driver.implicitly_wait(5)
 # skip bootloader
@@ -71,11 +72,12 @@ for i, input_id in enumerate(GAME_INPUT_ID_LIST):
 for combination in itertools.product(*DRONE_INPUT_VALUE_LIST):
   # fill drone inputs
   print("* running combination " + str(combination))
+  print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
   for i, input_id in enumerate(DRONE_INPUT_ID_LIST):
     input = driver.find_element(By.ID, input_id)
     input.clear()
     input.send_keys(str(combination[i]))
-    driver.get_screenshot_as_file(str(combination) + '.png')
+    #driver.get_screenshot_as_file(str(combination) + '.png')
 
   #'''
   #run the simulation
@@ -84,7 +86,6 @@ for combination in itertools.product(*DRONE_INPUT_VALUE_LIST):
 
   driver.implicitly_wait(30)
   loading = driver.find_element(By.XPATH, '//span[@id="loading"]')
-  time.sleep(20)
 
   # download all result logs
   for i in range(NUMBER_OF_DRONES):
