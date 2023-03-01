@@ -9,11 +9,12 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 from datetime import datetime
 
+start_time = datetime.now()
 print("Start execution at:")
-print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+print(start_time.strftime("%d/%m/%Y %H:%M:%S"))
 
 NUMBER_OF_DRONES = 1
-GRANULARITY = 9
+GRANULARITY = 2
 GAME_INPUT_ID_LIST=["simulation_speed", "simulation_time", "number_of_drones", "drone_min_speed", "drone_speed", "drone_max_speed", "drone_max_acceleration", "drone_max_deceleration", "start_AMSL", "init_pos_lat", "init_pos_lon", "init_pos_z", "drone_max_sink_rate", "drone_max_climb_rate"]
 GAME_INPUT_VALUE_LIST=[1500*60, 1500, NUMBER_OF_DRONES, 12, 16, 20, 6, 1, "594.792", "45.6403", "14.2648", "65.668", 3, 8]
 DRONE_INPUT_ID_LIST=["drone_max_roll", "drone_min_pitch", "drone_max_pitch"]
@@ -27,13 +28,6 @@ def values_in_range(start, end, n):
 
 for i in range(len(DRONE_VALUE_RANGE_LIST)):
   DRONE_INPUT_VALUE_LIST.append(values_in_range(DRONE_VALUE_RANGE_LIST[i][0], DRONE_VALUE_RANGE_LIST[i][1], GRANULARITY))
-
-#speed  1 - 30 (min<sp<max)
-#accel  1 - 10
-#roll   0 - 90
-#pitch -50 - 50 (min<max)
-#sink  -15 - 30  (<max_speed)
-#climb  -1 - 30  (<max_speed)
 
 # configure the web driver settings
 options = Options()
@@ -72,7 +66,8 @@ for i, input_id in enumerate(GAME_INPUT_ID_LIST):
 for combination in itertools.product(*DRONE_INPUT_VALUE_LIST):
   # fill drone inputs
   print("* running combination " + str(combination))
-  print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+  #print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+  start_iter = datetime.now()
   for i, input_id in enumerate(DRONE_INPUT_ID_LIST):
     input = driver.find_element(By.ID, input_id)
     input.clear()
@@ -86,14 +81,22 @@ for combination in itertools.product(*DRONE_INPUT_VALUE_LIST):
 
   driver.implicitly_wait(30)
   loading = driver.find_element(By.XPATH, '//span[@id="loading"]')
+  driver.find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "Download Simulation LOG")]')
 
   # download all result logs
   for i in range(NUMBER_OF_DRONES):
     text = "Download Simulation LOG " + str(i)
     download_log = driver.find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "' + text + '")]')
     download_log.click() #saves log txt file in command location
+
+  end_iter = datetime.now()
+  elapsed = end_iter - start_iter
+  print("Time for iteration (milliseconds): " + str(elapsed.total_seconds()*1000))
   #'''
 
+end_time = datetime.now()
 print("End execution at:")
-print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+print(end_time.now().strftime("%d/%m/%Y %H:%M:%S"))
+elapsed_time = end_time - start_time
+print("Elapsed time: " + str(elapsed_time.seconds))
 
