@@ -68,38 +68,13 @@ dc = DesiredCapabilities.CHROME
 dc['loggingPrefs'] = { 'browser':'ALL'}
 
 driver = setup_driver_on_app(options, dc)
-'''
-# local selenium
-driver = webdriver.Chrome(options=options, desired_capabilities=dc)
-
-# navigate to drone app
-url = "https://dronesimulator.app.officejs.com/"
-#url = "https://softinst157899.host.vifib.net/erp5/web_site_module/officejs_drone_simulator/"
-driver.get(url)
-driver.implicitly_wait(5)
-# skip bootloader
-try:
-  skip = driver.find_element(By.XPATH, '//a[@class="skip-link" and text()="Skip"]')
-  skip.click()
-except:
-  pass
-
-# wait for editor iframe content
-driver.implicitly_wait(20)
-iframe = driver.find_element(By.XPATH, '//iframe')
-
-# fill game inputs
-for i, input_id in enumerate(GAME_INPUT_ID_LIST):
-  input = driver.find_element(By.ID, input_id)
-  input.clear()
-  input.send_keys(GAME_INPUT_VALUE_LIST[i])
-'''
-
+iter = 0
 # run all combination of input values
 for combination in itertools.product(*DRONE_INPUT_VALUE_LIST):
+  iter += 1
   try:
     # fill drone inputs
-    print("* running combination " + str(combination))
+    print("Running combination " + str(combination))
     #print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
     start_iter = datetime.now()
     for i, input_id in enumerate(DRONE_INPUT_ID_LIST):
@@ -125,7 +100,7 @@ for combination in itertools.product(*DRONE_INPUT_VALUE_LIST):
 
     end_iter = datetime.now()
     elapsed = end_iter - start_iter
-    print("Time for iteration (milliseconds): " + str(elapsed.total_seconds()*1000))
+    print("* done in %s milliseconds: " % str(elapsed.total_seconds()*1000))
     #'''
   except Exception as e:
     print("ERROR: simulation for this combination failed")
@@ -141,5 +116,6 @@ end_time = datetime.now()
 print("End execution at:")
 print(end_time.now().strftime("%d/%m/%Y %H:%M:%S"))
 elapsed_time = end_time - start_time
-print("Elapsed time: " + str(elapsed_time.seconds))
+print("Total combinations: " + str(iter))
+print("Total time %s seconds. " % str(elapsed_time.seconds))
 
