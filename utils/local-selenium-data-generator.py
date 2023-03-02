@@ -29,15 +29,46 @@ def values_in_range(start, end, n):
 for i in range(len(DRONE_VALUE_RANGE_LIST)):
   DRONE_INPUT_VALUE_LIST.append(values_in_range(DRONE_VALUE_RANGE_LIST[i][0], DRONE_VALUE_RANGE_LIST[i][1], GRANULARITY))
 
+def setup_driver_on_app(options, dc):
+    # local selenium
+    driver = webdriver.Chrome(options=options, desired_capabilities=dc)
+    print("Webdriver created.")
+
+    # navigate to drone app
+    url = "https://dronesimulator.app.officejs.com/"
+    #url = "https://softinst157899.host.vifib.net/erp5/web_site_module/officejs_drone_simulator/"
+    driver.get(url)
+    driver.implicitly_wait(5)
+    # skip bootloader
+    try:
+      skip = driver.find_element(By.XPATH, '//a[@class="skip-link" and text()="Skip"]')
+      skip.click()
+    except:
+      pass
+
+    # wait for editor iframe content
+    driver.implicitly_wait(20)
+    iframe = driver.find_element(By.XPATH, '//iframe')
+
+    # fill game inputs
+    for i, input_id in enumerate(GAME_INPUT_ID_LIST):
+      input = driver.find_element(By.ID, input_id)
+      input.clear()
+      input.send_keys(GAME_INPUT_VALUE_LIST[i])
+    return driver
+
 # configure the web driver settings
 options = Options()
 options.add_argument('headless')
 options.add_argument('incognito')
 options.add_argument('window-size=1200x1200')
 options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')        
 dc = DesiredCapabilities.CHROME
 dc['loggingPrefs'] = { 'browser':'ALL'}
 
+driver = setup_driver_on_app(options, dc)
+'''
 # local selenium
 driver = webdriver.Chrome(options=options, desired_capabilities=dc)
 
@@ -62,6 +93,7 @@ for i, input_id in enumerate(GAME_INPUT_ID_LIST):
   input = driver.find_element(By.ID, input_id)
   input.clear()
   input.send_keys(GAME_INPUT_VALUE_LIST[i])
+'''
 
 # run all combination of input values
 for combination in itertools.product(*DRONE_INPUT_VALUE_LIST):
@@ -99,7 +131,11 @@ for combination in itertools.product(*DRONE_INPUT_VALUE_LIST):
     print("ERROR: simulation for this combination failed")
     print(e)
     print("trying to take screenshot...")
-    driver.get_screenshot_as_file(str(combination) + '.png')
+    try:
+      driver.get_screenshot_as_file(str(combination) + '.png')
+    except:
+      print("Error while taking screenshot, this means driver sesion ended. Re-creating webdriver...")
+      driver = setup_driver_on_app(options, dc)
 
 end_time = datetime.now()
 print("End execution at:")
