@@ -16,6 +16,7 @@ from selenium.webdriver.remote.remote_connection import RemoteConnection
 options = Options()
 options.add_argument('headless')
 options.add_argument('incognito')
+options.add_argument('--no-sandbox')
 options.add_argument('window-size=1200x2600')
 dc = DesiredCapabilities.CHROME
 dc['loggingPrefs'] = { 'browser':'ALL'}
