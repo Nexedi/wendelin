@@ -24,7 +24,7 @@ DRONE_VALUE_RANGE_LIST=[[12.1, 19.9], [10, 50], [-35, -10], [10, 40]]
 DRONE_INPUT_VALUE_LIST=[]
 AI_SCRIPT = ""
 if (len(sys.argv)>1):
-  AI_SCRIPT = open(sys.argv[1], "r").read().replace("\n", "\\n")
+  AI_SCRIPT = open(sys.argv[1], "r").read().replace("\n", "\\n").replace('"', "'")
 
 def values_in_range(start, end, n):
   d = (end - start) / (n - 1)
