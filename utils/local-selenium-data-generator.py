@@ -21,6 +21,7 @@ DRONE_INPUT_ID_LIST=["drone_speed", "drone_max_roll", "drone_min_pitch", "drone_
 DRONE_VALUE_RANGE_LIST=[[12.1, 19.9], [10, 50], [-35, -10], [10, 40]]
 #DRONE_VALUE_RANGE_LIST=[[12, 52], [-37, -11], [12, 38]]
 DRONE_INPUT_VALUE_LIST=[]
+AI_SCRIPT = open("my_script.js", "r").read()
 
 def values_in_range(start, end, n):
   d = (end - start) / (n - 1)
@@ -60,6 +61,12 @@ def setup_driver_on_app(options, dc):
           input = driver.find_element(By.ID, input_id)
           input.clear()
           input.send_keys(GAME_INPUT_VALUE_LIST[i])
+
+        # fill codemirror editor input
+        frame = driver.find_element(By.XPATH, '//iframe')
+        driver.switch_to.frame(frame)
+        driver.execute_script('return document.getElementsByClassName("CodeMirror")[0].CodeMirror.setValue("' + AI_SCRIPT.replace("\n", "\\n") + '")')
+        driver.switch_to.default_content()
 
         print("Webdriver created.")
         done = True
