@@ -1,3 +1,4 @@
+import sys
 import time
 import itertools
 import certifi
@@ -21,7 +22,9 @@ DRONE_INPUT_ID_LIST=["drone_speed", "drone_max_roll", "drone_min_pitch", "drone_
 DRONE_VALUE_RANGE_LIST=[[12.1, 19.9], [10, 50], [-35, -10], [10, 40]]
 #DRONE_VALUE_RANGE_LIST=[[12, 52], [-37, -11], [12, 38]]
 DRONE_INPUT_VALUE_LIST=[]
-AI_SCRIPT = open("my_script.js", "r").read()
+AI_SCRIPT = ""
+if (len(sys.argv)>1):
+  AI_SCRIPT = open(sys.argv[1], "r").read().replace("\n", "\\n")
 
 def values_in_range(start, end, n):
   d = (end - start) / (n - 1)
@@ -63,10 +66,12 @@ def setup_driver_on_app(options, dc):
           input.send_keys(GAME_INPUT_VALUE_LIST[i])
 
         # fill codemirror editor input
-        frame = driver.find_element(By.XPATH, '//iframe')
-        driver.switch_to.frame(frame)
-        driver.execute_script('return document.getElementsByClassName("CodeMirror")[0].CodeMirror.setValue("' + AI_SCRIPT.replace("\n", "\\n") + '")')
-        driver.switch_to.default_content()
+        if (AI_SCRIPT):
+            frame = driver.find_element(By.XPATH, '//iframe')
+            driver.switch_to.frame(frame)
+            driver.execute_script('return document.getElementsByClassName("CodeMirror")[0].CodeMirror.setValue("' + AI_SCRIPT + '")')
+            driver.switch_to.default_content()
+            #driver.get_screenshot_as_file('ai.png')
 
         print("Webdriver created.")
         done = True
