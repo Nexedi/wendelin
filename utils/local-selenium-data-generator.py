@@ -14,11 +14,11 @@ print("Start execution at:")
 print(start_time.strftime("%d/%m/%Y %H:%M:%S"))
 
 NUMBER_OF_DRONES = 1
-GRANULARITY = 5
+GRANULARITY = 8
 GAME_INPUT_ID_LIST=["simulation_speed", "simulation_time", "number_of_drones", "drone_min_speed", "drone_max_speed", "drone_max_acceleration", "drone_max_deceleration", "start_AMSL", "init_pos_lat", "init_pos_lon", "init_pos_z", "drone_max_sink_rate", "drone_max_climb_rate"]
 GAME_INPUT_VALUE_LIST=[1500*60, 1500, NUMBER_OF_DRONES, 12, 20, 6, 1, "594.792", "45.6403", "14.2648", "65.668", 3, 8]
 DRONE_INPUT_ID_LIST=["drone_speed", "drone_max_roll", "drone_min_pitch", "drone_max_pitch"]
-DRONE_VALUE_RANGE_LIST=[[12.5, 19.5], [10, 50], [-35, -10], [10, 40]]
+DRONE_VALUE_RANGE_LIST=[[12.1, 19.9], [10, 50], [-35, -10], [10, 40]]
 #DRONE_VALUE_RANGE_LIST=[[12, 52], [-37, -11], [12, 38]]
 DRONE_INPUT_VALUE_LIST=[]
 
@@ -30,32 +30,45 @@ for i in range(len(DRONE_VALUE_RANGE_LIST)):
   DRONE_INPUT_VALUE_LIST.append(values_in_range(DRONE_VALUE_RANGE_LIST[i][0], DRONE_VALUE_RANGE_LIST[i][1], GRANULARITY))
 
 def setup_driver_on_app(options, dc):
-    # local selenium
-    driver = webdriver.Chrome(options=options, desired_capabilities=dc)
-    print("Webdriver created.")
-
-    # navigate to drone app
-    url = "https://dronesimulator.app.officejs.com/"
-    #url = "https://softinst157899.host.vifib.net/erp5/web_site_module/officejs_drone_simulator/"
-    driver.get(url)
-    driver.implicitly_wait(5)
-    # skip bootloader
+  done = False
+  retry = 0
+  while not done:
+    if retry == 10:
+        raise RuntimeError("Error: couldn't create webdriver after 10 attempts")
     try:
-      skip = driver.find_element(By.XPATH, '//a[@class="skip-link" and text()="Skip"]')
-      skip.click()
-    except:
-      pass
+        # local selenium
+        driver = webdriver.Chrome(options=options, desired_capabilities=dc)
 
-    # wait for editor iframe content
-    driver.implicitly_wait(20)
-    iframe = driver.find_element(By.XPATH, '//iframe')
+        # navigate to drone app
+        url = "https://dronesimulator.app.officejs.com/"
+        #url = "https://softinst157899.host.vifib.net/erp5/web_site_module/officejs_drone_simulator/"
+        driver.get(url)
+        driver.implicitly_wait(5)
+        # skip bootloader
+        try:
+          skip = driver.find_element(By.XPATH, '//a[@class="skip-link" and text()="Skip"]')
+          skip.click()
+        except:
+          pass
 
-    # fill game inputs
-    for i, input_id in enumerate(GAME_INPUT_ID_LIST):
-      input = driver.find_element(By.ID, input_id)
-      input.clear()
-      input.send_keys(GAME_INPUT_VALUE_LIST[i])
-    return driver
+        # wait for editor iframe content
+        driver.implicitly_wait(20)
+        iframe = driver.find_element(By.XPATH, '//iframe')
+
+        # fill game inputs
+        for i, input_id in enumerate(GAME_INPUT_ID_LIST):
+          input = driver.find_element(By.ID, input_id)
+          input.clear()
+          input.send_keys(GAME_INPUT_VALUE_LIST[i])
+
+        print("Webdriver created.")
+        done = True
+    except Exception as e:
+        print("Error creating webdriver.")
+        print(e)
+        print("retry")
+        retry += 1
+  return driver
 
 # configure the web driver settings
 options = Options()
