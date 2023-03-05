@@ -26,13 +26,6 @@
 """
 from AccessControl import allow_module, allow_type, allow_class
 
-import numpy as np
-
-allow_type(np.dtype)
-
-sz = np.array([('2017-07-12T12:30:20',)], dtype=[('date', 'M8[s]')])
-allow_type(type(sz[0]['date']))
-
 allow_module('sklearn')
 allow_module('sklearn.model_selection')
 allow_module('sklearn.linear_model')
@@ -67,10 +60,6 @@ def allow_full_write(t):
   else: # 3.6
     safetype.__self__.update({t: True})
 
-
-allow_full_write(np.ndarray)
-allow_full_write(np.core.records.recarray)
-allow_full_write(np.core.records.record)
 
 from wendelin.bigarray.array_zodb import ZBigArray
 allow_full_write(ZBigArray)
