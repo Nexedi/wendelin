@@ -85,6 +85,7 @@ def setup_driver_on_app(options, dc):
 # configure the web driver settings
 options = Options()
 options.add_argument('headless')
+options.add_argument('--headless=new')
 options.add_argument('incognito')
 options.add_argument('window-size=1200x1200')
 options.add_argument('--no-sandbox')
