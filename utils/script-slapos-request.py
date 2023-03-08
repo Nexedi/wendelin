@@ -16,13 +16,15 @@ for i in range(NUMBER_OF_SERVERS):
 done = False
 nap = 300
 while not done:
+  done = True
   for instance in instance_list:
     print("checking instance in %s" % instance.getId())
     print("instance started?")
     if instance.getState() != 'started':
       print("instance NOT started")
       time.sleep(nap)
-      break
+      done = False
+      continue
     print("instance started!")
     print("instance ready?")
     try:
@@ -30,11 +32,11 @@ while not done:
     except:
       print("instance NOT ready")
       time.sleep(nap)
-      break
+      done = False
+      continue
     print("instance in %s ready!" % instance.getId())
-  done = True
 
-print("all instance ready")
+print("all instances ready")
 
 server_url_list = []
 
@@ -48,7 +50,6 @@ for instance in instance_list:
   # e.g. 'https://selenium:jvT0SRR9Mtad@[2001:67c:1254:5f:d58a::5933]:9443/wd/hub'
   #instance.getConnectionParameter('connection-parameters')
   # ?? ERROR, not found
-
 
 #OUTSIDE (slapos console)
 #slapos service list
