@@ -1,10 +1,36 @@
+import time
+from slapos import request
+
 selenium_SR_url = "~/srv/project/slapos/software/seleniumserver/software.cfg"
-
-# request instance(s) (they should be 2 or more)
+selenium_SR_url = "/srv/slapgrid/slappart34/srv/project/slapos/software/seleniumrunner/software.cfg"
+# TODO: request 2 or more instances
 instance = request(selenium_SR_url, "seleniumserver")
+instance = request(selenium_SR_url, "selenium-server-roque")
+instance = request(selenium_SR_url, "seleniumrunner")
 
-instance.getState()
-# 'started'
+done = False
+nap = 10
+while not done:
+  #TODO iterate instances
+  print("instance started?")
+  if instance.getState() != 'started':
+    print("instance NOT started")
+    time.sleep(nap)
+    continue
+  print("instance started!")
+  print("instance ready?")
+  try:
+    instance.getConnectionParameter('url')
+  except:
+    print("instance NOT ready")
+    time.sleep(nap)
+    continue
+  print("instance ready!")
+  done = True
+
+server_url = instance.getConnectionParameter('url')
+print("server_url:")
+print(server_url)
 
 # get a specific parameter info
 instance.getConnectionParameter('url')
@@ -13,13 +39,11 @@ instance.getConnectionParameter('url')
 instance.getConnectionParameter('connection-parameters')
 # ?? ERROR, not found
 
-# outside python, using slapos client:
-
-slapos service list
+#OUTSIDE (slapos console)
+#slapos service list
 #{
 #  "seleniumserver": "~/srv/project/slapos/software/seleniumserver/software.cfg"
 #}
 
-slapos service info seleniumserver
+#slapos service info seleniumserver
 # dict with all info
-
