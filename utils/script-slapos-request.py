@@ -2,7 +2,7 @@ import time
 from slapos import request
 
 selenium_SR_url = "~/srv/project/slapos/software/seleniumserver/software.cfg"
-selenium_SR_url = "/srv/slapgrid/slappart34/srv/project/slapos/software/seleniumrunner/software.cfg"
+selenium_SR_url = "~/srv/project/slapos/software/seleniumrunner/software.cfg"
 # TODO: request 2 or more instances
 instance = request(selenium_SR_url, "seleniumserver")
 instance = request(selenium_SR_url, "selenium-server-roque")
