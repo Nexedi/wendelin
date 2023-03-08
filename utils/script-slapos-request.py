@@ -3,13 +3,14 @@ from slapos import request
 
 selenium_SR_url = "~/srv/project/slapos/software/seleniumserver/software.cfg"
 selenium_SR_url = "~/srv/project/slapos/software/seleniumrunner/software.cfg"
+selenium_SR_url = "/srv/slapgrid/slappart6/srv/project/slapos/software/seleniumserver/software.cfg"
 # TODO: request 2 or more instances
 instance = request(selenium_SR_url, "seleniumserver")
 instance = request(selenium_SR_url, "selenium-server-roque")
 instance = request(selenium_SR_url, "seleniumrunner")
 
 done = False
-nap = 10
+nap = 300
 while not done:
   #TODO iterate instances
   print("instance started?")
