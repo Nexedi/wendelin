@@ -1,21 +1,24 @@
 import time
-#from slapos import request
+#from slapos import request #missing eggs! "No module named slapos"
 
 NUMBER_OF_SERVERS = 2
 
 selenium_SR_url = "~/srv/project/slapos/software/seleniumserver/software.cfg"
 selenium_SR_url = "~/srv/project/slapos/software/seleniumrunner/software.cfg"
+#TODO how to get SR url?
 selenium_SR_url = "/srv/slapgrid/slappart6/srv/project/slapos/software/seleniumserver/software.cfg"
 
 instance_list = []
 
-for i in range(NUMBER_OF_SERVERS):
-  instance = request(selenium_SR_url, "seleniumserver-" + str(i))
-  instance_list.append(instance)
+def request_instances(NUMBER_OF_SERVERS):
+  for i in range(NUMBER_OF_SERVERS):
+    instance = request(selenium_SR_url, "seleniumserver-" + str(i))
+    instance_list.append(instance)
 
 done = False
 nap = 300
 while not done:
+  request_instances(NUMBER_OF_SERVERS)
   done = True
   for instance in instance_list:
     print("checking instance in %s" % instance.getId())
