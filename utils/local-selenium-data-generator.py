@@ -25,6 +25,8 @@ DRONE_INPUT_VALUE_LIST=[]
 AI_SCRIPT = ""
 if (len(sys.argv)>1):
   AI_SCRIPT = open(sys.argv[1], "r").read().replace("\n", "\\n").replace('"', "'")
+# flag to set if run remote or local
+REMOTE = False
 
 def values_in_range(start, end, n):
   d = (end - start) / (n - 1)
@@ -40,8 +42,20 @@ def setup_driver_on_app(options, dc):
     if retry == 10:
         raise RuntimeError("Error: couldn't create webdriver after 10 attempts")
     try:
-        # local selenium
-        driver = webdriver.Chrome(options=options, desired_capabilities=dc)
+        if (REMOTE):
+          # run selenium remote server
+          server_url = "https://selenium:jvT0SRR9Mtad@softinst179949.host.vifib.net/wd/hub"
+          executor = RemoteConnection(server_url, keep_alive=True)
+          cert_reqs = 'CERT_REQUIRED'
+          ca_certs = certifi.where()
+          executor._conn = urllib3.PoolManager(cert_reqs=cert_reqs, ca_certs=ca_certs)
+          driver = webdriver.Remote(
+              command_executor=executor,
+              desired_capabilities=dc,
+          )
+        else:
+          # local selenium
+          driver = webdriver.Chrome(options=options, desired_capabilities=dc)
 
         # navigate to drone app
         url = "https://dronesimulator.app.officejs.com/"
@@ -53,6 +67,7 @@ def setup_driver_on_app(options, dc):
           skip = driver.find_element(By.XPATH, '//a[@class="skip-link" and text()="Skip"]')
           skip.click()
         except:
+          # if app was installed  on a previous run, there is no bootloader page. contine
           pass
 
         # wait for editor iframe content
@@ -118,11 +133,15 @@ for combination in itertools.product(*DRONE_INPUT_VALUE_LIST):
     loading = driver.find_element(By.XPATH, '//span[@id="loading"]')
     driver.find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "Download Simulation LOG")]')
 
-    # download all result logs
+    # download/store all result logs
+    result_list = []
     for i in range(NUMBER_OF_DRONES):
       text = "Download Simulation LOG " + str(i)
       download_log = driver.find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "' + text + '")]')
       download_log.click() #saves log txt file in command location
+      # stores log result on object (can be used to send to wendelin)
+      result_log = driver.find_element(By.XPATH, '//div[@class="container"]//textarea[@id="' + id_s + '"]')
+      result_list.append(result_log.get_attribute('value'))
 
     end_iter = datetime.now()
     elapsed = end_iter - start_iter
@@ -145,3 +164,8 @@ elapsed_time = end_time - start_time
 print("Total combinations: " + str(iter))
 print("Total time %s seconds. " % str(elapsed_time.seconds))
 
+#print browser log entries
+#for entry in driver.get_log('browser'):
+#  print(entry)
+
+driver.quit()
