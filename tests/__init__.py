@@ -17,7 +17,7 @@ class WendelinERP5(ERP5TypeTestSuite):
     return ['%s:%s' % (x.group(1), x.group(2)) \
       for x in [component_re.match(y) for y in glob.glob(os.path.join(
       BT5, '*', '*', '*', 'test.erp5.test*.py'))]]
-  
+
   def run(self, full_test):
     test = ':' in full_test and full_test.split(':')[1] or full_test
     # from https://lab.nexedi.com/nexedi/erp5/commit/530e8b4e:
