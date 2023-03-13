@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from test_suite import ERP5TypeTestSuite
+from test_suite import ERP5TypeTestSuite, WendelinBusinessTemplateCodingStyleTestSuite
 import glob
 import os.path
 import re
