@@ -61,7 +61,7 @@ class WendelinERP5(ERP5TypeTestSuite):
     return status_dict
 
 
-class WendelinBusinessTemplateCodingStyleTestSuite(_ERP5):
+class WendelinBusinessTemplateCodingStyleTestSuite(ERP5TypeTestSuite):
   """
   Run coding style test on all business templates.
   """
