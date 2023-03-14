@@ -29,6 +29,8 @@ if (len(sys.argv)>1):
 REMOTE = False
 
 def values_in_range(start, end, n):
+  if n == 1:
+    return [start]
   d = (end - start) / (n - 1)
   return [start + i*d for i in range(n)]
 
@@ -137,6 +139,7 @@ for combination in itertools.product(*DRONE_INPUT_VALUE_LIST):
     result_list = []
     for i in range(NUMBER_OF_DRONES):
       text = "Download Simulation LOG " + str(i)
+      id_s = "log_result_" + str(i)
       download_log = driver.find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "' + text + '")]')
       download_log.click() #saves log txt file in command location
       # stores log result on object (can be used to send to wendelin)
