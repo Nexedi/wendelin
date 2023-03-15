@@ -1,5 +1,5 @@
 import time
-#from slapos import request #missing eggs! "No module named slapos"
+from slapos import slap
 
 NUMBER_OF_SERVERS = 2
 
@@ -7,6 +7,14 @@ selenium_SR_url = "~/srv/project/slapos/software/seleniumserver/software.cfg"
 selenium_SR_url = "~/srv/project/slapos/software/seleniumrunner/software.cfg"
 #TODO how to get SR url?
 selenium_SR_url = "/srv/slapgrid/slappart6/srv/project/slapos/software/seleniumserver/software.cfg"
+selenium_SR_url = "~/srv/project/slapos/software/headlesschrome-seleniumserver/software.cfg"
+
+''' WIP request instance
+my_slap = slap.slap()
+my_slap.initializeConnection('') #config['master_url'] #doc: slapgrid_uri – uri the slapgrid server connector
+computer = my_slap.registerComputer('slaprunner') #config['computer_id'] #doc: computer_guid – the identifier of the computer inside the slapgrid server. #slaprunner?
+computer.getComputerPartitionList()
+my_slap.registerOpenOrder().request(selenium_SR_url, 'my_selenium_server')'''
 
 instance_list = []
 
