@@ -70,6 +70,7 @@ def setup_driver_on_app(server_url, options, dc):
         #driver.get_screenshot_as_file('ai.png')
 
       print("Webdriver created for " + server_url)
+      driver.get_screenshot_as_file('DEBUG-web-driver-created.png')
       done = True
     except Exception as e:
       print("Error creating webdriver for " + server_url)
@@ -86,8 +87,8 @@ GAME_INPUT_ID_LIST=["simulation_speed", "simulation_time", "number_of_drones", "
 GAME_INPUT_VALUE_LIST=[1500*60, 1500, NUMBER_OF_DRONES, 12, 20, 6, 1, "594.792", "45.6403", "14.2648", "65.668", 3, 8]
 #DRONE_INPUT_ID_LIST=["drone_speed", "drone_max_roll", "drone_min_pitch", "drone_max_pitch"]
 #DRONE_VALUE_RANGE_LIST=[[12, 20], [10, 50], [-35, -10], [10, 40]]
-DRONE_INPUT_ID_LIST=["drone_speed"]
-DRONE_VALUE_RANGE_LIST=[[12, 20]]
+DRONE_INPUT_ID_LIST=["drone_speed", "drone_max_roll"]
+DRONE_VALUE_RANGE_LIST=[[12, 20], [10, 50]]
 DRONE_INPUT_VALUE_LIST=[]
 AI_SCRIPT = ""
 if (len(sys.argv)>1):
@@ -102,8 +103,10 @@ server_url_list = [
 
 for i in range(len(DRONE_VALUE_RANGE_LIST)):
   DRONE_INPUT_VALUE_LIST.append(values_in_range(DRONE_VALUE_RANGE_LIST[i][0], DRONE_VALUE_RANGE_LIST[i][1], GRANULARITY))
+print("full DRONE_INPUT_VALUE_LIST:")
+print(DRONE_INPUT_VALUE_LIST)
 
-combination_list = itertools.product(*DRONE_INPUT_VALUE_LIST)
+combination_list = [combination for combination in itertools.product(*DRONE_INPUT_VALUE_LIST)]
 print("full combination_list:")
 print(combination_list)
 
@@ -123,7 +126,7 @@ dc = DesiredCapabilities.CHROME
 dc['loggingPrefs'] = { 'browser':'ALL'}
 
 def checkDriver(driver_dict):
-  print("checking driver: " str(driver_dict))
+  print("checking driver: " + str(driver_dict))
   driver.implicitly_wait(1)
   try:
     driver.find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "Download Simulation LOG")]')
@@ -173,8 +176,8 @@ print(driver_list)
 while len(combination_list) > 0:
   print("---------------------------------")
   print("len(combination_list): " + str(len(combination_list)))
-  print("Allocating combination " + str(combination))
   combination = combination_list.pop()
+  print("Allocating combination " + str(combination))
   assigned = False
   while not assigned:
     print("checking drivers...")
