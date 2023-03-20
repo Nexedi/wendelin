@@ -126,16 +126,23 @@ dc = DesiredCapabilities.CHROME
 dc['loggingPrefs'] = { 'browser':'ALL'}
 
 def checkDriver(driver_dict):
-  print("checking driver: " + str(driver_dict))
-  driver.implicitly_wait(1)
+  print("checking driver...")
+  print("driver_dict:")
+  print(driver_dict)
+  #print("driver_dict.driver:")
+  #print(driver_dict.driver)
+  print("driver_dict[driver]:")
+  print(driver_dict['driver'])
+  driver_dict['driver'].implicitly_wait(1)
   try:
-    driver.find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "Download Simulation LOG")]')
+    driver_dict['driver'].find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "Download Simulation LOG")]')
     print("driver finished previous comb. Set it to free")
     #TODO save results
     #free driver
-    driver_dict.running_combination = None
+    driver_dict['running_combination'] = None
   except Exception as e:
     print("driver is still busy")
+    driver_dict['driver'].get_screenshot_as_file('DEBUG-driver-still-busy.png')
     print("exception on check drive:")
     print(e)
 
@@ -183,7 +190,7 @@ while len(combination_list) > 0:
     print("checking drivers...")
     # check drivers
     driver_dict = getFreeDriver(combination)
-    print("get free driver result:")
+    print("got free driver result:")
     print(driver_dict)
     if driver_dict:
       assigned = True
