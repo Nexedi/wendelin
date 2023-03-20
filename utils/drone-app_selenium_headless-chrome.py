@@ -135,11 +135,15 @@ def checkDriver(driver_dict):
   print(driver_dict['driver'])
   driver_dict['driver'].implicitly_wait(1)
   try:
-    driver_dict['driver'].find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "Download Simulation LOG")]')
-    print("driver finished previous comb. Set it to free")
-    #TODO save results
-    #free driver
-    driver_dict['running_combination'] = None
+    if not driver_dict['first_run']:
+      driver_dict['driver'].find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "Download Simulation LOG")]')
+      #TODO save results
+      print("driver ready for another comb. Set it to free")
+      #free driver
+      driver_dict['running_combination'] = None
+    else:
+      print("first run for the driver!")
+      driver_dict['first_run'] = False
   except Exception as e:
     print("driver is still busy")
     driver_dict['driver'].get_screenshot_as_file('DEBUG-driver-still-busy.png')
@@ -174,6 +178,7 @@ for server_url in server_url_list:
   driver_dict = {
     'server_url': server_url,
     'driver': driver,
+    'first_run': True,
     'running_combination': None
   }
   driver_list.append(driver_dict)
@@ -189,6 +194,7 @@ while len(combination_list) > 0:
   while not assigned:
     print("checking drivers...")
     # check drivers
+    # TODO: this may crash, include it in the try block
     driver_dict = getFreeDriver(combination)
     print("got free driver result:")
     print(driver_dict)
