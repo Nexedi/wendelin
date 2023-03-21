@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from test_suite import ERP5TypeTestSuite
 import glob
 import os.path
@@ -8,71 +9,87 @@ HERE = os.path.dirname(__file__)
 BT5 = os.path.join(os.path.split(HERE)[0], 'bt5')
 PRODUCT = os.path.join(os.path.split(HERE)[0], 'product')
 
-class WendelinBusinessTemplateCodingStyleTestSuite(ERP5TypeTestSuite):
-    """
-    Run coding style test on all business templates.
-    """
+class _ERP5(ERP5TypeTestSuite):
+  realtime_output = False
+  enabled_product_list = ('CMFActivity', 'CMFCategory', 'ERP5', 'ERP5Catalog',
+                          'ERP5Form',
+                          'ERP5OOo', 'ERP5Security', 'ERP5Type',
+                          'Formulator', 'ERP5Workflow',
+                          'HBTreeFolder2', 'MailTemplates',
+                          'PortalTransforms', 'TimerService',
+                          'ZMySQLDA', 'ZSQLCatalog', 'Zelenium')
 
-    def __init__(self, logger=None, options=None):
-        ERP5TypeTestSuite.__init__(self, logger=logger, options=options)
-        self.subtests = []
+  def enableProducts(self):
+    product_set = set(self.enabled_product_list)
+    try:
+      dir_set = set(os.walk('Products').next()[1])
+      for product in dir_set - product_set:
+        os.unlink(os.path.join('Products', product))
+      product_set -= dir_set
+    except StopIteration:
+      os.mkdir('Products')
+    for product in product_set:
+      os.symlink(os.path.join('..', 'products', product),
+                 os.path.join('Products', product))
 
-    def getTestList(self):
-        test_list = []
-        # Wendelin bootstrap is not included in ERP5
-        bootstrap_path = os.path.join(os.path.dirname(PRODUCT), 'Wendelin', 'bootstrap')
-        test_list += [os.path.basename(path) for path in glob.glob(bootstrap_path + '/*') if os.path.isdir(path)]
-        # business templates in bt5
-        bt5_paths = glob.glob(BT5 + '/*/*/')
-        for bt5_path in bt5_paths:
-            # we skip coding style check for business templates having this marker
-            # property. Since the property is not exported (on purpose), modified business templates
-            # will be candidate for coding style test again.
-            if os.path.exists(bt5_path + '/bt/skip_coding_style_test'):
-                continue
-            test_list.append(os.path.basename(os.path.dirname(bt5_path)))
-        # business templates in product
-        product_paths = glob.glob(PRODUCT + '/*/bt5/*/*/')
-        for product_path in product_paths:
-            if os.path.exists(product_path + '/skip_coding_style_test'):
-                continue
-            test_list.append(os.path.basename(os.path.dirname(product_path)))
-        return test_list
+  def _getAllTestList(self):
+    test_list = []
+    path = "%s/../" % HERE
+    component_re = re.compile(".*/([^/]+)/TestTemplateItem/portal_components"
+                              "/test\.[^.]+\.([^.]+).py$")
+    for test_path in chain(
+        glob(path + '/product/*/tests/test*.py'),
+        glob(path + '/bt5/*/TestTemplateItem/test*.py'),
+        glob(path + '/bt5/*/TestTemplateItem/portal_components/test.*.test*.py')):
+      component_re_match = component_re.match(test_path)
+      if component_re_match is not None:
+        test_case = "%s:%s" % (component_re_match.group(1),
+                               component_re_match.group(2))
+      else:
+        test_case = test_path.split(os.sep)[-1][:-3] # remove .py
+      product = test_path.split(os.sep)[-3]
+      # don't test 3rd party products
+      if product in ('PortalTransforms', 'MailTemplates', 'Zelenium'):
+        continue
+      test_list.append(test_case)
+    return test_list
 
-    def run(self, full_test):
-        if full_test.startswith("Python3Style."):
-            return self.runUnitTest('Python3StyleTest', TESTED_PRODUCT=full_test[13:])
-        return self.runUnitTest('CodingStyleTest', TESTED_BUSINESS_TEMPLATE=full_test)
+  def update(self):
+    self.checkout('products', 'bt5')
+    self.enableProducts()
 
-    def getLogDirectoryPath(self, *args, **kw):
-        log_directory = os.path.join(
-            self.log_directory,
-            args[-1] + '-' + (kw.get('TESTED_BUSINESS_TEMPLATE') or kw['TESTED_PRODUCT']))
-        os.mkdir(log_directory)
-        return log_directory
 
-    def addSubTest(self, test, test_class):
-        """
-        Add a sub test to this test suite. A sub test is a test class to be executed
-        as part of this test suite.
-        """
-        self.subtests.append((test, test_class))
+class WendelinBusinessTemplateCodingStyleTestSuite(_ERP5):
+  """Run coding style test on all business templates.
+  """
+  def getTestList(self):
+    test_list = [
+      os.path.basename(path)
+      for path in chain(
+        glob(HERE + '/../bt5/*'),
+        glob(HERE + '/../product/Wendelin/bootstrap/*'))
+      # we skip coding style check for business templates having this marker
+      # property. Since the property is not exported (on purpose), modified business templates
+      # will be candidate for coding style test again.
+      if not os.path.exists(path + '/bt/skip_coding_style_test') and os.path.isdir(path)
+    ]
+    for path in chain(glob(HERE + '/../product/*'),
+                      glob(HERE + '/../bt5')):
+      if not os.path.exists(path + '/skip_coding_style_test') and os.path.isdir(path):
+        test_list.append("Python3Style." + os.path.basename(path))
+    return test_list
 
-    def setUp(self):
-        """
-        Set up each sub test before running.
-        """
-        for subtest in self.subtests:
-            subtest[1].setUp()
+  def run(self, full_test):
+    if full_test.startswith("Python3Style."):
+      return self.runUnitTest('Python3StyleTest', TESTED_PRODUCT=full_test[13:])
+    return self.runUnitTest('CodingStyleTest', TESTED_BUSINESS_TEMPLATE=full_test)
 
-    def runSubTests(self):
-        """
-        Run all sub tests in this test suite.
-        """
-        results = {}
-        for subtest in self.subtests:
-            results[subtest[0]] = subtest[1].run()
-        return results
+  def getLogDirectoryPath(self, *args, **kw):
+    log_directory = os.path.join(
+        self.log_directory,
+        args[-1] + '-' + (kw.get('TESTED_BUSINESS_TEMPLATE') or kw['TESTED_PRODUCT']))
+    os.mkdir(log_directory)
+    return log_directory
 
 
 class WendelinERP5(ERP5TypeTestSuite):
@@ -126,3 +143,4 @@ class WendelinERP5(ERP5TypeTestSuite):
       status_dict['test_count'] = int(group_dict['total'])
       status_dict['skip_count'] = int(group_dict['expected_failure'])
     return status_dict
+
