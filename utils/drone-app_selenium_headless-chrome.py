@@ -69,6 +69,7 @@ def setup_driver_on_app(server_url, options, dc):
         driver.switch_to.default_content()
         #driver.get_screenshot_as_file('ai.png')
 
+      driver.implicitly_wait(0)
       print("Webdriver created.")
       driver.get_screenshot_as_file('DEBUG-web-driver-created.png')
       done = True
@@ -80,14 +81,14 @@ def setup_driver_on_app(server_url, options, dc):
   return driver
 
 def checkDriver(driver_dict):
-  print("Checking driver " + str(driver_dict['id']) + "(has running comb: " + str(driver_dict['running_combination']) + ")")
-  driver_dict['driver'].implicitly_wait(1)
+  print("Checking driver " + str(driver_dict['id']) + " (has running comb: " + str(driver_dict['running_combination']) + ")")
   try:
     if driver_dict['running_combination']:
       if not driver_dict['first_run']:
         driver_dict['driver'].find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "Download Simulation LOG")]')
-        print("Download Simulation LOG FOUND!! Saving results... (screenshot taken)")
-        driver_dict['driver'].get_screenshot_as_file('DEBUG-saving-results.png')
+        txt = 'DEBUG-saving-results-' + driver_dict['id'] + '-' + str(driver_dict['running_combination'])
+        print("Driver finished run! " + txt + " (screenshot taken)")
+        driver_dict['driver'].get_screenshot_as_file(txt + '.png')
         for i in range(NUMBER_OF_DRONES):
           text = "Download Simulation LOG " + str(i)
           #id_s = "log_result_" + str(i)
@@ -134,8 +135,8 @@ GAME_INPUT_ID_LIST=["simulation_speed", "simulation_time", "number_of_drones", "
 GAME_INPUT_VALUE_LIST=[1500*60, 1500, NUMBER_OF_DRONES, 12, 20, 6, 1, "594.792", "45.6403", "14.2648", "65.668", 3, 8]
 #DRONE_INPUT_ID_LIST=["drone_speed", "drone_max_roll", "drone_min_pitch", "drone_max_pitch"]
 #DRONE_VALUE_RANGE_LIST=[[12, 20], [10, 50], [-35, -10], [10, 40]]
-DRONE_INPUT_ID_LIST=["drone_speed", "drone_max_roll"]
-DRONE_VALUE_RANGE_LIST=[[12, 20], [10, 50]]
+DRONE_INPUT_ID_LIST=["drone_speed", "drone_min_speed"]
+DRONE_VALUE_RANGE_LIST=[[10, 20], [5, 10]]
 DRONE_INPUT_VALUE_LIST=[]
 AI_SCRIPT = ""
 if (len(sys.argv)>1):
@@ -191,7 +192,6 @@ while len(combination_list) > 0:
   print("Allocating combination " + str(combination))
   assigned = False
   while not assigned:
-    print("Checking all drivers...")
     # check drivers
     # TODO: this may crash, include it in the try block
     driver_dict = getFreeDriver(combination)
@@ -213,9 +213,21 @@ while len(combination_list) > 0:
           driver_dict['driver'] = setup_driver_on_app(driver_dict.server_url, options, dc)
           driver_dict['running_combination'] = None
     else:
-      print("no free drivers yet. WAIT 1 sec")
+      print("No free drivers yet.")
       print("")
       time.sleep(1) #wait
+
+print("")
+print("ALL combinations were assigned")
+print("waiting for current execution to end")
+#wait until all running combination are done
+finished = False
+while not finished:
+  finished = True
+  for driver_dict in driver_list:
+    checkDriver(driver_dict)
+    if driver_dict['running_combination']:
+      finished = True
 
 end_time = datetime.now()
 print("End execution at:")
