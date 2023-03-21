@@ -70,8 +70,9 @@ def setup_driver_on_app(server_url, options, dc):
         #driver.get_screenshot_as_file('ai.png')
 
       driver.implicitly_wait(0)
+      driver.set_window_size(1000, 2080)
       print("Webdriver created.")
-      driver.get_screenshot_as_file('DEBUG-web-driver-created.png')
+      #driver.get_screenshot_as_file('DEBUG-web-driver-created.png')
       done = True
     except Exception as e:
       print("Error creating webdriver.")
@@ -85,30 +86,47 @@ def checkDriver(driver_dict):
   try:
     if driver_dict['running_combination']:
       if not driver_dict['first_run']:
+        print("finding Download Simulation LOG result element...")
         driver_dict['driver'].find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "Download Simulation LOG")]')
+        print("FOUND")
         txt = 'DEBUG-saving-results-' + driver_dict['id'] + '-' + str(driver_dict['running_combination'])
         print("Driver finished run! " + txt + " (screenshot taken)")
-        driver_dict['driver'].get_screenshot_as_file(txt + '.png')
+        #driver_dict['driver'].get_screenshot_as_file(txt + '.png')
         for i in range(NUMBER_OF_DRONES):
           text = "Download Simulation LOG " + str(i)
           #id_s = "log_result_" + str(i)
           download_log = driver_dict['driver'].find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "' + text + '")]')
           download_log.click() #saves log txt file in command location
-          print("1 drone result saved")
+          time.sleep(1)
+          print("DEBUG - " + text + " - " + driver_dict['id'] + '-' + str(driver_dict['running_combination']))
         print("driver ready for another comb. Set it to free")
         driver_dict['running_combination'] = None #free driver
       else:
         print("first run for the driver!")
         driver_dict['first_run'] = False
   except Exception as e:
+    #<div data-gadget-scope="notification" data-gadget-sandbox="public" class="visible">
+    #  <button type="submit" class="error">Error: Drone speed must be between min speed and max speed</button>
+    #</div>
     print("driver is still busy")
-    #driver_dict['driver'].get_screenshot_as_file('DEBUG-driver-still-busy.png')
-    #print("exception on check drive:")
-    #print(e)
+    try:
+      error = driver_dict['driver'].find_element(By.XPATH, '//div[@class="visible"]//button[contains(text(), "Failed to execute")]')
+      print("error on combination " + str(driver_dict['running_combination']) + ". Setting driver free.")
+      txt = 'DEBUG-error-exception-' + driver_dict['id'] + '-' + str(driver_dict['running_combination'])
+      driver_dict['driver'].get_screenshot_as_file(txt + '.png')
+      driver_dict['running_combination'] = None #free driver
+    except:
+      print("no execution error")
+    if driver_dict['print-exception']:
+      txt = 'DEBUG-exception-' + driver_dict['id'] + '-' + str(driver_dict['running_combination'])
+      driver_dict['driver'].get_screenshot_as_file(txt + '.png')
+      print(e)
+      print(type(e).__name__)
 
 def getFreeDriver(combination):
   free_driver = None
   for driver_dict in driver_list:
+    driver_dict['driver'].implicitly_wait(0)
     checkDriver(driver_dict)
     if not free_driver:
       if not driver_dict['running_combination']:
@@ -165,7 +183,7 @@ options = Options()
 options.add_argument('headless')
 options.add_argument('--headless=new')
 options.add_argument('incognito')
-options.add_argument('window-size=1200x3200')
+#options.add_argument('window-size=800x2200')
 options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')        
 dc = DesiredCapabilities.CHROME
@@ -179,7 +197,8 @@ for idx, server_url in enumerate(server_url_list):
     'server_url': server_url,
     'driver': driver,
     'first_run': True,
-    'running_combination': None
+    'running_combination': None,
+    'print-exception': False
   }
   driver_list.append(driver_dict)
 
@@ -218,16 +237,23 @@ while len(combination_list) > 0:
       time.sleep(1) #wait
 
 print("")
+print("--------------------------------")
 print("ALL combinations were assigned")
+print("--------------------------------")
+print("")
 print("waiting for current execution to end")
 #wait until all running combination are done
 finished = False
 while not finished:
   finished = True
   for driver_dict in driver_list:
+    # as this is the last check, it can be waited. No need to loop too much
+    driver_dict['driver'].implicitly_wait(10)
+    driver_dict['print-exception'] = True
     checkDriver(driver_dict)
     if driver_dict['running_combination']:
-      finished = True
+      finished = False
+  time.sleep(0.5)
 
 end_time = datetime.now()
 print("End execution at:")
@@ -238,6 +264,8 @@ print("Total time %s seconds. " % str(elapsed_time.seconds))
 
 for driver_dict in driver_list:
   #print browser log entries
-  #for entry in driver.get_log('browser'):
+  #for entry in driver_dict['driver'].get_log('browser'):
   #  print(entry)
   driver_dict['driver'].quit()
+
+print("All drivers quit")
