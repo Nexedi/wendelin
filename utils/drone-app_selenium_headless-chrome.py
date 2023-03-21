@@ -172,7 +172,6 @@ dc['loggingPrefs'] = { 'browser':'ALL'}
 
 driver_list = []
 for idx, server_url in enumerate(server_url_list):
-#for server_url in server_url_list:
   driver = setup_driver_on_app(server_url, options, dc)
   driver_dict = {
     'id': 'D' + str(idx),
@@ -182,8 +181,6 @@ for idx, server_url in enumerate(server_url_list):
     'running_combination': None
   }
   driver_list.append(driver_dict)
-#print("Done. Driver dict list:")
-#print(driver_list)
 
 iter = 0
 while len(combination_list) > 0:
@@ -227,8 +224,8 @@ elapsed_time = end_time - start_time
 print("Total combinations: " + str(iter))
 print("Total time %s seconds. " % str(elapsed_time.seconds))
 
-#print browser log entries
-#for entry in driver.get_log('browser'):
-#  print(entry)
-
-#driver.quit()
+for driver_dict in driver_list:
+  #print browser log entries
+  #for entry in driver.get_log('browser'):
+  #  print(entry)
+  driver_dict['driver'].quit()
