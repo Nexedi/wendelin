@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from test_suite import ERP5TypeTestSuite
-import glob
+from glob import glob
 import os.path
 import re
 from itertools import chain
