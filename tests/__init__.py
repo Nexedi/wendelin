@@ -77,8 +77,8 @@ class WendelinBusinessTemplateCodingStyleTestSuite(_ERP5):
     for path in chain(glob(HERE + '/../product/*'), glob(HERE + '/../bt5')):
       if not os.path.exists(path + '/skip_coding_style_test') and os.path.isdir(path):
         test_list.append("Python3Style." + os.path.basename(path))
-      elif path + "/erp5_wendelin_category" == os.path.basename(path):
-	continue
+
+    test_list = [path for path in test_list if os.path.basename(path) != "erp5_wendelin_category"]
 
     return test_list
 
