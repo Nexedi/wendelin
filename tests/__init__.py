@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 from test_suite import ERP5TypeTestSuite
 from glob import glob
 import os.path
