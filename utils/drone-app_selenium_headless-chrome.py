@@ -14,15 +14,13 @@ from datetime import datetime
 
 def takeFullScreenshot(driver, filename):
   try:
-    print("taking full screenshot...")
     S = lambda X: driver.execute_script('return document.body.parentNode.scroll'+X)
-    print("S:")
-    print(S('Width'),S('Height'))
     driver.set_window_size(S('Width'),S('Height')*1.5) # May need manual adjustment
-    driver.find_element_by_tag_name('body').screenshot(filename)
-    print("screenshot taken!")
+    body = driver.find_element_by_tag_name('body')
+    body.screenshot(filename)
   except Exception as e:
-    print(e)
+    # take the screenshot in the standard way
+    driver.get_screenshot_as_file(filename)
 
 def values_in_range(start, end, n):
   if n == 1:
@@ -40,11 +38,10 @@ def setup_driver_on_app(server_url, options, dc):
     try:
       if (REMOTE):
         # run selenium remote server
-        executor = RemoteConnection(server_url, keep_alive=True)
-        cert_reqs = 'CERT_REQUIRED'
-        ca_certs = certifi.where()
-        executor._conn = urllib3.PoolManager(cert_reqs=cert_reqs, ca_certs=ca_certs)
-        #executor._conn = urllib3.PoolManager()
+        #executor = RemoteConnection(server_url, keep_alive=True)
+        #cert_reqs = 'CERT_REQUIRED'
+        #ca_certs = certifi.where()
+        #executor._conn = urllib3.PoolManager(cert_reqs=cert_reqs, ca_certs=ca_certs)
         driver = webdriver.Remote(
             #command_executor=executor,
             command_executor=server_url,
