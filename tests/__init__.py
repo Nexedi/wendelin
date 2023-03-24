@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from test_suite import ERP5TypeTestSuite
+from test_suite import ERP5TypeTestSuite, WendelinERP5
 from glob import glob
 import os.path
 import re
@@ -61,7 +61,7 @@ class _Wendelin(ERP5TypeTestSuite):
     self.enableProducts()
 
 
-class WendelinBusinessTemplateCodingStyleTestSuite(_Wendelin):
+class WendelinBusinessTemplateCodingStyleTestSuite(WendelinERP5):
   """Run coding style test on all business templates.
   """
   def getTestList(self):
