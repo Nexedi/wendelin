@@ -11,7 +11,7 @@ HERE = os.path.dirname(__file__)
 BT5 = os.path.join(os.path.split(HERE)[0], 'bt5')
 PRODUCT = os.path.join(os.path.split(HERE)[0], 'product')
 
-class _ERP5(ERP5TypeTestSuite):
+class _Wendelin(ERP5TypeTestSuite):
   realtime_output = False
   enabled_product_list = ('CMFActivity', 'CMFCategory', 'ERP5', 'ERP5Catalog',
                           'ERP5Form',
@@ -61,7 +61,7 @@ class _ERP5(ERP5TypeTestSuite):
     self.enableProducts()
 
 
-class WendelinBusinessTemplateCodingStyleTestSuite(_ERP5):
+class WendelinBusinessTemplateCodingStyleTestSuite(_Wendelin):
   """Run coding style test on all business templates.
   """
   def getTestList(self):
