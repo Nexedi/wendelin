@@ -10,9 +10,13 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 from datetime import datetime
 
+DEBUG = False
+
 ##### FUNCTIONS DEFINITION #####
 
 def takeFullScreenshot(driver, filename):
+  if not DEBUG:
+    return
   try:
     S = lambda X: driver.execute_script('return document.body.parentNode.scroll'+X)
     driver.set_window_size(S('Width'),S('Height')*1.5) # May need manual adjustment
@@ -20,6 +24,7 @@ def takeFullScreenshot(driver, filename):
     body.screenshot(filename)
   except Exception as e:
     # take the screenshot in the standard way
+    driver.set_window_size(1000, 3080)
     driver.get_screenshot_as_file(filename)
 
 def values_in_range(start, end, n):
@@ -81,7 +86,6 @@ def setup_driver_on_app(server_url, options, dc):
         #driver.get_screenshot_as_file('ai.png')
 
       driver.implicitly_wait(0)
-      driver.set_window_size(1000, 3080)
       print("Webdriver created.")
       #driver.get_screenshot_as_file('DEBUG-web-driver-created.png')
       done = True
@@ -97,13 +101,12 @@ def checkDriver(driver_dict):
   try:
     if driver_dict['running_combination']:
       if not driver_dict['first_run']:
-        print("finding Download Simulation LOG result element...")
         driver_dict['driver'].find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "Download Simulation LOG")]')
-        print("FOUND")
+        print("LOG link FOUND")
         txt = 'DEBUG-saving-results-' + driver_dict['id'] + '-' + str(driver_dict['running_combination'])
         print("Driver finished run! " + txt + " (screenshot taken)")
         #driver_dict['driver'].get_screenshot_as_file(txt + '.png')
-        takeFullScreenshot(driver_dict['driver'], txt + '.png')
+        #takeFullScreenshot(driver_dict['driver'], txt + '.png')
         for i in range(NUMBER_OF_DRONES):
           text = "Download Simulation LOG " + str(i)
           #id_s = "log_result_" + str(i)
@@ -119,9 +122,12 @@ def checkDriver(driver_dict):
   except Exception as e:
     print("driver is still busy")
     # check if app failed
+    takeFullScreenshot(driver_dict['driver'], 'driver-still-busy.png')
     try:
       error = driver_dict['driver'].find_element(By.XPATH, '//div[@class="visible"]//button[contains(text(), "Failed to execute")]')
+      print("")
       print("[ERROR] teximage2d error on comb  " + str(driver_dict['running_combination']) + ". Setting driver free.")
+      print("")
       txt = 'DEBUG-error-exception-' + driver_dict['id'] + '-' + str(driver_dict['running_combination'])
       #driver_dict['driver'].get_screenshot_as_file(txt + '.png')
       takeFullScreenshot(driver_dict['driver'], txt + '.png')
@@ -147,9 +153,25 @@ def getFreeDriver(combination):
         free_driver = driver_dict
   return free_driver
 
+def reloadPage(driver):
+  driver.refresh();
+  # skip bootloader
+  try:
+    skip = driver.find_element(By.XPATH, '//a[@class="skip-link" and text()="Skip"]')
+    skip.click()
+  except:
+    # if app was installed  on a previous run, there is no bootloader page. contine
+    pass
+  # wait for editor iframe content
+  driver.implicitly_wait(20)
+  iframe = driver.find_element(By.XPATH, '//iframe')
+  driver.implicitly_wait(0)
+
 def runDriver(driver, combination):
   # fill drone inputs
   print("Running combination " + str(combination))
+  reloadPage(driver)
+  print("page reloaded!")
   for i, input_id in enumerate(DRONE_INPUT_ID_LIST):
     input = driver.find_element(By.ID, input_id)
     input.clear()
@@ -178,7 +200,7 @@ APP_URL = "https://dronesimulator.app.officejs.com/"
 server_url_list = [
   #"https://selenium:i1Kzu0Yd8L2R@[2001:67c:1254:53:b362::314f]:9430/wd/hub",
   "https://selenium:i1Kzu0Yd8L2R@softinst182376.host.vifib.net/wd/hub",
-  "https://selenium:dBlhn3DRcpgu@softinst182375.host.vifib.net/wd/hub"
+  #"https://selenium:dBlhn3DRcpgu@softinst182375.host.vifib.net/wd/hub"
 ]
 
 for i in range(len(DRONE_VALUE_RANGE_LIST)):
@@ -197,7 +219,6 @@ options = Options()
 options.add_argument('headless')
 options.add_argument('--headless=new')
 options.add_argument('incognito')
-#options.add_argument('window-size=800x3200')
 options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')        
 dc = DesiredCapabilities.CHROME
@@ -240,7 +261,8 @@ while len(combination_list) > 0:
         assigned = False
         print("trying to take screenshot...")
         try:
-          driver_dict['driver'].get_screenshot_as_file(str(combination) + '.png')
+          takeFullScreenshot(driver_dict['driver'], '[ERROR] ' + str(combination) + '.png')
+          #driver_dict['driver'].get_screenshot_as_file(str(combination) + '.png')
         except:
           print("Error while taking screenshot, this means driver sesion died. Re-creating webdriver...")
           driver_dict['driver'] = setup_driver_on_app(driver_dict.server_url, options, dc)
@@ -276,11 +298,13 @@ elapsed_time = end_time - start_time
 print("Total combinations: " + str(iter))
 print("Total time %s seconds. " % str(elapsed_time.seconds))
 
-for driver_dict in driver_list:
-  #print browser log entries
-  print("Log for driver " + str(driver_dict['id']))
-  for entry in driver_dict['driver'].get_log('browser'):
-    print(entry)
-  driver_dict['driver'].quit()
+DEBUG = False
+if DEBUG:
+  for driver_dict in driver_list:
+    #print browser log entries
+    print("Log for driver " + str(driver_dict['id']))
+    for entry in driver_dict['driver'].get_log('browser'):
+      print(entry)
+    driver_dict['driver'].quit()
 
 print("All drivers quit")
