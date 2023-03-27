@@ -56,6 +56,12 @@ def setup_driver_on_app(server_url, options, dc):
         # local selenium
         driver = webdriver.Chrome(options=options, desired_capabilities=dc)
 
+      #DEBUG
+      str_version = driver.capabilities['browserVersion'].split('.')[0]
+      print("CHROME VERSION: " + str_version)
+      if (int(str_version)) <= 91:
+        raise Exception("Discard old chrome version.")
+
       # navigate to drone app
       driver.get(APP_URL)
       driver.implicitly_wait(5)
@@ -170,8 +176,7 @@ def reloadPage(driver):
 def runDriver(driver, combination):
   # fill drone inputs
   print("Running combination " + str(combination))
-  reloadPage(driver)
-  print("page reloaded!")
+  #reloadPage(driver)
   for i, input_id in enumerate(DRONE_INPUT_ID_LIST):
     input = driver.find_element(By.ID, input_id)
     input.clear()
