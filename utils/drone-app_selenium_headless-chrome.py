@@ -10,7 +10,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 from datetime import datetime
 
-DEBUG = False
+DEBUG = True
 
 ##### FUNCTIONS DEFINITION #####
 
@@ -47,25 +47,30 @@ def setup_driver_on_app(server_url, options, dc):
         #cert_reqs = 'CERT_REQUIRED'
         #ca_certs = certifi.where()
         #executor._conn = urllib3.PoolManager(cert_reqs=cert_reqs, ca_certs=ca_certs)
+        print("calling webdriver.Remote...")
         driver = webdriver.Remote(
             #command_executor=executor,
             command_executor=server_url,
             desired_capabilities=dc,
         )
+        print("Done. Driver instantiated.")
       else:
         # local selenium
         driver = webdriver.Chrome(options=options, desired_capabilities=dc)
 
       #DEBUG
-      str_version = driver.capabilities['browserVersion'].split('.')[0]
-      print("CHROME VERSION: " + str_version)
-      if (int(str_version)) <= 91:
-        raise Exception("Discard old chrome version.")
+      #print("Getting version...")
+      #str_version = driver.capabilities['browserVersion'].split('.')[0]
+      #print("CHROME VERSION: " + str_version)
+      #if (int(str_version)) <= 91:
+      #  raise Exception("Discard old chrome version.")
 
+      print("Navigating to app...")
       # navigate to drone app
       driver.get(APP_URL)
       driver.implicitly_wait(5)
       # skip bootloader
+      print("Skiping bootloader...")
       try:
         skip = driver.find_element(By.XPATH, '//a[@class="skip-link" and text()="Skip"]')
         skip.click()
@@ -73,10 +78,12 @@ def setup_driver_on_app(server_url, options, dc):
         # if app was installed  on a previous run, there is no bootloader page. contine
         pass
 
+      print("Waiting for iframe...")
       # wait for editor iframe content
       driver.implicitly_wait(20)
       iframe = driver.find_element(By.XPATH, '//iframe')
 
+      print("Filling inputs...")
       # fill game inputs
       for i, input_id in enumerate(GAME_INPUT_ID_LIST):
         input = driver.find_element(By.ID, input_id)
@@ -89,11 +96,9 @@ def setup_driver_on_app(server_url, options, dc):
         driver.switch_to.frame(frame)
         driver.execute_script('return document.getElementsByClassName("CodeMirror")[0].CodeMirror.setValue("' + AI_SCRIPT + '")')
         driver.switch_to.default_content()
-        #driver.get_screenshot_as_file('ai.png')
 
       driver.implicitly_wait(0)
       print("Webdriver created.")
-      #driver.get_screenshot_as_file('DEBUG-web-driver-created.png')
       done = True
     except Exception as e:
       print("Error creating webdriver.")
@@ -110,8 +115,7 @@ def checkDriver(driver_dict):
         driver_dict['driver'].find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "Download Simulation LOG")]')
         print("LOG link FOUND")
         txt = 'DEBUG-saving-results-' + driver_dict['id'] + '-' + str(driver_dict['running_combination'])
-        print("Driver finished run! " + txt + " (screenshot taken)")
-        #driver_dict['driver'].get_screenshot_as_file(txt + '.png')
+        print("Driver finished run! " + txt)
         #takeFullScreenshot(driver_dict['driver'], txt + '.png')
         for i in range(NUMBER_OF_DRONES):
           text = "Download Simulation LOG " + str(i)
@@ -123,27 +127,21 @@ def checkDriver(driver_dict):
         print("driver ready for another comb. Set it to free")
         driver_dict['running_combination'] = None #free driver
       else:
-        print("first run for the driver!")
         driver_dict['first_run'] = False
   except Exception as e:
     print("driver is still busy")
+    #takeFullScreenshot(driver_dict['driver'], 'driver-still-busy.png')
     # check if app failed
-    takeFullScreenshot(driver_dict['driver'], 'driver-still-busy.png')
     try:
       error = driver_dict['driver'].find_element(By.XPATH, '//div[@class="visible"]//button[contains(text(), "Failed to execute")]')
-      print("")
-      print("[ERROR] teximage2d error on comb  " + str(driver_dict['running_combination']) + ". Setting driver free.")
-      print("")
-      txt = 'DEBUG-error-exception-' + driver_dict['id'] + '-' + str(driver_dict['running_combination'])
-      #driver_dict['driver'].get_screenshot_as_file(txt + '.png')
-      takeFullScreenshot(driver_dict['driver'], txt + '.png')
-      driver_dict['running_combination'] = None #free driver
+      webgl_teximage2d_error = True
     except:
-      print("not teximage2d error. good.")
+      webgl_teximage2d_error = False
       pass
+    if webgl_teximage2d_error:
+      raise Exception("[ERROR] webgl teximage2d")
     if driver_dict['print-exception']:
       txt = 'DEBUG-exception-' + driver_dict['id'] + '-' + str(driver_dict['running_combination'])
-      #driver_dict['driver'].get_screenshot_as_file(txt + '.png')
       takeFullScreenshot(driver_dict['driver'], txt + '.png')
       print(e)
       print(type(e).__name__)
@@ -160,7 +158,9 @@ def getFreeDriver(combination):
   return free_driver
 
 def reloadPage(driver):
+  print("RELOADING PAGE")
   driver.refresh();
+  driver.get(APP_URL)
   # skip bootloader
   try:
     skip = driver.find_element(By.XPATH, '//a[@class="skip-link" and text()="Skip"]')
@@ -176,7 +176,7 @@ def reloadPage(driver):
 def runDriver(driver, combination):
   # fill drone inputs
   print("Running combination " + str(combination))
-  #reloadPage(driver)
+  reloadPage(driver)
   for i, input_id in enumerate(DRONE_INPUT_ID_LIST):
     input = driver.find_element(By.ID, input_id)
     input.clear()
@@ -203,9 +203,8 @@ REMOTE = True # flag to set if run remote or local
 APP_URL = "https://dronesimulator.app.officejs.com/"
 # TODO. HARDCODED, it should be generated by requesting the instances //see: script-slapos-request.py
 server_url_list = [
-  #"https://selenium:i1Kzu0Yd8L2R@[2001:67c:1254:53:b362::314f]:9430/wd/hub",
   "https://selenium:i1Kzu0Yd8L2R@softinst182376.host.vifib.net/wd/hub",
-  #"https://selenium:dBlhn3DRcpgu@softinst182375.host.vifib.net/wd/hub"
+  "https://selenium:dBlhn3DRcpgu@softinst182375.host.vifib.net/wd/hub"
 ]
 
 for i in range(len(DRONE_VALUE_RANGE_LIST)):
@@ -267,7 +266,6 @@ while len(combination_list) > 0:
         print("trying to take screenshot...")
         try:
           takeFullScreenshot(driver_dict['driver'], '[ERROR] ' + str(combination) + '.png')
-          #driver_dict['driver'].get_screenshot_as_file(str(combination) + '.png')
         except:
           print("Error while taking screenshot, this means driver sesion died. Re-creating webdriver...")
           driver_dict['driver'] = setup_driver_on_app(driver_dict.server_url, options, dc)
