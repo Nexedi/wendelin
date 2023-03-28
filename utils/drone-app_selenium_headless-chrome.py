@@ -35,6 +35,8 @@ server_url_list = [
 
 ##### FUNCTIONS DEFINITION #####
 
+# UTILS
+
 def takeFullScreenshot(driver, filename):
   driver.set_window_size(1000, 3080)
   driver.get_screenshot_as_file(filename)
@@ -58,7 +60,8 @@ def values_in_range(start, end, n):
   d = (end - start) / (n - 1)
   return [start + i*d for i in range(n)]
 
-# NEW APPROACH
+# WEB DRIVER PROCESS
+
 def createDriver(server_url, options):
   print("Creating webdriver for " + server_url)
   done = False
@@ -174,9 +177,11 @@ def runDone(driver):
 
 ##### MAIN #####
 
+# generate input values
 for i in range(len(DRONE_VALUE_RANGE_LIST)):
   DRONE_INPUT_VALUE_LIST.append(values_in_range(DRONE_VALUE_RANGE_LIST[i][0], DRONE_VALUE_RANGE_LIST[i][1], GRANULARITY))
 
+# generate all input combinations
 combination_list = [combination for combination in itertools.product(*DRONE_INPUT_VALUE_LIST)]
 
 start_time = datetime.now()
@@ -196,22 +201,18 @@ options.add_argument('--disable-dev-shm-usage')
 # create all drivers
 driver_list = []
 for idx, server_url in enumerate(server_url_list):
-  #driver = setup_driver_on_app(server_url, options)
   driver = createDriver(server_url, options)
   driver_dict = {
     'id': 'D' + str(idx),
-    #'server_url': server_url, #obsolete?
     'state': 'draft',
     'driver': driver,
-    #'first_run': True, #obsolete
-    'running_combination': None, #for DEBUG
-    #'print-exception': False #obsolete?
+    'running_combination': None
   }
   driver_list.append(driver_dict)
 
-print("NEW APPROACH")
 iter = 0
-while len(combination_list) > 0:
+finished_driver_count = 0
+while finished_driver_count < len(driver_list):
   for driver_dict in driver_list:
     print("Checking driver " + str(driver_dict['id']) + ", with state: " + str(driver_dict['state']) + " (has running comb: " + str(driver_dict['running_combination']) + ")") 
     driver = driver_dict['driver']
@@ -229,11 +230,16 @@ while len(combination_list) > 0:
         driver_dict['state'] = 'loading'
       if driver_dict['state'] == 'loading':
         print("state loading!")
-        combination = combination_list.pop()
-        driver_dict['running_combination'] = combination
-        runDriverNew(driver, combination)
-        print("set state to running")
-        driver_dict['state'] = 'running'
+        if len(combination_list) > 0:
+          combination = combination_list.pop()
+          driver_dict['running_combination'] = combination
+          runDriverNew(driver, combination)
+          print("set state to running")
+          driver_dict['state'] = 'running'
+        else:
+          print("set state to finished")
+          driver_dict['state'] = 'finished'
+          finished_driver_count += 1
       if driver_dict['state'] == 'running':
         print("state running!")
         if runDone(driver):
