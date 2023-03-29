@@ -82,7 +82,7 @@ class WendelinBusinessTemplateCodingStyleTestSuite(WendelinERP5):
       if not os.path.exists(path + '/skip_coding_style_test') and os.path.isdir(path):
         test_list.append("Python3Style." + os.path.basename(path))
 
-  return test_list
+    return test_list
 
   def run(self, full_test):
     if full_test.startswith("Python3Style."):
