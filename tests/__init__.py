@@ -67,8 +67,6 @@ class WendelinBusinessTemplateCodingStyleTestSuite(WendelinERP5):
   Run coding style test on all business templates.
   """
 
-  ...
-
   def getTestList(self):
     test_list = [
       os.path.basename(path)
@@ -97,3 +95,5 @@ class WendelinBusinessTemplateCodingStyleTestSuite(WendelinERP5):
         args[-1] + '-' + (kw.get('TESTED_BUSINESS_TEMPLATE') or kw['TESTED_PRODUCT']))
     os.mkdir(log_directory)
     return log_directory
+
+  pass
