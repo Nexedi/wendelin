@@ -63,33 +63,4 @@ class WendelinERP5(ERP5TypeTestSuite):
     return status_dict
 
 class WendelinBusinessTemplateCodingStyleTestSuite(WendelinERP5):
-  """Run coding style test on all business templates.
-  """
-  def getTestList(self):
-    test_list = [
-      os.path.basename(path)
-      for path in chain(
-        glob(HERE + '/../bt5/*'),
-        glob(HERE + '/../product/Wendelin/bootstrap/*'))
-      # we skip coding style check for business templates having this marker
-      # property. Since the property is not exported (on purpose), modified business templates
-      # will be candidate for coding style test again.
-      if not os.path.exists(path + '/bt/skip_coding_style_test') and os.path.isdir(path)
-    ]
-    for path in chain(glob(HERE + '/../product/*'), glob(HERE + '/../bt5')):
-      if not os.path.exists(path + '/skip_coding_style_test') and os.path.isdir(path):
-        test_list.append("Python3Style." + os.path.basename(path))
-
-    return test_list
-
-  def run(self, full_test):
-    if full_test.startswith("Python3Style."):
-      return self.runUnitTest('Python3StyleTest', TESTED_PRODUCT=full_test[13:])
-    return self.runUnitTest('CodingStyleTest', TESTED_BUSINESS_TEMPLATE=full_test)
-
-  def getLogDirectoryPath(self, *args, **kw):
-    log_directory = os.path.join(
-        self.log_directory,
-        args[-1] + '-' + (kw.get('TESTED_BUSINESS_TEMPLATE') or kw['TESTED_PRODUCT']))
-    os.mkdir(log_directory)
-    return log_directory
+  ...
