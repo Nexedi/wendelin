@@ -78,10 +78,10 @@ def createDriver(server_url, options):
       else: # local selenium
         driver = webdriver.Chrome(options=options, desired_capabilities=options.to_capabilities())
       EMPTY_URL = driver.current_url
-      #DEBUG
       str_version = driver.capabilities['browserVersion'].split('.')[0]
-      #if (int(str_version)) <= 91:
-      #  raise Exception("Discard old chrome version.")
+      # create only v91
+      if (int(str_version)) != 91:
+        raise Exception("Discard non-91 chrome version.")
       print("Webdriver created. Chrome version: " + str_version)
       done = True
     except Exception as e:
@@ -91,24 +91,24 @@ def createDriver(server_url, options):
   return driver
 
 def initDriver(driver):
-  print("INIT-DRIVER")
+  print("- INIT-DRIVER")
   if driver.current_url == EMPTY_URL:
-    print("driver url empty. calling GET app_url")
+    #print("driver url empty. calling GET app_url")
     driver.get(APP_URL)
-  else:
-    print("driver url already set, DON'T call GET")
+  #else:
+    #print("driver url already set, DON'T call GET")
   # skip bootloader
   skip_list = driver.find_elements(By.XPATH, '//a[@class="skip-link" and text()="Skip"]')
   if len(skip_list) > 0:
-    print("skipping bootloader (click on skip)")
+    #print("skipping bootloader (click on skip)")
     skip_list[0].click()
-  else:
-    print("skip bootL not found")
+  #else:
+  #  print("skip bootL not found")
 
 def loadDriver(driver):
-  print("LOAD-DRIVER")
+  print("- LOAD-DRIVER")
   # fill game inputs
-  print("filling common inputs") #this takes time and it's serial
+  #print("filling common inputs") #this takes time and it's serial (1sec per input)
   for i, input_id in enumerate(GAME_INPUT_ID_LIST):
     input = driver.find_element(By.ID, input_id)
     input.clear()
@@ -116,17 +116,16 @@ def loadDriver(driver):
 
   # fill codemirror editor input
   if (AI_SCRIPT):
-    print("filling AI_SCRIPT")
+    #print("filling AI_SCRIPT")
     frame = driver.find_element(By.XPATH, '//iframe')
     driver.switch_to.frame(frame)
     driver.execute_script('return document.getElementsByClassName("CodeMirror")[0].CodeMirror.setValue("' + AI_SCRIPT + '")')
     driver.switch_to.default_content()
-  print("load done")
+  print("- load done")
 
 def runDriverNew(driver, combination):
-  print("RUN-DRIVER")
+  print("- RUN-DRIVER - combination: " + str(combination))
   # fill drone inputs
-  print("Running combination " + str(combination))
   for i, input_id in enumerate(DRONE_INPUT_ID_LIST):
     input = driver.find_element(By.ID, input_id)
     input.clear()
@@ -134,25 +133,25 @@ def runDriverNew(driver, combination):
   #run the simulation
   run_button = driver.find_element(By.XPATH, '//input[@type="submit" and @name="action_run"]')
   run_button.click()
-  print("run clicked")
+  print("- run clicked")
 
 def reloadDriver(driver):
-  print("RELOAD-DRIVER")
+  print("- RELOAD-DRIVER")
   driver.refresh();
-  print("refresh called")
+  #print("refresh called")
   driver.get(APP_URL)
-  print("GET app_url called.")
+  #print("GET app_url called.")
 
 def downloadLogs(driver_dict):
-  print("DOWNLOAD LOGS")
+  print("- DOWNLOAD LOGS")
   for i in range(NUMBER_OF_DRONES):
     text = "Download Simulation LOG " + str(i)
     #id_s = "log_result_" + str(i)
     download_log = driver_dict['driver'].find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "' + text + '")]')
     download_log.click() #saves log txt file in command location
     time.sleep(0.5)
-    print("Clicked - " + text + " - " + driver_dict['id'] + ' - ' + str(driver_dict['running_combination']))
-  print("download logs done")
+    print("- Clicked - " + text + " - " + driver_dict['id'] + ' - ' + str(driver_dict['running_combination']))
+  print("- download logs done")
 
 def initDone(driver):
   iframe_list = driver.find_elements(By.XPATH, '//iframe')
@@ -165,9 +164,9 @@ def runDone(driver):
     webgl_teximage2d_error = driver_dict['driver'].find_elements(By.XPATH, '//div[@class="visible"]//button[contains(text(), "Failed to execute")]')
     if (len(webgl_teximage2d_error) > 0):
       raise Exception("[ERROR] webgl_teximage2d_error")
-    print("[ERROR] while running - " + error_list[0].text)
-    print("DISCARD invalid combination")
-    print("set state to draft")
+    print("- [ERROR] while running - " + error_list[0].text)
+    print("- DISCARD invalid combination")
+    print("- " + driver_dict['id'] + " set state to draft")
     driver_dict['state'] = 'draft'
     # discard error combination (may be an invalid set of parameters)
     driver_dict['running_combination'] = None
@@ -192,6 +191,7 @@ print(combination_list)
 
 # configure the web driver settings
 options = webdriver.ChromeOptions()
+#options.set_capability("browserVersion", "91.0.4472.0")
 options.add_argument('--headless=new')
 options.add_argument('--window-size=800x600')
 options.add_argument('--incognito')
@@ -210,48 +210,51 @@ for idx, server_url in enumerate(server_url_list):
   }
   driver_list.append(driver_dict)
 
+creation_time = datetime.now()
+creation_elapsed_time = creation_time - start_time
+
 iter = 0
 finished_driver_count = 0
 while finished_driver_count < len(driver_list):
   for driver_dict in driver_list:
-    print("Checking driver " + str(driver_dict['id']) + ", with state: " + str(driver_dict['state']) + " (has running comb: " + str(driver_dict['running_combination']) + ")") 
+    #print("Checking driver " + str(driver_dict['id']) + ", with state: " + str(driver_dict['state']) + " (has running comb: " + str(driver_dict['running_combination']) + ")")
     driver = driver_dict['driver']
     try:
       if driver_dict['state'] == 'draft':
-        print("state draft!")
+        print(driver_dict['id'] + " in state draft!")
         initDriver(driver)
         if initDone(driver):
-          print("init done (iframe found). set state to init")
+          print(driver_dict['id'] + " init done (iframe found). set state to init")
           driver_dict['state'] = 'init'
       if driver_dict['state'] == 'init':
-        print("state init!")
+        print(driver_dict['id'] + " in state init!")
         loadDriver(driver)
-        print("set state to loading")
+        print(driver_dict['id'] + " set state to loading")
         driver_dict['state'] = 'loading'
       if driver_dict['state'] == 'loading':
-        print("state loading!")
+        print(driver_dict['id'] + " in state loading!")
         if len(combination_list) > 0:
           combination = combination_list.pop()
           driver_dict['running_combination'] = combination
           runDriverNew(driver, combination)
-          print("set state to running")
+          print(driver_dict['id'] + " set state to running")
           driver_dict['state'] = 'running'
         else:
-          print("set state to finished")
+          print(driver_dict['id'] + " set state to finished")
           driver_dict['state'] = 'finished'
           finished_driver_count += 1
       if driver_dict['state'] == 'running':
-        print("state running!")
+        #print(driver_dict['id'] + " in state running!")
         if runDone(driver):
-          print("run done! donwlog links found")
+          print(driver_dict['id'] + " run done! donwlog links found")
           downloadLogs(driver_dict)
-          reloadDriver(driver)
-          print("set state to draft")
+          #reloadDriver(driver)
+          print(driver_dict['id'] + " set state to draft")
           driver_dict['state'] = 'draft'
           driver_dict['running_combination'] = None
           iter += 1
-        else:
-          print("still running")
+        #else:
+        #  print("still running")
     except Exception as e:
       print("ERROR: " + str(e))
       combination_list.append(driver_dict['running_combination'])
@@ -263,8 +266,9 @@ while finished_driver_count < len(driver_list):
 end_time = datetime.now()
 print("End execution at:")
 print(end_time.now().strftime("%d/%m/%Y %H:%M:%S"))
-elapsed_time = end_time - start_time
+elapsed_time = end_time - creation_time #start_time
 print("Total combinations: " + str(iter))
-print("Total time %s seconds. " % str(elapsed_time.seconds))
+print("Total time for driver creation: %s seconds. " % str(creation_elapsed_time.seconds))
+print("Total time for runs: %s seconds. " % str(elapsed_time.seconds))
 
 print("All drivers quit")
