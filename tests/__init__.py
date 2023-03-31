@@ -17,7 +17,7 @@ class WendelinERP5(ERP5TypeTestSuite):
     component_re = re.compile(".*/([^/]+)/TestTemplateItem/portal_components"
                               "/test\.[^.]+\.([^.]+).py$")
     return ['%s:%s' % (x.group(1), x.group(2)) \
-      for x in [component_re.match(y) for y in glob.glob(os.path.join(
+      for x in [component_re.match(y) for y in glob(os.path.join(
       BT5, '*', '*', '*', 'test.erp5.test*.py'))]]
 
   def run(self, full_test):
