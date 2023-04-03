@@ -4,29 +4,25 @@ from slapos import slap
 NUMBER_OF_SERVERS = 2
 
 selenium_SR_url = "~/srv/project/slapos/software/seleniumserver/software.cfg"
-selenium_SR_url = "~/srv/project/slapos/software/seleniumrunner/software.cfg"
 #TODO how to get SR url?
-selenium_SR_url = "/srv/slapgrid/slappart6/srv/project/slapos/software/seleniumserver/software.cfg"
-selenium_SR_url = "~/srv/project/slapos/software/headlesschrome-seleniumserver/software.cfg"
+selenium_SR_url = "/srv/slapgrid/slappart70/srv/project/slapos/software/headlesschrome-seleniumserver/software.cfg"
 
-''' WIP request instance
+print("REQUESTING SERVER INSTANCES")
+
 my_slap = slap.slap()
-my_slap.initializeConnection('') #config['master_url'] #doc: slapgrid_uri – uri the slapgrid server connector
-computer = my_slap.registerComputer('slaprunner') #config['computer_id'] #doc: computer_guid – the identifier of the computer inside the slapgrid server. #slaprunner?
-computer.getComputerPartitionList()
-my_slap.registerOpenOrder().request(selenium_SR_url, 'my_selenium_server')'''
+#TODO how to get master_url?
+my_slap.initializeConnection('http://10.0.222.95:4000') #slapgrid_uri – uri the slapgrid server connector
 
 instance_list = []
 
-def request_instances(NUMBER_OF_SERVERS):
-  for i in range(NUMBER_OF_SERVERS):
-    instance = request(selenium_SR_url, "seleniumserver-" + str(i))
-    instance_list.append(instance)
+for i in range(NUMBER_OF_SERVERS):
+  instance = my_slap.registerOpenOrder().request(selenium_SR_url, "headlesschrome-seleniumserver-" + str(i))
+  instance_list.append(instance)
+  print("instance requested: %s" % instance.getId())
 
 done = False
 nap = 300
 while not done:
-  request_instances(NUMBER_OF_SERVERS)
   done = True
   for instance in instance_list:
     print("checking instance in %s" % instance.getId())
@@ -39,7 +35,7 @@ while not done:
     print("instance started!")
     print("instance ready?")
     try:
-      instance.getConnectionParameter('url')
+      instance.getConnectionParameter('frontend-url')
     except:
       print("instance NOT ready")
       time.sleep(nap)
@@ -55,18 +51,7 @@ print("Server urls:")
 
 for instance in instance_list:
   # get a specific parameter info
-  server_url = instance.getConnectionParameter('url')
+  server_url = instance.getConnectionParameter('frontend-url')
   server_url_list.append(server_url)
-  print(server_url)
-  # e.g. 'https://selenium:jvT0SRR9Mtad@[2001:67c:1254:5f:d58a::5933]:9443/wd/hub'
-  #instance.getConnectionParameter('connection-parameters')
-  # ?? ERROR, not found
 
-#OUTSIDE (slapos console)
-#slapos service list
-#{
-#  "seleniumserver": "~/srv/project/slapos/software/seleniumserver/software.cfg"
-#}
-
-#slapos service info seleniumserver
-# dict with all info
+print(server_url_list)
