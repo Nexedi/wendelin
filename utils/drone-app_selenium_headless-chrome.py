@@ -58,9 +58,9 @@ for instance in instance_list:
   frontend_url = instance.getConnectionParameter('frontend-url')
   protocol = frontend_url.split('//')[0]
   domain = frontend_url.split('//')[1]
-  user = instance.getConnectionParameter('frontend-url')
-  pswrd = instance.getConnectionParameter('frontend-url')
-  server_url = "%s://%s:%s@%s" % (protocol, user, pswrd, domain)
+  user = instance.getConnectionParameter('user')
+  pswrd = instance.getConnectionParameter('pass')
+  server_url = "%s//%s:%s@%s" % (protocol, user, pswrd, domain)
   server_url_list.append(server_url)
 
 print("All instances ready. Server url list:")
