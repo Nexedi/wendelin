@@ -155,10 +155,10 @@ def initDriver(driver):
   #else:
     #print("driver url already set, DON'T call GET")
   # skip bootloader
-  skip_list = driver.find_elements(By.XPATH, '//a[@class="skip-link" and text()="Skip"]')
-  if len(skip_list) > 0:
+  #skip_list = driver.find_elements(By.XPATH, '//a[@class="skip-link" and text()="Skip"]')
+  #if len(skip_list) > 0:
     #print("skipping bootloader (click on skip)")
-    skip_list[0].click()
+    #skip_list[0].click()
   #else:
   #  print("skip bootL not found")
 
