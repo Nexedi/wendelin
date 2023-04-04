@@ -17,12 +17,9 @@ DEBUG = False
 
 def requestServerInstances():
   NUMBER_OF_SERVERS = 2
-
   selenium_SR_url = "~/srv/project/slapos/software/seleniumserver/software.cfg"
   #TODO how to get SR url?
   selenium_SR_url = "/srv/slapgrid/slappart70/srv/project/slapos/software/headlesschrome-seleniumserver/software.cfg"
-
-  print("REQUESTING SERVER INSTANCES") if DEBUG else None
 
   my_slap = slap.slap()
   #TODO how to get master_url?
@@ -34,14 +31,13 @@ def requestServerInstances():
     reference = "headlesschrome-seleniumserver-" + str(i)
     instance = my_slap.registerOpenOrder().request(selenium_SR_url, reference)
     instance_list.append(instance)
-    print("instance %s requested at %s" % (reference, instance.getId())) if DEBUG else None
+    print("Instance %s requested at %s" % (reference, instance.getId()))
 
   done = False
   nap = 30
   while not done:
     done = True
     for instance in instance_list:
-      print("checking instance in %s" % instance.getId()) if DEBUG else None
       if instance.getState() != 'started':
         time.sleep(nap)
         done = False
@@ -49,11 +45,9 @@ def requestServerInstances():
       try:
         instance.getConnectionParameter('frontend-url')
       except:
-        print("instance NOT ready") if DEBUG else None
         time.sleep(nap)
         done = False
         continue
-      print("instance in %s ready!" % instance.getId()) if DEBUG else None
 
   server_url_list = []
 
@@ -126,12 +120,11 @@ def values_in_range(start, end, n):
 # WEB DRIVER PROCESS
 
 def createDriver(server_url, options):
-  print("Creating webdriver for " + server_url) if DEBUG else None
   done = False
   retry = 0
   while not done:
     if retry == 10:
-        raise RuntimeError("Error: couldn't create webdriver after 10 attempts for " + server_url)
+      raise RuntimeError("Error: couldn't create webdriver after 10 attempts for " + server_url)
     try:
       if (REMOTE):
         driver = webdriver.Remote(
@@ -149,47 +142,26 @@ def createDriver(server_url, options):
       print("Webdriver created. Chrome version: " + str_version)
       done = True
     except Exception as e:
-      print("Error creating webdriver. Retry.") if DEBUG else None
-      print(e) if DEBUG else None
       retry += 1
   return driver
 
 def initDriver(driver):
-  print("- INIT-DRIVER") if DEBUG else None
   if driver.current_url == EMPTY_URL:
-    #print("driver url empty. calling GET app_url")
     driver.get(APP_URL)
-  #else:
-    #print("driver url already set, DON'T call GET")
-  # skip bootloader
-  #skip_list = driver.find_elements(By.XPATH, '//a[@class="skip-link" and text()="Skip"]')
-  #if len(skip_list) > 0:
-    #print("skipping bootloader (click on skip)")
-    #skip_list[0].click()
-  #else:
-  #  print("skip bootL not found")
 
 def loadDriver(driver):
-  print("- LOAD-DRIVER") if DEBUG else None
   # fill game inputs
-  #print("filling common inputs") #this takes time and it's serial (1sec per input)
   for i, input_id in enumerate(GAME_INPUT_ID_LIST):
     input_element = driver.find_element(By.ID, input_id)
     driver.execute_script("arguments[0].value = '%s'" % GAME_INPUT_VALUE_LIST[i], input_element)
-    #input_element.clear()
-    #input_element.send_keys(GAME_INPUT_VALUE_LIST[i])
-    #input.type(GAME_INPUT_VALUE_LIST[i])
   driver.set_window_size(1000, 4080)
-  #driver.get_screenshot_as_file("inputs-common.png")
 
   # fill codemirror editor input
   if (AI_SCRIPT):
-    #print("filling AI_SCRIPT")
     frame = driver.find_element(By.XPATH, '//iframe')
     driver.switch_to.frame(frame)
     driver.execute_script('return document.getElementsByClassName("CodeMirror")[0].CodeMirror.setValue("' + AI_SCRIPT + '")')
     driver.switch_to.default_content()
-  print("- load done") if DEBUG else None
 
 def runDriverNew(driver, combination):
   print("- RUN-DRIVER - combination: " + str(combination))
@@ -199,23 +171,17 @@ def runDriverNew(driver, combination):
     driver.execute_script("arguments[0].value = '%s'" % str(combination[i]), input_element)
     #input_element.clear()
     #input_element.send_keys(str(combination[i]))
-  #driver.get_screenshot_as_file("inputs-%s.png" % str(combination))
   #run the simulation
   run_button = driver.find_element(By.XPATH, '//input[@type="submit" and @name="action_run"]')
   run_button.click()
-  print("- run clicked") if DEBUG else None
 
 def reloadDriver(driver):
-  print("- RELOAD-DRIVER") if DEBUG else None
   driver.refresh();
-  #print("refresh called")
   driver.get(APP_URL)
-  #print("GET app_url called.")
 
 def downloadLogs(driver_dict):
-  print("- DOWNLOAD LOGS") if DEBUG else None
   for i in range(NUMBER_OF_DRONES):
-    text = "Download Simulation LOG " + str(i) if DEBUG else None
+    #text = "Download Simulation LOG " + str(i)
     #download_log = driver_dict['driver'].find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "' + text + '")]')
     #download_log.click() #saves log txt file in command location
     id_s = "log_result_" + str(i)
@@ -226,7 +192,6 @@ def downloadLogs(driver_dict):
     f.write(result_log_content)
     f.close()
     print("- Result log stored in file '%s'" % filename)
-  print("- download logs done") if DEBUG else None
 
 def initDone(driver):
   iframe_list = driver.find_elements(By.XPATH, '//iframe')
@@ -240,8 +205,6 @@ def runDone(driver):
     if (len(webgl_teximage2d_error) > 0):
       raise Exception("[ERROR] webgl_teximage2d_error")
     print("- [ERROR] while running - " + error_list[0].text)
-    print("- DISCARD invalid combination") if DEBUG else None
-    print("- " + driver_dict['id'] + " set state to draft") if DEBUG else None
     driver_dict['state'] = 'draft'
     # discard error combination (may be an invalid set of parameters)
     driver_dict['running_combination'] = None
@@ -262,12 +225,9 @@ print("Total combinations: " + str(len(combination_list)))
 start_time = datetime.now()
 print("Start execution at:")
 print(start_time.strftime("%d/%m/%Y %H:%M:%S"))
-print("Full combination_list:") if DEBUG else None
-print(combination_list) if DEBUG else None
 
 # configure the web driver settings
 options = webdriver.ChromeOptions()
-#options.set_capability("browserVersion", "91.0.4472.0")
 options.add_argument('--headless=new')
 options.add_argument('--window-size=800x600')
 options.add_argument('--incognito')
@@ -293,56 +253,41 @@ iter = 0
 finished_driver_count = 0
 while finished_driver_count < len(driver_list):
   for driver_dict in driver_list:
-    #print("Checking driver " + str(driver_dict['id']) + ", with state: " + str(driver_dict['state']) + " (has running comb: " + str(driver_dict['running_combination']) + ")")
     driver = driver_dict['driver']
     try:
       if driver_dict['state'] == 'draft':
-        print(driver_dict['id'] + " in state draft!") if DEBUG else None
         initDriver(driver)
         if initDone(driver):
-          print(driver_dict['id'] + " init done (iframe found). set state to init") if DEBUG else None
           driver_dict['state'] = 'init'
       if driver_dict['state'] == 'init':
-        print(driver_dict['id'] + " in state init!") if DEBUG else None
         loadDriver(driver)
-        print(driver_dict['id'] + " set state to loading") if DEBUG else None
         driver_dict['state'] = 'loading'
       if driver_dict['state'] == 'loading':
-        print(driver_dict['id'] + " in state loading!") if DEBUG else None
         if len(combination_list) > 0:
           combination = combination_list.pop()
           driver_dict['running_combination'] = combination
           runDriverNew(driver, combination)
-          print(driver_dict['id'] + " set state to running") if DEBUG else None
           driver_dict['state'] = 'running'
         else:
-          print(driver_dict['id'] + " set state to finished") if DEBUG else None
           driver_dict['state'] = 'finished'
           finished_driver_count += 1
       if driver_dict['state'] == 'running':
-        #print(driver_dict['id'] + " in state running!")
         if runDone(driver):
-          print(driver_dict['id'] + " run done! donwlog links found") if DEBUG else None
           downloadLogs(driver_dict)
-          #reloadDriver(driver)
-          print(driver_dict['id'] + " set state to draft") if DEBUG else None
           driver_dict['state'] = 'draft'
           driver_dict['running_combination'] = None
           iter += 1
-        #else:
-        #  print("still running")
     except Exception as e:
       print("ERROR: " + str(e))
       combination_list.append(driver_dict['running_combination'])
       driver_dict['running_combination'] = None
       reloadDriver(driver)
-      print("set state to draft") if DEBUG else None
       driver_dict['state'] = 'draft'
 
 end_time = datetime.now()
 print("End execution at:")
 print(end_time.now().strftime("%d/%m/%Y %H:%M:%S"))
-elapsed_time = end_time - creation_time #start_time
+elapsed_time = end_time - creation_time
 print("Total combinations: " + str(iter))
 print("Total time for driver creation: %s seconds. " % str(creation_elapsed_time.seconds))
 print("Total time for runs: %s seconds. " % str(elapsed_time.seconds))
