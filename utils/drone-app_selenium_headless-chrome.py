@@ -203,11 +203,16 @@ def downloadLogs(driver_dict):
   print("- DOWNLOAD LOGS")
   for i in range(NUMBER_OF_DRONES):
     text = "Download Simulation LOG " + str(i)
-    #id_s = "log_result_" + str(i)
-    download_log = driver_dict['driver'].find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "' + text + '")]')
-    download_log.click() #saves log txt file in command location
-    time.sleep(0.5)
-    print("- Clicked - " + text + " - " + driver_dict['id'] + ' - ' + str(driver_dict['running_combination']))
+    #download_log = driver_dict['driver'].find_element(By.XPATH, '//div[@class="container"]//a[contains(text(), "' + text + '")]')
+    #download_log.click() #saves log txt file in command location
+    id_s = "log_result_" + str(i)
+    result_log = driver.find_element(By.XPATH, '//div[@class="container"]//textarea[@id="' + id_s + '"]')
+    result_log_content = result_log.get_attribute('value')
+    filename = "simulation_log_" + driver_dict['id'] + '_' + str(driver_dict['running_combination']) + '.log'
+    f = open(filename, "a")
+    f.write(result_log_content)
+    f.close()
+    print("- Result log stored in file '%s'" % filename)
   print("- download logs done")
 
 def initDone(driver):
