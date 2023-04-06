@@ -12,11 +12,14 @@ from selenium.webdriver.remote.remote_connection import RemoteConnection
 from datetime import datetime
 
 DEBUG = False
+REMOTE = True # flag to set if run remote or local
+EXEC_LOG = open("execution.log", "a")
+EXEC_LOG.write("--------------------------------------------" + '\n')
 
 ##### SERVER INSTANCES REQUEST #####
 
 def requestServerInstances():
-  NUMBER_OF_SERVERS = 2
+  NUMBER_OF_SERVERS = 8
   selenium_SR_url = "~/srv/project/slapos/software/seleniumserver/software.cfg"
   #TODO how to get SR url?
   selenium_SR_url = "/srv/slapgrid/slappart70/srv/project/slapos/software/headlesschrome-seleniumserver/software.cfg"
@@ -80,7 +83,6 @@ DRONE_INPUT_VALUE_LIST=[]
 AI_SCRIPT = ""
 if (len(sys.argv)>1):
   AI_SCRIPT = open(sys.argv[1], "r").read().replace("\n", "\\n").replace('"', "'")
-REMOTE = True # flag to set if run remote or local
 APP_URL = "https://dronesimulator.app.officejs.com/"
 EMPTY_URL = "data:,"
 #server_url_list = [
@@ -120,11 +122,16 @@ def values_in_range(start, end, n):
 # WEB DRIVER PROCESS
 
 def createDriver(server_url, options):
+  print("Creating driver for " + server_url)
   done = False
   retry = 0
+  MAX_RETRY = 10
+  exception = None
   while not done:
-    if retry == 10:
-      raise RuntimeError("Error: couldn't create webdriver after 10 attempts for " + server_url)
+    if retry == MAX_RETRY:
+      print("Error: couldn't create webdriver for " + server_url)
+      print(exception)
+      return None
     try:
       if (REMOTE):
         driver = webdriver.Remote(
@@ -142,7 +149,13 @@ def createDriver(server_url, options):
       print("Webdriver created. Chrome version: " + str_version)
       done = True
     except Exception as e:
-      retry += 1
+      exception = e
+      if "401" in str(exception):
+        # no need to retry
+        retry = MAX_RETRY
+        exception = "ERROR: 401"
+      else:
+        retry += 1
   return driver
 
 def initDriver(driver):
@@ -222,9 +235,12 @@ for i in range(len(DRONE_VALUE_RANGE_LIST)):
 combination_list = [combination for combination in itertools.product(*DRONE_INPUT_VALUE_LIST)]
 
 print("Total combinations: " + str(len(combination_list)))
+EXEC_LOG.write("Total combinations: " + str(len(combination_list)) + '\n')
 start_time = datetime.now()
 print("Start execution at:")
 print(start_time.strftime("%d/%m/%Y %H:%M:%S"))
+EXEC_LOG.write("Start execution at:" + '\n')
+EXEC_LOG.write(start_time.strftime("%d/%m/%Y %H:%M:%S") + '\n')
 
 # configure the web driver settings
 options = webdriver.ChromeOptions()
@@ -236,15 +252,21 @@ options.add_argument('--disable-dev-shm-usage')
 
 # create all drivers
 driver_list = []
+if not REMOTE:
+  server_url_list = ["LOCAL"]
 for idx, server_url in enumerate(server_url_list):
   driver = createDriver(server_url, options)
-  driver_dict = {
-    'id': 'D' + str(idx),
-    'state': 'draft',
-    'driver': driver,
-    'running_combination': None
-  }
-  driver_list.append(driver_dict)
+  if driver:
+    driver_dict = {
+      'id': 'D' + str(idx),
+      'state': 'draft',
+      'driver': driver,
+      'running_combination': None
+    }
+    driver_list.append(driver_dict)
+
+print("Total drivers created: " + str(len(driver_list)))
+EXEC_LOG.write("Total drivers created: " + str(len(driver_list)))
 
 creation_time = datetime.now()
 creation_elapsed_time = creation_time - start_time
@@ -293,3 +315,11 @@ print("Total time for driver creation: %s seconds. " % str(creation_elapsed_time
 print("Total time for runs: %s seconds. " % str(elapsed_time.seconds))
 
 print("All drivers quit")
+
+EXEC_LOG.write("End execution at:\n")
+EXEC_LOG.write(end_time.now().strftime("%d/%m/%Y %H:%M:%S") + '\n')
+EXEC_LOG.write("Total combinations: " + str(iter) + '\n')
+EXEC_LOG.write("Total time for driver creation: %s seconds. " % str(creation_elapsed_time.seconds) + '\n')
+EXEC_LOG.write("Total time for runs: %s seconds. " % str(elapsed_time.seconds) + '\n')
+
+EXEC_LOG.close()
