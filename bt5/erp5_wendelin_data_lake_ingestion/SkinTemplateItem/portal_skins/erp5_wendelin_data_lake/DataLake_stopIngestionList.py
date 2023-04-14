@@ -14,7 +14,7 @@ def getHash(data_stream):
     end_offset = n_chunk*chunk_size+chunk_size
     try:
       data_stream_chunk = ''.join(data_stream.readChunkList(start_offset, end_offset))
-    except e:
+    except Exception:
       # data stream is empty
       data_stream_chunk = ""
     hash_md5.update(data_stream_chunk)
