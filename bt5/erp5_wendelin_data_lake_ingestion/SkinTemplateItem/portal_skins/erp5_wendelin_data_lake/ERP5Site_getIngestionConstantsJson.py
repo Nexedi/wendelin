@@ -1,6 +1,6 @@
 import json
 portal = context.getPortalObject()
-dictionary = {'invalid_suffix':portal.ERP5Site_getIngestionReferenceDictionary()['invalid_suffix'],
+dict = {'invalid_suffix':portal.ERP5Site_getIngestionReferenceDictionary()['invalid_suffix'],
         'split_end_suffix':portal.ERP5Site_getIngestionReferenceDictionary()['split_end_suffix'],
         'single_end_suffix':portal.ERP5Site_getIngestionReferenceDictionary()['single_end_suffix'],
         'split_first_suffix':portal.ERP5Site_getIngestionReferenceDictionary()['split_first_suffix'],
@@ -10,4 +10,4 @@ dictionary = {'invalid_suffix':portal.ERP5Site_getIngestionReferenceDictionary()
         'reference_length':portal.ERP5Site_getIngestionReferenceDictionary()['reference_length'],
         'invalid_chars':portal.ERP5Site_getIngestionReferenceDictionary()['invalid_chars'],
         }
-return json.dumps(dictionary)
+return json.dumps(dict)
