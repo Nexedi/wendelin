@@ -50,11 +50,11 @@
         </item>
         <item>
             <key> <string>_params</string> </key>
-            <value> <string>category_id</string> </value>
+            <value> <string></string> </value>
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>BusinessConfiguration_getPrettyCategoriesSpreadsheetConfiguratorItem</string> </value>
+            <value> <string>ERP5Site_createDataAnalysisList</string> </value>
         </item>
       </dictionary>
     </pickle>
