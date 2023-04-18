@@ -26,7 +26,7 @@ class Progbar(object):
     self.verbose = verbose
     self.output1 = output
 
-  def update(self, current, values=[], force=False):
+  def update(self, current, values=None, force=False):
     """Updates the progress bar.
 
     # Arguments
@@ -35,6 +35,10 @@ class Progbar(object):
             The progress bar will display averages for these values.
         force: Whether to force visual progress update.
     """
+
+    if values in None:
+      values = []
+
     for k, v in values:
       if k not in self.sum_values:
         self.sum_values[k] = [v * (current - self.seen_so_far),
@@ -114,11 +118,14 @@ class Progbar(object):
 
     self.last_update = now
 
-  def add(self, n, values=[]):
+  def add(self, n, values=None):
+    if values is None:
+      values = []
+
     self.update(self.seen_so_far + n, values)
 
 
-from keras.callbacks import ProgbarLogger as OriginalProgbarLogger
+from keras.callbacks import ProgbarLogger as OriginalProgbarLogger # pylint:disable=import-error
 
 class ProgbarLogger(OriginalProgbarLogger):
 
@@ -162,9 +169,9 @@ def train(portal):
   # 2. you can save trained model.
   # 3. you can load trained model.
   # from cStringIO import StringIO
-  import tensorflow as tf
+  import tensorflow as tf # pylint:disable=import-error
   sess = tf.Session()
-  from keras import backend as K
+  from keras import backend as K # pylint:disable=import-error
   K.set_session(sess)
 
   stream = portal.data_stream_module.wendelin_examples_keras_log
@@ -175,8 +182,8 @@ def train(portal):
   if saved_model_data is not None:
     model = portal.keras_load_model(saved_model_data)
   else:
-    from keras.models import Sequential
-    from keras.layers import Dense
+    from keras.models import Sequential # pylint:disable=import-error
+    from keras.layers import Dense # pylint:disable=import-error
     model = Sequential()
     model.add(Dense(12, input_dim=8, init='uniform', activation='relu'))
     model.add(Dense(8, init='uniform', activation='relu'))
