@@ -179,7 +179,6 @@ def load_model(data):
     else:
       model._make_train_function()
     optimizer_weights_dict = data['optimizer_weights']
-    optimizer_weight_names = optimizer_weights_dict['weight_names']
     optimizer_weight_values = optimizer_weights_dict['weight_values']
     model.optimizer.set_weights(optimizer_weight_values)
   return model
