@@ -115,9 +115,9 @@
             <key> <string>categories</string> </key>
             <value>
               <tuple>
-                <string>resource/portal_workflow/erp5_wendelin_workflow</string>
-                <string>current_state/portal_workflow/erp5_wendelin_workflow/state_end</string>
                 <string>specialise/portal_templates/54</string>
+                <string>resource/portal_workflow/erp5_wendelin_workflow</string>
+                <string>current_state/portal_workflow/erp5_wendelin_workflow/state_start</string>
               </tuple>
             </value>
         </item>
@@ -136,11 +136,9 @@
             <value>
               <object>
                 <klass>
-                  <global id="1.1" name="_reconstructor" module="copy_reg"/>
+                  <global id="1.1" name="DateTime" module="DateTime.DateTime"/>
                 </klass>
                 <tuple>
-                  <global id="1.2" name="DateTime" module="DateTime.DateTime"/>
-                  <global id="1.3" name="object" module="__builtin__"/>
                   <none/>
                 </tuple>
                 <state>
@@ -172,8 +170,6 @@
               <object>
                 <klass> <reference id="1.1"/> </klass>
                 <tuple>
-                  <reference id="1.2"/>
-                  <reference id="1.3"/>
                   <none/>
                 </tuple>
                 <state>

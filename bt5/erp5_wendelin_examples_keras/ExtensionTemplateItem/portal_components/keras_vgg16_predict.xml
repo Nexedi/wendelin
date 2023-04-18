@@ -70,28 +70,7 @@
         <item>
             <key> <string>data</string> </key>
             <value>
-              <dictionary>
-                <item>
-                    <key> <string>text_content</string> </key>
-                    <value> <string>from keras.applications.vgg16 import VGG16, preprocess_input, decode_predictions\n
-from keras.preprocessing import image\n
-import numpy as np\n
-from cStringIO import StringIO\n
-import PIL.Image\n
-\n
-model = VGG16(weights=\'imagenet\')\n
-\n
-def predict(image_document):\n
-  img = PIL.Image.open(StringIO(image_document.getData()))\n
-  img = img.resize((224, 224))\n
-  x = image.img_to_array(img)\n
-  x = np.expand_dims(x, axis=0)\n
-  preds = model.predict(preprocess_input(x))\n
-  results = decode_predictions(preds, top=5)[0]\n
-  return results\n
-</string> </value>
-                </item>
-              </dictionary>
+              <dictionary/>
             </value>
         </item>
       </dictionary>
@@ -121,28 +100,24 @@ def predict(image_document):\n
   </record>
   <record id="4" aka="AAAAAAAAAAQ=">
     <pickle>
-      <global name="WorkflowHistoryList" module="Products.ERP5Type.Workflow"/>
+      <global name="WorkflowHistoryList" module="Products.ERP5Type.patches.WorkflowTool"/>
     </pickle>
     <pickle>
-      <dictionary>
-        <item>
-            <key> <string>_log</string> </key>
-            <value>
-              <list>
-                <dictionary>
-                  <item>
-                      <key> <string>action</string> </key>
-                      <value> <string>modify</string> </value>
-                  </item>
-                  <item>
-                      <key> <string>validation_state</string> </key>
-                      <value> <string>modified</string> </value>
-                  </item>
-                </dictionary>
-              </list>
-            </value>
-        </item>
-      </dictionary>
+      <tuple>
+        <none/>
+        <list>
+          <dictionary>
+            <item>
+                <key> <string>action</string> </key>
+                <value> <string>validate</string> </value>
+            </item>
+            <item>
+                <key> <string>validation_state</string> </key>
+                <value> <string>validated</string> </value>
+            </item>
+          </dictionary>
+        </list>
+      </tuple>
     </pickle>
   </record>
 </ZopeData>

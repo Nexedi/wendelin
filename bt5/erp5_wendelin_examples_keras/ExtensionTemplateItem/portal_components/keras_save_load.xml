@@ -7,12 +7,6 @@
     <pickle>
       <dictionary>
         <item>
-            <key> <string>_recorded_property_dict</string> </key>
-            <value>
-              <persistent> <string encoding="base64">AAAAAAAAAAI=</string> </persistent>
-            </value>
-        </item>
-        <item>
             <key> <string>default_reference</string> </key>
             <value> <string>keras_save_load</string> </value>
         </item>
@@ -45,7 +39,9 @@
         <item>
             <key> <string>text_content_warning_message</string> </key>
             <value>
-              <tuple/>
+              <tuple>
+                <string>W:182,  4: Unused variable \'optimizer_weight_names\' (unused-variable)</string>
+              </tuple>
             </value>
         </item>
         <item>
@@ -55,7 +51,7 @@
         <item>
             <key> <string>workflow_history</string> </key>
             <value>
-              <persistent> <string encoding="base64">AAAAAAAAAAM=</string> </persistent>
+              <persistent> <string encoding="base64">AAAAAAAAAAI=</string> </persistent>
             </value>
         </item>
       </dictionary>
@@ -72,192 +68,10 @@
             <value>
               <dictionary>
                 <item>
-                    <key> <string>text_content</string> </key>
-                    <value> <string>import warnings\n
-import numpy as np\n
-from keras import backend as K\n
-from keras import __version__ as keras_version\n
-from keras.models import Sequential\n
-from keras.models import model_from_config\n
-from keras.optimizers import optimizer_from_config\n
-from keras import optimizers\n
-\n
-def save_model(model, model_store=None):\n
-  data = {}\n
-  data[\'keras_version\'] = keras_version\n
-  data[\'model_config\'] = {\'class_name\':model.__class__.__name__,\n
-                          \'config\':model.get_config()}\n
-\n
-  # save weights\n
-  if hasattr(model, \'flattened_layers\'):\n
-    # Support for legacy Sequential/Merge behavior.\n
-    flattened_layers = model.flattened_layers\n
-  else:\n
-    flattened_layers = model.layers\n
-\n
-  data[\'layer_names\'] = [layer.name for layer in flattened_layers]\n
-  layer_group = {}\n
-  for layer in flattened_layers:\n
-    group = layer_group[layer.name] = {}\n
-    symbolic_weights = layer.weights\n
-    weight_values = K.batch_get_value(symbolic_weights)\n
-    weight_names = []\n
-    for i, (w, val) in enumerate(zip(symbolic_weights, weight_values)):\n
-      if hasattr(w, \'name\') and w.name:\n
-        name = str(w.name)\n
-      else:\n
-        name = \'param_\' + str(i)\n
-      weight_names.append(name)\n
-    group[\'weight_names\'] = weight_names\n
-    group[\'weight_values\'] = []\n
-    for name, val in zip(weight_names, weight_values):\n
-      group[\'weight_values\'].append(val.copy())\n
-    data[\'model_weights\'] = layer_group\n
-\n
-  if hasattr(model, \'optimizer\'):\n
-    if isinstance(model.optimizer, optimizers.TFOptimizer):\n
-      warnings.warn(\n
-        \'TensorFlow optimizers do not \'\n
-        \'make it possible to access \'\n
-        \'optimizer attributes or optimizer state \'\n
-        \'after instantiation. \'\n
-        \'As a result, we cannot save the optimizer \'\n
-        \'as part of the model save file.\'\n
-        \'You will have to compile your model again after loading it. \'\n
-        \'Prefer using a Keras optimizer instead \'\n
-        \'(see keras.io/optimizers).\')\n
-    else:\n
-      data[\'training_config\'] = {\n
-        \'optimizer_config\':{\n
-          \'class_name\':model.optimizer.__class__.__name__,\n
-          \'config\':model.optimizer.get_config()},\n
-        \'loss\': model.loss,\n
-        \'metrics\': model.metrics,\n
-        \'sample_weight_mode\': model.sample_weight_mode,\n
-        \'loss_weights\': model.loss_weights,\n
-      }\n
-\n
-      # save optimizer weights\n
-      symbolic_weights = getattr(model.optimizer, \'weights\')\n
-      if symbolic_weights:\n
-        data[\'optimizer_weights\'] = {}\n
-        weight_values = K.batch_get_value(symbolic_weights)\n
-        weight_names = []\n
-        for i, (w, val) in enumerate(zip(symbolic_weights, weight_values)):\n
-          if hasattr(w, \'name\') and w.name:\n
-            name = str(w.name)\n
-          else:\n
-            name = \'param_\' + str(i)\n
-          weight_names.append(name)\n
-        data[\'optimizer_weights\'][\'weight_names\'] = weight_names\n
-        data[\'optimizer_weights\'][\'weight_values\'] = []\n
-        for name, val in zip(weight_names, weight_values):\n
-          data[\'optimizer_weights\'][\'weight_values\'].append(val.copy())\n
-  return data\n
-\n
-def load_model(data):\n
-  # instantiate model\n
-  model_config = data[\'model_config\']\n
-  if model_config is None:\n
-    raise ValueError(\'No model found in config file.\')\n
-\n
-  model = model_from_config(model_config)\n
-  if hasattr(model, \'flattened_layers\'):\n
-    # Support for legacy Sequential/Merge behavior.\n
-    flattened_layers = model.flattened_layers\n
-  else:\n
-    flattened_layers = model.layers\n
-\n
-  filtered_layers = []\n
-  for layer in flattened_layers:\n
-    weights = layer.weights\n
-    if weights:\n
-      filtered_layers.append(layer)\n
-\n
-  flattened_layers = filtered_layers\n
-\n
-  layer_names = data[\'layer_names\']\n
-  filtered_layer_names = []\n
-  for name in layer_names:\n
-    weight_dict = data[\'model_weights\'][name]\n
-    weight_names = weight_dict[\'weight_names\']\n
-    if len(weight_names):\n
-      filtered_layer_names.append(name)\n
-  layer_names = filtered_layer_names\n
-  if len(layer_names) != len(flattened_layers):\n
-    raise ValueError(\'You are trying to load a weight file \'\n
-                     \'containing \' + str(len(layer_names)) +\n
-                     \' layers into a model with \' +\n
-                     str(len(flattened_layers)) + \' layers.\')\n
-\n
-  # We batch weight value assignments in a single backend call\n
-  # which provides a speedup in TensorFlow.\n
-  weight_value_tuples = []\n
-  for k, name in enumerate(layer_names):\n
-    weight_dict = data[\'model_weights\'][name]\n
-    weight_names = weight_dict[\'weight_names\']\n
-    weight_values = weight_dict[\'weight_values\']\n
-    layer = flattened_layers[k]\n
-    symbolic_weights = layer.weights\n
-    if len(weight_values) != len(symbolic_weights):\n
-      raise ValueError(\'Layer #\' + str(k) +\n
-                       \' (named "\' + layer.name +\n
-                       \'" in the current model) was found to \'\n
-                       \'correspond to layer \' + name +\n
-                       \' in the save file. \'\n
-                       \'However the new layer \' + layer.name +\n
-                       \' expects \' + str(len(symbolic_weights)) +\n
-                       \' weights, but the saved weights have \' +\n
-                       str(len(weight_values)) +\n
-                       \' elements.\')\n
-    if layer.__class__.__name__ == \'Convolution1D\':\n
-      # This is for backwards compatibility with\n
-      # the old Conv1D weights format.\n
-      w = weight_values[0]\n
-      shape = w.shape\n
-      if shape[:2] != (layer.filter_length, 1) or shape[3] != layer.nb_filter:\n
-        # Legacy shape:\n
-        # (self.nb_filter, input_dim, self.filter_length, 1)\n
-        assert shape[0] == layer.nb_filter and shape[2:] == (layer.filter_length, 1)\n
-        w = np.transpose(w, (2, 3, 1, 0))\n
-        weight_values[0] = w\n
-    weight_value_tuples += zip(symbolic_weights, weight_values)\n
-  K.batch_set_value(weight_value_tuples)\n
-\n
-  # instantiate optimizer\n
-  training_config = data.get(\'training_config\')\n
-  if training_config is None:\n
-    warnings.warn(\'No training configuration found in save file: \'\n
-                  \'the model was *not* compiled. Compile it manually.\')\n
-    return model\n
-  optimizer_config = training_config[\'optimizer_config\']\n
-  optimizer = optimizer_from_config(optimizer_config)\n
-\n
-  # recover loss functions and metrics\n
-  loss = training_config[\'loss\']\n
-  metrics = training_config[\'metrics\']\n
-  sample_weight_mode = training_config[\'sample_weight_mode\']\n
-  loss_weights = training_config[\'loss_weights\']\n
-\n
-  # compile model\n
-  model.compile(optimizer=optimizer,\n
-                loss=loss,\n
-                metrics=metrics,\n
-                loss_weights=loss_weights,\n
-                sample_weight_mode=sample_weight_mode)\n
-\n
-  # set optimizer weights\n
-  if \'optimizer_weights\' in data:\n
-    # build train function (to get weight updates)\n
-    if isinstance(model, Sequential):\n
-      model.model._make_train_function()\n
-    else:\n
-      model._make_train_function()\n
-    optimizer_weights_dict = data[\'optimizer_weights\']\n
-    optimizer_weight_names = optimizer_weights_dict[\'weight_names\']\n
-    optimizer_weight_values = optimizer_weights_dict[\'weight_values\']\n
-    model.optimizer.set_weights(optimizer_weight_values)\n
-  return model</string> </value>
+                    <key> <string>component_validation_workflow</string> </key>
+                    <value>
+                      <persistent> <string encoding="base64">AAAAAAAAAAM=</string> </persistent>
+                    </value>
                 </item>
               </dictionary>
             </value>
@@ -267,50 +81,24 @@ def load_model(data):\n
   </record>
   <record id="3" aka="AAAAAAAAAAM=">
     <pickle>
-      <global name="PersistentMapping" module="Persistence.mapping"/>
+      <global name="WorkflowHistoryList" module="Products.ERP5Type.patches.WorkflowTool"/>
     </pickle>
     <pickle>
-      <dictionary>
-        <item>
-            <key> <string>data</string> </key>
-            <value>
-              <dictionary>
-                <item>
-                    <key> <string>component_validation_workflow</string> </key>
-                    <value>
-                      <persistent> <string encoding="base64">AAAAAAAAAAQ=</string> </persistent>
-                    </value>
-                </item>
-              </dictionary>
-            </value>
-        </item>
-      </dictionary>
-    </pickle>
-  </record>
-  <record id="4" aka="AAAAAAAAAAQ=">
-    <pickle>
-      <global name="WorkflowHistoryList" module="Products.ERP5Type.Workflow"/>
-    </pickle>
-    <pickle>
-      <dictionary>
-        <item>
-            <key> <string>_log</string> </key>
-            <value>
-              <list>
-                <dictionary>
-                  <item>
-                      <key> <string>action</string> </key>
-                      <value> <string>modify</string> </value>
-                  </item>
-                  <item>
-                      <key> <string>validation_state</string> </key>
-                      <value> <string>modified</string> </value>
-                  </item>
-                </dictionary>
-              </list>
-            </value>
-        </item>
-      </dictionary>
+      <tuple>
+        <none/>
+        <list>
+          <dictionary>
+            <item>
+                <key> <string>action</string> </key>
+                <value> <string>validate</string> </value>
+            </item>
+            <item>
+                <key> <string>validation_state</string> </key>
+                <value> <string>validated</string> </value>
+            </item>
+          </dictionary>
+        </list>
+      </tuple>
     </pickle>
   </record>
 </ZopeData>
