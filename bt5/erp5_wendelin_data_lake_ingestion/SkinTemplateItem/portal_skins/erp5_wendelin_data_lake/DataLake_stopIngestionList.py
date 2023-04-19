@@ -24,7 +24,6 @@ def getHash(data_stream):
 
 def isInterruptedAbandonedSplitIngestion(reference):
   from DateTime import DateTime
-  # now = DateTime()
   day_hours = 1.0/24/60*60*24
   # started split data ingestions for reference
   catalog_kw = {'portal_type': 'Data Ingestion',
