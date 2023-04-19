@@ -91,7 +91,7 @@ for data_ingestion in portal_catalog(portal_type = "Data Ingestion",
         if last_data_stream_id.endswith(reference_end_split):
           portal.ERP5Site_invalidateSplitIngestions(data_ingestion.getReference(), success=True)
           full_data_stream_hash = getHash(full_data_stream)
-          full_data_stream.setVersion(hash1)
+          full_data_stream.setVersion(full_data_stream_hash)
           if full_data_stream.getValidationState() != "validated":
             full_data_stream.validate()
           related_split_ingestions = portal_catalog(portal_type = "Data Ingestion",
