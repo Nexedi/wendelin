@@ -71,7 +71,7 @@
         </item>
         <item>
             <key> <string>content_type</string> </key>
-            <value> <string>text/x-rst</string> </value>
+            <value> <string>text/html</string> </value>
         </item>
         <item>
             <key> <string>default_reference</string> </key>
@@ -184,11 +184,9 @@
                       <value>
                         <object>
                           <klass>
-                            <global name="_reconstructor" module="copy_reg"/>
+                            <global name="DateTime" module="DateTime.DateTime"/>
                           </klass>
                           <tuple>
-                            <global name="DateTime" module="DateTime.DateTime"/>
-                            <global name="object" module="__builtin__"/>
                             <none/>
                           </tuple>
                           <state>
@@ -228,7 +226,7 @@
                   </item>
                   <item>
                       <key> <string>actor</string> </key>
-                      <value> <unicode>zope</unicode> </value>
+                      <value> <string>zope</string> </value>
                   </item>
                   <item>
                       <key> <string>comment</string> </key>
@@ -242,7 +240,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>1007.57216.60639.7116</string> </value>
+                      <value> <string>951.55792.50694.62344</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -253,16 +251,14 @@
                       <value>
                         <object>
                           <klass>
-                            <global name="_reconstructor" module="copy_reg"/>
+                            <global name="DateTime" module="DateTime.DateTime"/>
                           </klass>
                           <tuple>
-                            <global name="DateTime" module="DateTime.DateTime"/>
-                            <global name="object" module="__builtin__"/>
                             <none/>
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1682072041.68</float>
+                              <float>1465846140.49</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
@@ -316,11 +312,9 @@
                       <value>
                         <object>
                           <klass>
-                            <global name="_reconstructor" module="copy_reg"/>
+                            <global name="DateTime" module="DateTime.DateTime"/>
                           </klass>
                           <tuple>
-                            <global name="DateTime" module="DateTime.DateTime"/>
-                            <global name="object" module="__builtin__"/>
                             <none/>
                           </tuple>
                           <state>
