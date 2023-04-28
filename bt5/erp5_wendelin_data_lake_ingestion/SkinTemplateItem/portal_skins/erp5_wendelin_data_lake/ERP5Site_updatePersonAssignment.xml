@@ -63,7 +63,7 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>CredentialRequest_updatePersonAssignment</string> </value>
+            <value> <string>ERP5Site_updatePersonAssignment</string> </value>
         </item>
       </dictionary>
     </pickle>
