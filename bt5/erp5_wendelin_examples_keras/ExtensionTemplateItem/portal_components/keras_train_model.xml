@@ -45,100 +45,7 @@
         <item>
             <key> <string>text_content_warning_message</string> </key>
             <value>
-              <tuple>
-                <string>W:  8,  0: Bad indentation. Found 4 spaces, expected 2 (bad-indentation)</string>
-                <string>W:  9,  0: Bad indentation. Found 6 spaces, expected 4 (bad-indentation)</string>
-                <string>W: 11,  0: Bad indentation. Found 4 spaces, expected 2 (bad-indentation)</string>
-                <string>W: 12,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W: 18,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W: 19,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W: 20,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W: 21,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W: 22,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W: 23,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W: 24,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W: 25,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W: 26,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W: 27,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W: 28,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W: 30,  0: Bad indentation. Found 4 spaces, expected 2 (bad-indentation)</string>
-                <string>W: 31,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W: 39,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W: 40,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 41,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W: 43,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W: 44,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 45,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W: 46,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W: 47,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W: 49,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W: 50,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W: 51,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 52,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W: 54,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 56,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 58,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 59,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 60,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 61,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 62,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 63,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 64,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W: 65,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W: 66,  0: Bad indentation. Found 20 spaces, expected 10 (bad-indentation)</string>
-                <string>W: 67,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W: 68,  0: Bad indentation. Found 20 spaces, expected 10 (bad-indentation)</string>
-                <string>W: 69,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 70,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 71,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 72,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 74,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 75,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W: 76,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 77,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W: 78,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 79,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 80,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 81,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W: 82,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 83,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W: 84,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 85,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W: 86,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W: 87,  0: Bad indentation. Found 20 spaces, expected 10 (bad-indentation)</string>
-                <string>W: 88,  0: Bad indentation. Found 20 spaces, expected 10 (bad-indentation)</string>
-                <string>W: 89,  0: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)</string>
-                <string>W: 90,  0: Bad indentation. Found 20 spaces, expected 10 (bad-indentation)</string>
-                <string>W: 91,  0: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)</string>
-                <string>W: 92,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W: 93,  0: Bad indentation. Found 20 spaces, expected 10 (bad-indentation)</string>
-                <string>W: 95,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 96,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W: 97,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W: 99,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W:101,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W:102,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W:104,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W:105,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
-                <string>W:106,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W:107,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W:108,  0: Bad indentation. Found 20 spaces, expected 10 (bad-indentation)</string>
-                <string>W:109,  0: Bad indentation. Found 20 spaces, expected 10 (bad-indentation)</string>
-                <string>W:110,  0: Bad indentation. Found 20 spaces, expected 10 (bad-indentation)</string>
-                <string>W:111,  0: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)</string>
-                <string>W:112,  0: Bad indentation. Found 20 spaces, expected 10 (bad-indentation)</string>
-                <string>W:113,  0: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)</string>
-                <string>W:114,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
-                <string>W:116,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W:118,  0: Bad indentation. Found 4 spaces, expected 2 (bad-indentation)</string>
-                <string>W:119,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
-                <string>W: 30,  4: Dangerous default value [] as argument (dangerous-default-value)</string>
-                <string>W:118,  4: Dangerous default value [] as argument (dangerous-default-value)</string>
-                <string>W:126,  2: __init__ method from base class \'ProgbarLogger\' is not called (super-init-not-called)</string>
-                <string>W:165,  2: Redefining name \'StringIO\' from outer scope (line 146) (redefined-outer-name)</string>
-                <string>W:165,  2: Reimport \'StringIO\' (imported line 146) (reimported)</string>
-                <string>W:  3,  0: Unused import sys (unused-import)</string>
-              </tuple>
+              <tuple/>
             </value>
         </item>
         <item>
@@ -163,7 +70,213 @@
         <item>
             <key> <string>data</string> </key>
             <value>
-              <dictionary/>
+              <dictionary>
+                <item>
+                    <key> <string>text_content</string> </key>
+                    <value> <string encoding="cdata"><![CDATA[
+
+import numpy as np\n
+import time\n
+import sys\n
+import transaction\n
+\n
+class Progbar(object):\n
+\n
+    def output(self, data):\n
+      self.output1(str(data))\n
+\n
+    def __init__(self, target, width=30, verbose=1, interval=0.01, output=None):\n
+        """Dislays a progress bar.\n
+\n
+        # Arguments:\n
+            target: Total number of steps expected.\n
+            interval: Minimum visual progress update interval (in seconds).\n
+        """\n
+        self.width = width\n
+        self.target = target\n
+        self.sum_values = {}\n
+        self.unique_values = []\n
+        self.start = time.time()\n
+        self.last_update = 0\n
+        self.interval = interval\n
+        self.total_width = 0\n
+        self.seen_so_far = 0\n
+        self.verbose = verbose\n
+        self.output1 = output\n
+\n
+    def update(self, current, values=[], force=False):\n
+        """Updates the progress bar.\n
+\n
+        # Arguments\n
+            current: Index of current step.\n
+            values: List of tuples (name, value_for_last_step).\n
+                The progress bar will display averages for these values.\n
+            force: Whether to force visual progress update.\n
+        """\n
+        for k, v in values:\n
+            if k not in self.sum_values:\n
+                self.sum_values[k] = [v * (current - self.seen_so_far),\n
+                                      current - self.seen_so_far]\n
+                self.unique_values.append(k)\n
+            else:\n
+                self.sum_values[k][0] += v * (current - self.seen_so_far)\n
+                self.sum_values[k][1] += (current - self.seen_so_far)\n
+        self.seen_so_far = current\n
+\n
+        now = time.time()\n
+        if self.verbose == 1:\n
+            if not force and (now - self.last_update) < self.interval:\n
+                return\n
+\n
+            prev_total_width = self.total_width\n
+            #self.output(\'\\b\' * prev_total_width)\n
+            self.output(\'\\r\')\n
+\n
+            numdigits = int(np.floor(np.log10(self.target))) + 1\n
+            barstr = \'%%%dd/%%%dd [\' % (numdigits, numdigits)\n
+            bar = barstr % (current, self.target)\n
+            prog = float(current) / self.target\n
+            prog_width = int(self.width * prog)\n
+            if prog_width > 0:\n
+                bar += (\'=\' * (prog_width - 1))\n
+                if current < self.target:\n
+                    bar += \'>\'\n
+                else:\n
+                    bar += \'=\'\n
+            bar += (\'.\' * (self.width - prog_width))\n
+            bar += \']\'\n
+            self.output(bar)\n
+            self.total_width = len(bar)\n
+\n
+            if current:\n
+                time_per_unit = (now - self.start) / current\n
+            else:\n
+                time_per_unit = 0\n
+            eta = time_per_unit * (self.target - current)\n
+            info = \'\'\n
+            if current < self.target:\n
+                info += \' - ETA: %ds\' % eta\n
+            else:\n
+                info += \' - %ds\' % (now - self.start)\n
+            for k in self.unique_values:\n
+                info += \' - %s:\' % k\n
+                if isinstance(self.sum_values[k], list):\n
+                    avg = self.sum_values[k][0] / max(1, self.sum_values[k][1])\n
+                    if abs(avg) > 1e-3:\n
+                        info += \' %.4f\' % avg\n
+                    else:\n
+                        info += \' %.4e\' % avg\n
+                else:\n
+                    info += \' %s\' % self.sum_values[k]\n
+\n
+            self.total_width += len(info)\n
+            if prev_total_width > self.total_width:\n
+                info += ((prev_total_width - self.total_width) * \' \')\n
+\n
+            self.output(info)\n
+\n
+            if current >= self.target:\n
+                self.output(\'\\r\\n\')\n
+\n
+        if self.verbose == 2:\n
+            if current >= self.target:\n
+                info = \'%ds\' % (now - self.start)\n
+                for k in self.unique_values:\n
+                    info += \' - %s:\' % k\n
+                    avg = self.sum_values[k][0] / max(1, self.sum_values[k][1])\n
+                    if avg > 1e-3:\n
+                        info += \' %.4f\' % avg\n
+                    else:\n
+                        info += \' %.4e\' % avg\n
+                self.output(info + "\\r\\n")\n
+\n
+        self.last_update = now\n
+\n
+    def add(self, n, values=[]):\n
+        self.update(self.seen_so_far + n, values)\n
+\n
+\n
+from keras.callbacks import ProgbarLogger as OriginalProgbarLogger\n
+\n
+class ProgbarLogger(OriginalProgbarLogger):\n
+\n
+  def __init__(self, output, verbose=0):\n
+    self.output = output\n
+    self.verbose = verbose\n
+\n
+  def on_epoch_begin(self, epoch, logs=None):\n
+    if self.verbose:\n
+      self.output(\'Epoch %d/%d\\r\\n\' % (epoch + 1, self.nb_epoch))\n
+      self.progbar = Progbar(target=self.params[\'nb_sample\'],\n
+                             verbose=1, output=self.output)\n
+    self.seen = 0\n
+\n
+  def on_epoch_end(self, epoch, logs=None):\n
+    super(ProgbarLogger, self).on_epoch_end(epoch, logs)\n
+    if epoch % 10 == 0:\n
+      transaction.commit()\n
+\n
+\n
+seed = 7\n
+np.random.seed(seed)\n
+\n
+from cStringIO import StringIO\n
+import cPickle\n
+def save(portal, value):\n
+  data_stream = portal.data_stream_module.wendelin_examples_keras_nn\n
+  data_stream.edit(file=StringIO(cPickle.dumps(value)))\n
+\n
+def load(portal):\n
+  data_stream = portal.data_stream_module.wendelin_examples_keras_nn\n
+  data = data_stream.getData()\n
+  if data:\n
+    return cPickle.loads(data)\n
+  else:\n
+    return None\n
+\n
+def train(portal):\n
+  # This is just a demo of keras.\n
+  # 1. you can use keras.\n
+  # 2. you can save trained model.\n
+  # 3. you can load trained model.\n
+  from cStringIO import StringIO\n
+  import tensorflow as tf\n
+  sess = tf.Session()\n
+  from keras import backend as K\n
+  K.set_session(sess)\n
+\n
+  stream = portal.data_stream_module.wendelin_examples_keras_log\n
+  def output(value):\n
+    stream.appendData(value)\n
+\n
+  saved_model_data = load(portal)\n
+  if saved_model_data is not None:\n
+    model = portal.keras_load_model(saved_model_data)\n
+  else:\n
+    from keras.models import Sequential\n
+    from keras.layers import Dense\n
+    model = Sequential()\n
+    model.add(Dense(12, input_dim=8, init=\'uniform\', activation=\'relu\'))\n
+    model.add(Dense(8, init=\'uniform\', activation=\'relu\'))\n
+    model.add(Dense(1, init=\'uniform\', activation=\'sigmoid\'))\n
+    model.compile(loss=\'binary_crossentropy\', optimizer=\'adam\', metrics=[\'accuracy\'])\n
+\n
+  dataset = np.loadtxt(StringIO(str(portal.portal_skins.erp5_wendelin_examples_keras[\'pima.csv\'])), delimiter=\',\')\n
+  X = dataset[:, 0:8]\n
+  Y = dataset[:, 8]\n
+\n
+  model.fit(X, Y, nb_epoch=20, batch_size=10, callbacks=[ProgbarLogger(output)])\n
+  scores = model.evaluate(X, Y)\n
+  output(\'%s: %.2f%%\' % (model.metrics_names[1], scores[1]*100))\n
+  model_dict = portal.keras_save_model(model)\n
+  K.clear_session()\n
+  save(portal, model_dict)\n
+  return model_dict\n
+
+
+]]></string> </value>
+                </item>
+              </dictionary>
             </value>
         </item>
       </dictionary>
@@ -193,24 +306,28 @@
   </record>
   <record id="4" aka="AAAAAAAAAAQ=">
     <pickle>
-      <global name="WorkflowHistoryList" module="Products.ERP5Type.patches.WorkflowTool"/>
+      <global name="WorkflowHistoryList" module="Products.ERP5Type.Workflow"/>
     </pickle>
     <pickle>
-      <tuple>
-        <none/>
-        <list>
-          <dictionary>
-            <item>
-                <key> <string>action</string> </key>
-                <value> <string>validate</string> </value>
-            </item>
-            <item>
-                <key> <string>validation_state</string> </key>
-                <value> <string>validated</string> </value>
-            </item>
-          </dictionary>
-        </list>
-      </tuple>
+      <dictionary>
+        <item>
+            <key> <string>_log</string> </key>
+            <value>
+              <list>
+                <dictionary>
+                  <item>
+                      <key> <string>action</string> </key>
+                      <value> <string>modify</string> </value>
+                  </item>
+                  <item>
+                      <key> <string>validation_state</string> </key>
+                      <value> <string>modified</string> </value>
+                  </item>
+                </dictionary>
+              </list>
+            </value>
+        </item>
+      </dictionary>
     </pickle>
   </record>
 </ZopeData>
