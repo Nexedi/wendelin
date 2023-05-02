@@ -109,40 +109,61 @@
                 <string>W: 88,  0: Bad indentation. Found 20 spaces, expected 10 (bad-indentation)</string>
                 <string>W: 89,  0: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)</string>
                 <string>W: 90,  0: Bad indentation. Found 20 spaces, expected 10 (bad-indentation)</string>
-               sion(sess)\n
-\n
-  stream = portal.data_stream_module.wendelin_examples_keras_log\n
-  def output(value):\n
-    stream.appendData(value)\n
-\n
-  saved_model_data = load(portal)\n
-  if saved_model_data is not None:\n
-    model = portal.keras_load_model(saved_model_data)\n
-  else:\n
-    from keras.models import Sequential\n
-    from keras.layers import Dense\n
-    model = Sequential()\n
-    model.add(Dense(12, input_dim=8, init=\'uniform\', activation=\'relu\'))\n
-    model.add(Dense(8, init=\'uniform\', activation=\'relu\'))\n
-    model.add(Dense(1, init=\'uniform\', activation=\'sigmoid\'))\n
-    model.compile(loss=\'binary_crossentropy\', optimizer=\'adam\', metrics=[\'accuracy\'])\n
-\n
-  dataset = np.loadtxt(StringIO(str(portal.portal_skins.erp5_wendelin_examples_keras[\'pima.csv\'])), delimiter=\',\')\n
-  X = dataset[:, 0:8]\n
-  Y = dataset[:, 8]\n
-\n
-  model.fit(X, Y, nb_epoch=20, batch_size=10, callbacks=[ProgbarLogger(output)])\n
-  scores = model.evaluate(X, Y)\n
-  output(\'%s: %.2f%%\' % (model.metrics_names[1], scores[1]*100))\n
-  model_dict = portal.keras_save_model(model)\n
-  K.clear_session()\n
-  save(portal, model_dict)\n
-  return model_dict\n
-
-
-]]></string> </value>
-                </item>
-              </dictionary>
+                <string>W: 91,  0: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)</string>
+                <string>W: 92,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
+                <string>W: 93,  0: Bad indentation. Found 20 spaces, expected 10 (bad-indentation)</string>
+                <string>W: 95,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
+                <string>W: 96,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
+                <string>W: 97,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
+                <string>W: 99,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
+                <string>W:101,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
+                <string>W:102,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
+                <string>W:104,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
+                <string>W:105,  0: Bad indentation. Found 12 spaces, expected 6 (bad-indentation)</string>
+                <string>W:106,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
+                <string>W:107,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
+                <string>W:108,  0: Bad indentation. Found 20 spaces, expected 10 (bad-indentation)</string>
+                <string>W:109,  0: Bad indentation. Found 20 spaces, expected 10 (bad-indentation)</string>
+                <string>W:110,  0: Bad indentation. Found 20 spaces, expected 10 (bad-indentation)</string>
+                <string>W:111,  0: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)</string>
+                <string>W:112,  0: Bad indentation. Found 20 spaces, expected 10 (bad-indentation)</string>
+                <string>W:113,  0: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)</string>
+                <string>W:114,  0: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)</string>
+                <string>W:116,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
+                <string>W:118,  0: Bad indentation. Found 4 spaces, expected 2 (bad-indentation)</string>
+                <string>W:119,  0: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)</string>
+                <string>W: 30,  4: Dangerous default value [] as argument (dangerous-default-value)</string>
+                <string>W:118,  4: Dangerous default value [] as argument (dangerous-default-value)</string>
+                <string>W:126,  2: __init__ method from base class \'ProgbarLogger\' is not called (super-init-not-called)</string>
+                <string>W:165,  2: Redefining name \'StringIO\' from outer scope (line 146) (redefined-outer-name)</string>
+                <string>W:165,  2: Reimport \'StringIO\' (imported line 146) (reimported)</string>
+                <string>W:  3,  0: Unused import sys (unused-import)</string>
+              </tuple>
+            </value>
+        </item>
+        <item>
+            <key> <string>version</string> </key>
+            <value> <string>erp5</string> </value>
+        </item>
+        <item>
+            <key> <string>workflow_history</string> </key>
+            <value>
+              <persistent> <string encoding="base64">AAAAAAAAAAM=</string> </persistent>
+            </value>
+        </item>
+      </dictionary>
+    </pickle>
+  </record>
+  <record id="2" aka="AAAAAAAAAAI=">
+    <pickle>
+      <global name="PersistentMapping" module="Persistence.mapping"/>
+    </pickle>
+    <pickle>
+      <dictionary>
+        <item>
+            <key> <string>data</string> </key>
+            <value>
+              <dictionary/>
             </value>
         </item>
       </dictionary>
@@ -172,28 +193,24 @@
   </record>
   <record id="4" aka="AAAAAAAAAAQ=">
     <pickle>
-      <global name="WorkflowHistoryList" module="Products.ERP5Type.Workflow"/>
+      <global name="WorkflowHistoryList" module="Products.ERP5Type.patches.WorkflowTool"/>
     </pickle>
     <pickle>
-      <dictionary>
-        <item>
-            <key> <string>_log</string> </key>
-            <value>
-              <list>
-                <dictionary>
-                  <item>
-                      <key> <string>action</string> </key>
-                      <value> <string>modify</string> </value>
-                  </item>
-                  <item>
-                      <key> <string>validation_state</string> </key>
-                      <value> <string>modified</string> </value>
-                  </item>
-                </dictionary>
-              </list>
-            </value>
-        </item>
-      </dictionary>
+      <tuple>
+        <none/>
+        <list>
+          <dictionary>
+            <item>
+                <key> <string>action</string> </key>
+                <value> <string>validate</string> </value>
+            </item>
+            <item>
+                <key> <string>validation_state</string> </key>
+                <value> <string>validated</string> </value>
+            </item>
+          </dictionary>
+        </list>
+      </tuple>
     </pickle>
   </record>
 </ZopeData>
