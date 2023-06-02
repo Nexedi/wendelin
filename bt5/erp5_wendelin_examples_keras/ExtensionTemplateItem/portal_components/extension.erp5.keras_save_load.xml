@@ -18,7 +18,7 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>keras_save_load</string> </value>
+            <value> <string>extension.erp5.keras_save_load</string> </value>
         </item>
         <item>
             <key> <string>portal_type</string> </key>
