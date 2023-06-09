@@ -158,11 +158,9 @@ By default these messages usually go through fluentd / fluent-bit and are wrappe
                       <value>
                         <object>
                           <klass>
-                            <global id="3.1" name="_reconstructor" module="copy_reg"/>
+                            <global id="3.1" name="DateTime" module="DateTime.DateTime"/>
                           </klass>
                           <tuple>
-                            <global id="3.2" name="DateTime" module="DateTime.DateTime"/>
-                            <global id="3.3" name="object" module="__builtin__"/>
                             <none/>
                           </tuple>
                           <state>
@@ -208,8 +206,6 @@ By default these messages usually go through fluentd / fluent-bit and are wrappe
                         <object>
                           <klass> <reference id="3.1"/> </klass>
                           <tuple>
-                            <reference id="3.2"/>
-                            <reference id="3.3"/>
                             <none/>
                           </tuple>
                           <state>
@@ -255,8 +251,6 @@ By default these messages usually go through fluentd / fluent-bit and are wrappe
                         <object>
                           <klass> <reference id="3.1"/> </klass>
                           <tuple>
-                            <reference id="3.2"/>
-                            <reference id="3.3"/>
                             <none/>
                           </tuple>
                           <state>
@@ -302,8 +296,6 @@ By default these messages usually go through fluentd / fluent-bit and are wrappe
                         <object>
                           <klass> <reference id="3.1"/> </klass>
                           <tuple>
-                            <reference id="3.2"/>
-                            <reference id="3.3"/>
                             <none/>
                           </tuple>
                           <state>
@@ -349,8 +341,6 @@ By default these messages usually go through fluentd / fluent-bit and are wrappe
                         <object>
                           <klass> <reference id="3.1"/> </klass>
                           <tuple>
-                            <reference id="3.2"/>
-                            <reference id="3.3"/>
                             <none/>
                           </tuple>
                           <state>
@@ -396,8 +386,6 @@ By default these messages usually go through fluentd / fluent-bit and are wrappe
                         <object>
                           <klass> <reference id="3.1"/> </klass>
                           <tuple>
-                            <reference id="3.2"/>
-                            <reference id="3.3"/>
                             <none/>
                           </tuple>
                           <state>
@@ -443,8 +431,6 @@ By default these messages usually go through fluentd / fluent-bit and are wrappe
                         <object>
                           <klass> <reference id="3.1"/> </klass>
                           <tuple>
-                            <reference id="3.2"/>
-                            <reference id="3.3"/>
                             <none/>
                           </tuple>
                           <state>
@@ -490,8 +476,6 @@ By default these messages usually go through fluentd / fluent-bit and are wrappe
                         <object>
                           <klass> <reference id="3.1"/> </klass>
                           <tuple>
-                            <reference id="3.2"/>
-                            <reference id="3.3"/>
                             <none/>
                           </tuple>
                           <state>
@@ -537,8 +521,6 @@ By default these messages usually go through fluentd / fluent-bit and are wrappe
                         <object>
                           <klass> <reference id="3.1"/> </klass>
                           <tuple>
-                            <reference id="3.2"/>
-                            <reference id="3.3"/>
                             <none/>
                           </tuple>
                           <state>
@@ -584,107 +566,11 @@ By default these messages usually go through fluentd / fluent-bit and are wrappe
                         <object>
                           <klass> <reference id="3.1"/> </klass>
                           <tuple>
-                            <reference id="3.2"/>
-                            <reference id="3.3"/>
                             <none/>
                           </tuple>
                           <state>
                             <tuple>
                               <float>1673359560.15</float>
-                              <string>UTC</string>
-                            </tuple>
-                          </state>
-                        </object>
-                      </value>
-                  </item>
-                </dictionary>
-                <dictionary>
-                  <item>
-                      <key> <string>action</string> </key>
-                      <value> <string>edit</string> </value>
-                  </item>
-                  <item>
-                      <key> <string>actor</string> </key>
-                      <value> <unicode>zope</unicode> </value>
-                  </item>
-                  <item>
-                      <key> <string>comment</string> </key>
-                      <value>
-                        <none/>
-                      </value>
-                  </item>
-                  <item>
-                      <key> <string>error_message</string> </key>
-                      <value> <string></string> </value>
-                  </item>
-                  <item>
-                      <key> <string>serial</string> </key>
-                      <value> <string>1008.30951.24131.52087</string> </value>
-                  </item>
-                  <item>
-                      <key> <string>state</string> </key>
-                      <value> <string>current</string> </value>
-                  </item>
-                  <item>
-                      <key> <string>time</string> </key>
-                      <value>
-                        <object>
-                          <klass> <reference id="3.1"/> </klass>
-                          <tuple>
-                            <reference id="3.2"/>
-                            <reference id="3.3"/>
-                            <none/>
-                          </tuple>
-                          <state>
-                            <tuple>
-                              <float>1686292557.87</float>
-                              <string>UTC</string>
-                            </tuple>
-                          </state>
-                        </object>
-                      </value>
-                  </item>
-                </dictionary>
-                <dictionary>
-                  <item>
-                      <key> <string>action</string> </key>
-                      <value> <string>edit</string> </value>
-                  </item>
-                  <item>
-                      <key> <string>actor</string> </key>
-                      <value> <unicode>zope</unicode> </value>
-                  </item>
-                  <item>
-                      <key> <string>comment</string> </key>
-                      <value>
-                        <none/>
-                      </value>
-                  </item>
-                  <item>
-                      <key> <string>error_message</string> </key>
-                      <value> <string></string> </value>
-                  </item>
-                  <item>
-                      <key> <string>serial</string> </key>
-                      <value> <string>1008.30951.24131.52087</string> </value>
-                  </item>
-                  <item>
-                      <key> <string>state</string> </key>
-                      <value> <string>current</string> </value>
-                  </item>
-                  <item>
-                      <key> <string>time</string> </key>
-                      <value>
-                        <object>
-                          <klass> <reference id="3.1"/> </klass>
-                          <tuple>
-                            <reference id="3.2"/>
-                            <reference id="3.3"/>
-                            <none/>
-                          </tuple>
-                          <state>
-                            <tuple>
-                              <float>1686296047.35</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
@@ -732,11 +618,9 @@ By default these messages usually go through fluentd / fluent-bit and are wrappe
                       <value>
                         <object>
                           <klass>
-                            <global id="4.1" name="_reconstructor" module="copy_reg"/>
+                            <global id="4.1" name="DateTime" module="DateTime.DateTime"/>
                           </klass>
                           <tuple>
-                            <global id="4.2" name="DateTime" module="DateTime.DateTime"/>
-                            <global id="4.3" name="object" module="__builtin__"/>
                             <none/>
                           </tuple>
                           <state>
@@ -776,8 +660,6 @@ By default these messages usually go through fluentd / fluent-bit and are wrappe
                         <object>
                           <klass> <reference id="4.1"/> </klass>
                           <tuple>
-                            <reference id="4.2"/>
-                            <reference id="4.3"/>
                             <none/>
                           </tuple>
                           <state>
@@ -817,8 +699,6 @@ By default these messages usually go through fluentd / fluent-bit and are wrappe
                         <object>
                           <klass> <reference id="4.1"/> </klass>
                           <tuple>
-                            <reference id="4.2"/>
-                            <reference id="4.3"/>
                             <none/>
                           </tuple>
                           <state>
