@@ -4,7 +4,7 @@
 array = context.getArray()
 
 if array is None:
-  return []
+  return ["Empty array"]
 
 else:
   if context.getArrayDtypeNames() is not None:
