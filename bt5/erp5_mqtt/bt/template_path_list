@@ -1,1 +1,2 @@
+portal_callables/IngestionPolicy_parseMQTTIngestionTag
 portal_ingestion_policies/default_mqtt
