@@ -1,4 +1,5 @@
 data_operation_module/mqtt_ingestion_operation
 data_supply_module/default_mqtt
+portal_callables/DataIngestionLine_writeMQTTIngestion
 portal_callables/IngestionPolicy_parseMQTTIngestionTag
 portal_ingestion_policies/default_mqtt

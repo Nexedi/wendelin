@@ -4,7 +4,7 @@ now = DateTime()
 today_string = now.strftime('%Y%m%d')
 portal = context.getPortalObject()
 portal_catalog = portal.portal_catalog
-context.log("It is being executed!")
+
 data_ingestion_reference = movement_dict.get('reference', reference)
 resource_reference = movement_dict.get('resource_reference', None)
 specialise_reference = movement_dict.get('specialise_reference', None)
@@ -133,6 +133,4 @@ bucket_reference = movement_dict.get('bucket_reference', None)
 if bucket_reference is not None:
   parameter_dict['bucket_reference'] = bucket_reference
 
-context.log(data_operation)
-context.log(parameter_dict)
 return data_operation, parameter_dict
