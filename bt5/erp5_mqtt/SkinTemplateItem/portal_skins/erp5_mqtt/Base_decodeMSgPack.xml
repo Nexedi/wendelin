@@ -8,19 +8,19 @@
       <dictionary>
         <item>
             <key> <string>_function</string> </key>
-            <value> <string>decodeMQTT</string> </value>
+            <value> <string>decodeMSgPack</string> </value>
         </item>
         <item>
             <key> <string>_module</string> </key>
-            <value> <string>WendelinMQTT</string> </value>
+            <value> <string>Base_decodeMSgPack</string> </value>
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>WendelinMQTT</string> </value>
+            <value> <string>Base_decodeMSgPack</string> </value>
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>WendelinMQTT</string> </value>
+            <value> <string>Base_decodeMSgPack</string> </value>
         </item>
       </dictionary>
     </pickle>

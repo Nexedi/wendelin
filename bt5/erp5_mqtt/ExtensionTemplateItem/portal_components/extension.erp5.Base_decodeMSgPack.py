@@ -1,7 +1,7 @@
 import json
 import msgpack
 
-def decodeMQTT(input_string):
+def decodeMSgPack(input_string):
   input_string = input_string.replace("'", "\"")
   input_dict = json.loads(input_string)
   serialized_data = msgpack.packb(input_dict)
