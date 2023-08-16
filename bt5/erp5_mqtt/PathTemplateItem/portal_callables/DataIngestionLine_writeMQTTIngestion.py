@@ -2,6 +2,11 @@ import json
 
 portal = context.getPortalObject()
 data = "".join([str(c[1]) for c in context.unpack(data_chunk)])
+context.log(type(data))
+
+new_data = context.WendelinMQTT(data)
+context.log(type(new_data))
+
 data = data.replace("'", "\"")
 data = json.loads(data)
 title = data["topic"]
