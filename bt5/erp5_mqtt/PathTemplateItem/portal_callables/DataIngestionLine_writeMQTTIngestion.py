@@ -1,13 +1,17 @@
+"""
+  This script operates within a context provided by the portal object.
+  It takes a data chunk, unpacks it, and then creates a new MQTT message
+  object within the portal, using specific attributes from the unpacked
+  data such as "topic" and "payload" for the message content.
+"""
+
 import json
 
 portal = context.getPortalObject()
-data = "".join([str(c[1]) for c in context.unpack(data_chunk)])
-deserialized_data = context.Base_decodeMSgPack(data)
-title = deserialized_data["topic"]
-payload = deserialized_data["payload"]
+data = context.unpack(data_chunk)[0][1]
 
 mqtt_message = portal.mqtt_message_module.newContent(
     portal_type="MQTT Message",
-    title=title,
-    payload=payload
+    title=data["topic"],
+    payload=data["payload"]
 )
