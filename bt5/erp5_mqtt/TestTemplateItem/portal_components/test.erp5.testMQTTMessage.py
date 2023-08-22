@@ -25,28 +25,92 @@
 #
 ##############################################################################
 
+import uuid
+import random
+import struct
+import string
+import base64
+import urllib
+import msgpack
+import binascii
+import textwrap
+import numpy as np
+
+from httplib import NO_CONTENT
+from cStringIO import StringIO
+from zExceptions import BadRequest
+from App.version_txt import getZopeVersion
 from Products.ERP5Type.tests.ERP5TypeTestCase import ERP5TypeTestCase
 
-class Test(ERP5TypeTestCase):
+
+if getZopeVersion() < (4, ):
+  NO_CONTENT = 200
+
+
+class TestDataIngestion(ERP5TypeTestCase):
+
   """
-  A Sample Test Class
+  Test Class for Data Ingestion via MQTT
   """
 
-  def afterSetUp(self):
-    """
-    This is ran before anything, used to set the environment
-    """
-    # here, you can create the categories and objects your test will depend on
-    pass
+  def getTitle(self):
+    return "Wendelin Data Ingestion Test for MQTT"
 
-  def test_sampleTest(self):
-    """
-    A Sample Test
 
-    For the method to be called during the test,
-    its name must start with 'test'.
-
-    See https://docs.python.org/2/library/unittest.html for help with available
-    assertion methods.
+  def getRandomString(self):
     """
-    self.assertEqual(0, 0)
+    Return a sequence of random characters.
+    """
+    return "test_%s" %"".join([random.choice(string.ascii_letters + string.digits) \
+      for _ in xrange(32)])
+
+
+  def chunks(self, l, n):
+    """
+    Yield successive n-sized chunks from one-s.
+    """
+    for i in xrange(0, len(l), n):
+      yield l[i:i+n]
+
+
+  def test_IngestionFromMQTT(self):
+    """
+    Test ingestion using a POST Request containing a
+    msgpack encoded message simulating input from MQTT.
+    """
+
+    portal = self.portal
+
+    reference = self.getRandomString()
+
+    ingestion_policy, data_supply, _ = portal.portal_ingestion_policies.IngestionPolicyTool_addIngestionPolicy(
+      reference = reference,
+      title = reference,
+      batch_mode=1
+    )
+
+    self.tic()
+
+    number_string_list = []
+
+    for my_list in list(self.chunks(range(0, 100001), 10)):
+      number_string_list.append(','.join([str(x) for x in my_list]))
+
+    real_data = "\n".join(number_string_list)
+    real_data += "\n"
+
+    body = msgpack.packb([0, real_data], use_bin_type=True)
+    env = { "CONTENT_TYPE": "application/x-www-form-urlencoded" }
+    body = urllib.urlencode({ "data_chunk": body})
+    path = ingestion_policy.getPath() + "/ingest?reference=" + reference
+
+    publish_kw = dict(
+      user="ERP5TypeTestCase",
+      env=env,
+      request_method="POST",
+      stdin=StringIO(body)
+    )
+
+    response = self.publish(path, **publish_kw)
+    self.assertEqual(NO_CONTENT, response.getStatus())
+    self.tic()

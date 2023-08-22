@@ -35,7 +35,16 @@
         <item>
             <key> <string>text_content_warning_message</string> </key>
             <value>
-              <tuple/>
+              <tuple>
+                <string>W: 86, 22: Unused variable \'data_supply\' (unused-variable)</string>
+                <string>W: 28,  0: Unused import uuid (unused-import)</string>
+                <string>W: 30,  0: Unused import struct (unused-import)</string>
+                <string>W: 32,  0: Unused import base64 (unused-import)</string>
+                <string>W: 35,  0: Unused import binascii (unused-import)</string>
+                <string>W: 36,  0: Unused import textwrap (unused-import)</string>
+                <string>W: 37,  0: Unused numpy imported as np (unused-import)</string>
+                <string>W: 41,  0: Unused BadRequest imported from zExceptions (unused-import)</string>
+              </tuple>
             </value>
         </item>
         <item>
