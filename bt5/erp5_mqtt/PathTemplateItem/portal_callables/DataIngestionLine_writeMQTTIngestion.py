@@ -5,12 +5,10 @@
   data such as "topic" and "payload" for the message content.
 """
 
-import json
-
 portal = context.getPortalObject()
 data = context.unpack(data_chunk)[0][1]
 
-mqtt_message = portal.mqtt_message_module.newContent(
+portal.mqtt_message_module.newContent(
     portal_type="MQTT Message",
     title=data["topic"],
     payload=data["payload"]
