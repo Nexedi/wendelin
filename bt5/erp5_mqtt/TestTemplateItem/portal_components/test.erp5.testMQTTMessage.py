@@ -25,20 +25,10 @@
 #
 ##############################################################################
 
-import uuid
-import random
-import struct
-import string
-import base64
-import urllib
 import msgpack
-import binascii
-import textwrap
-import numpy as np
 
 from httplib import NO_CONTENT
 from cStringIO import StringIO
-from zExceptions import BadRequest
 from App.version_txt import getZopeVersion
 from Products.ERP5Type.tests.ERP5TypeTestCase import ERP5TypeTestCase
 
@@ -57,60 +47,29 @@ class TestDataIngestion(ERP5TypeTestCase):
     return "Wendelin Data Ingestion Test for MQTT"
 
 
-  def getRandomString(self):
-    """
-    Return a sequence of random characters.
-    """
-    return "test_%s" %"".join([random.choice(string.ascii_letters + string.digits) \
-      for _ in xrange(32)])
-
-
-  def chunks(self, l, n):
-    """
-    Yield successive n-sized chunks from one-s.
-    """
-    for i in xrange(0, len(l), n):
-      yield l[i:i+n]
-
-
   def test_IngestionFromMQTT(self):
     """
     Test ingestion using a POST Request containing a
     msgpack encoded message simulating input from MQTT.
     """
 
-    portal = self.portal
+    ingestion_policy = self.portal.portal_ingestion_policies.default_mqtt
 
-    reference = self.getRandomString()
+    data_chunk = """
+      [{
+        "topic": "coupler_1.mqtt_data",
+        "payload": {
+          "message1": "Hello, World!",
+          "message2": "Hello, World Again!"
+        }
+      }]
+    """
 
-    ingestion_policy, data_supply, _ = portal.portal_ingestion_policies.IngestionPolicyTool_addIngestionPolicy(
-      reference = reference,
-      title = reference,
-      batch_mode=1
-    )
-
-    self.tic()
-
-    number_string_list = []
-
-    for my_list in list(self.chunks(range(0, 100001), 10)):
-      number_string_list.append(','.join([str(x) for x in my_list]))
-
-    real_data = "\n".join(number_string_list)
-    real_data += "\n"
-
-    body = msgpack.packb([0, real_data], use_bin_type=True)
-    env = { "CONTENT_TYPE": "application/x-www-form-urlencoded" }
-    body = urllib.urlencode({ "data_chunk": body})
-    path = ingestion_policy.getPath() + "/ingest?reference=" + reference
-
-    publish_kw = dict(
-      user="ERP5TypeTestCase",
-      env=env,
-      request_method="POST",
-      stdin=StringIO(body)
-    )
-
-    response = self.publish(path, **publish_kw)
-    self.assertEqual(NO_CONTENT, response.getStatus())
+    request = self.portal.REQUEST
+    request.environ["REQUEST_METHOD"] = "POST"
+    request.set("reference", "coupler_1.mqtt_data")
+    request.set("data_chunk", data_chunk)
+    ingestion_policy.ingest()
+    self.portal.log(data_chunk)
+    self.assertEqual(NO_CONTENT, 200)
     self.tic()
