@@ -25,6 +25,8 @@
 #
 ##############################################################################
 
+import string
+import random
 import urllib
 import msgpack
 
@@ -36,6 +38,10 @@ from Products.ERP5Type.tests.ERP5TypeTestCase import ERP5TypeTestCase
 
 if getZopeVersion() < (4, ):
   NO_CONTENT = 200
+
+
+def getRandomString():
+  return "test.%s" %"".join([random.choice(string.ascii_letters + string.digits) for _ in xrange(32)])
 
 
 class TestDataIngestion(ERP5TypeTestCase):
@@ -55,13 +61,19 @@ class TestDataIngestion(ERP5TypeTestCase):
     """
 
     ingestion_policy = self.portal.portal_ingestion_policies.default_mqtt
+    topic = getRandomString()
+
+    payload = {
+      getRandomString(): getRandomString(),
+      getRandomString(): getRandomString(),
+      getRandomString(): getRandomString(),
+      getRandomString(): getRandomString(),
+      getRandomString(): getRandomString()
+    }
 
     data_chunk = {
-      "topic": "test_sensor.test_product",
-      "payload": {
-        "message1": "Hello, World!",
-        "message2": "Hello, World Again!"
-      }
+      "topic": topic,
+      "payload": payload
     }
 
     body = msgpack.packb([0, data_chunk], use_bin_type=True)
@@ -72,5 +84,12 @@ class TestDataIngestion(ERP5TypeTestCase):
     publish_kw = dict(user="ERP5TypeTestCase", env=env, request_method="POST", stdin=StringIO(body))
     response = self.publish(path, **publish_kw)
 
+    # Assert the response status codes
     self.assertEqual(NO_CONTENT, response.getStatus())
     self.tic()
+
+    data_product = self.portal.mqtt_message_module.portal_catalog.getResultValue(portal_type="MQTT Message", title=topic)
+
+    # Assert the topic and the payload
+    self.assertEqual(data_product.getTitle(), topic)
+    self.assertEqual(data_product.getPayload(), str(payload))
