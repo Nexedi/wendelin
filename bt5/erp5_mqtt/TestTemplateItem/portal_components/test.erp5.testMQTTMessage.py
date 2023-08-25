@@ -25,6 +25,7 @@
 #
 ##############################################################################
 
+import urllib
 import msgpack
 
 from httplib import NO_CONTENT
@@ -55,21 +56,21 @@ class TestDataIngestion(ERP5TypeTestCase):
 
     ingestion_policy = self.portal.portal_ingestion_policies.default_mqtt
 
-    data_chunk = """
-      [{
-        "topic": "coupler_1.mqtt_data",
-        "payload": {
-          "message1": "Hello, World!",
-          "message2": "Hello, World Again!"
-        }
-      }]
-    """
+    data_chunk = {
+      "topic": "test_sensor.test_product",
+      "payload": {
+        "message1": "Hello, World!",
+        "message2": "Hello, World Again!"
+      }
+    }
 
-    request = self.portal.REQUEST
-    request.environ["REQUEST_METHOD"] = "POST"
-    request.set("reference", "coupler_1.mqtt_data")
-    request.set("data_chunk", data_chunk)
-    ingestion_policy.ingest()
-    self.portal.log(data_chunk)
-    self.assertEqual(NO_CONTENT, 200)
+    body = msgpack.packb([0, data_chunk], use_bin_type=True)
+    env = {"CONTENT_TYPE": "application/x-www-form-urlencoded"}
+    body = urllib.urlencode({"data_chunk": body})
+
+    path = ingestion_policy.getPath() + "/ingest?reference=test_sensor.test_product"
+    publish_kw = dict(user="ERP5TypeTestCase", env=env, request_method="POST", stdin=StringIO(body))
+    response = self.publish(path, **publish_kw)
+
+    self.assertEqual(NO_CONTENT, response.getStatus())
     self.tic()

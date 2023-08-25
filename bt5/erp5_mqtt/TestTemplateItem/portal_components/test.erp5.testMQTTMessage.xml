@@ -35,10 +35,7 @@
         <item>
             <key> <string>text_content_warning_message</string> </key>
             <value>
-              <tuple>
-                <string>W: 28,  0: Unused import msgpack (unused-import)</string>
-                <string>W: 31,  0: Unused StringIO imported from cStringIO (unused-import)</string>
-              </tuple>
+              <tuple/>
             </value>
         </item>
         <item>

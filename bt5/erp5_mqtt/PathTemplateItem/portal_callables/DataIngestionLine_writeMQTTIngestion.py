@@ -6,8 +6,6 @@ data such as "topic" and "payload" for the message content.
 """
 
 portal = context.getPortalObject()
-context.log(data_chunk)
-context.log(context.unpack(data_chunk))
 data = context.unpack(data_chunk)[0][1]
 
 portal.mqtt_message_module.newContent(
