@@ -63,12 +63,12 @@ class TestDataIngestion(ERP5TypeTestCase):
     ingestion_policy = self.portal.portal_ingestion_policies.default_mqtt
     topic = getRandomString()
 
+    message1 = getRandomString()
+    message2 = getRandomString()
+
     payload = {
-      getRandomString(): getRandomString(),
-      getRandomString(): getRandomString(),
-      getRandomString(): getRandomString(),
-      getRandomString(): getRandomString(),
-      getRandomString(): getRandomString()
+      "message1": message1,
+      "message2": message2
     }
 
     data_chunk = {
