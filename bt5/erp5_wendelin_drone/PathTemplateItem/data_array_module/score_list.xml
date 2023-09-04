@@ -1,0 +1,324 @@
+<?xml version="1.0"?>
+<ZopeData>
+  <record id="1" aka="AAAAAAAAAAE=">
+    <pickle>
+      <global name="Data Array" module="erp5.portal_type"/>
+    </pickle>
+    <pickle>
+      <dictionary>
+        <item>
+            <key> <string>_Access_contents_information_Permission</string> </key>
+            <value>
+              <tuple>
+                <string>Assignee</string>
+                <string>Assignor</string>
+                <string>Associate</string>
+                <string>Auditor</string>
+                <string>Manager</string>
+              </tuple>
+            </value>
+        </item>
+        <item>
+            <key> <string>_Add_portal_content_Permission</string> </key>
+            <value>
+              <tuple>
+                <string>Assignee</string>
+                <string>Assignor</string>
+                <string>Associate</string>
+                <string>Manager</string>
+              </tuple>
+            </value>
+        </item>
+        <item>
+            <key> <string>_Modify_portal_content_Permission</string> </key>
+            <value>
+              <tuple>
+                <string>Assignee</string>
+                <string>Assignor</string>
+                <string>Associate</string>
+                <string>Manager</string>
+              </tuple>
+            </value>
+        </item>
+        <item>
+            <key> <string>_View_Permission</string> </key>
+            <value>
+              <tuple>
+                <string>Assignee</string>
+                <string>Assignor</string>
+                <string>Associate</string>
+                <string>Auditor</string>
+                <string>Manager</string>
+              </tuple>
+            </value>
+        </item>
+        <item>
+            <key> <string>array</string> </key>
+            <value>
+              <persistent> <string encoding="base64">AAAAAAAAAAI=</string> </persistent>
+            </value>
+        </item>
+        <item>
+            <key> <string>default_reference</string> </key>
+            <value> <string>Create Score List Array-drone_simulation</string> </value>
+        </item>
+        <item>
+            <key> <string>description</string> </key>
+            <value>
+              <none/>
+            </value>
+        </item>
+        <item>
+            <key> <string>id</string> </key>
+            <value> <string>score_list</string> </value>
+        </item>
+        <item>
+            <key> <string>language</string> </key>
+            <value>
+              <none/>
+            </value>
+        </item>
+        <item>
+            <key> <string>title</string> </key>
+            <value> <string>Create Score List</string> </value>
+        </item>
+        <item>
+            <key> <string>version</string> </key>
+            <value> <string>001</string> </value>
+        </item>
+      </dictionary>
+    </pickle>
+  </record>
+  <record id="2" aka="AAAAAAAAAAI=">
+    <pickle>
+      <global name="ZBigArray" module="wendelin.bigarray.array_zodb"/>
+    </pickle>
+    <pickle>
+      <tuple>
+        <dictionary>
+          <item>
+              <key> <string>_dtype</string> </key>
+              <value>
+                <object>
+                  <klass>
+                    <global id="2.1" name="dtype" module="numpy"/>
+                  </klass>
+                  <tuple>
+                    <string>V64</string>
+                    <int>0</int>
+                    <int>1</int>
+                  </tuple>
+                  <state>
+                    <tuple>
+                      <int>3</int>
+                      <string>|</string>
+                      <none/>
+                      <tuple>
+                        <string>Iteration</string>
+                        <string>Parameters1</string>
+                        <string>Parameters2</string>
+                        <string>Score</string>
+                        <string>Distance mean</string>
+                        <string>ASML mean</string>
+                        <string>Ground Speed mean</string>
+                        <string>Climb Rate mean</string>
+                      </tuple>
+                      <dictionary>
+                        <item>
+                            <key> <string>ASML mean</string> </key>
+                            <value>
+                              <tuple>
+                                <object id="2.2">
+                                  <klass> <reference id="2.1"/> </klass>
+                                  <tuple>
+                                    <string>f8</string>
+                                    <int>0</int>
+                                    <int>1</int>
+                                  </tuple>
+                                  <state>
+                                    <tuple>
+                                      <int>3</int>
+                                      <string encoding="cdata"><![CDATA[
+
+<
+
+]]></string>
+                                      <none/>
+                                      <none/>
+                                      <none/>
+                                      <int>-1</int>
+                                      <int>-1</int>
+                                      <int>0</int>
+                                    </tuple>
+                                  </state>
+                                </object>
+                                <int>40</int>
+                              </tuple>
+                            </value>
+                        </item>
+                        <item>
+                            <key> <string>Climb Rate mean</string> </key>
+                            <value>
+                              <tuple>
+                                <reference id="2.2"/>
+                                <int>56</int>
+                              </tuple>
+                            </value>
+                        </item>
+                        <item>
+                            <key> <string>Distance mean</string> </key>
+                            <value>
+                              <tuple>
+                                <reference id="2.2"/>
+                                <int>32</int>
+                              </tuple>
+                            </value>
+                        </item>
+                        <item>
+                            <key> <string>Ground Speed mean</string> </key>
+                            <value>
+                              <tuple>
+                                <reference id="2.2"/>
+                                <int>48</int>
+                              </tuple>
+                            </value>
+                        </item>
+                        <item>
+                            <key> <string>Iteration</string> </key>
+                            <value>
+                              <tuple>
+                                <object>
+                                  <klass> <reference id="2.1"/> </klass>
+                                  <tuple>
+                                    <string>i8</string>
+                                    <int>0</int>
+                                    <int>1</int>
+                                  </tuple>
+                                  <state>
+                                    <tuple>
+                                      <int>3</int>
+                                      <string encoding="cdata"><![CDATA[
+
+<
+
+]]></string>
+                                      <none/>
+                                      <none/>
+                                      <none/>
+                                      <int>-1</int>
+                                      <int>-1</int>
+                                      <int>0</int>
+                                    </tuple>
+                                  </state>
+                                </object>
+                                <int>0</int>
+                              </tuple>
+                            </value>
+                        </item>
+                        <item>
+                            <key> <string>Parameters1</string> </key>
+                            <value>
+                              <tuple>
+                                <reference id="2.2"/>
+                                <int>8</int>
+                              </tuple>
+                            </value>
+                        </item>
+                        <item>
+                            <key> <string>Parameters2</string> </key>
+                            <value>
+                              <tuple>
+                                <reference id="2.2"/>
+                                <int>16</int>
+                              </tuple>
+                            </value>
+                        </item>
+                        <item>
+                            <key> <string>Score</string> </key>
+                            <value>
+                              <tuple>
+                                <reference id="2.2"/>
+                                <int>24</int>
+                              </tuple>
+                            </value>
+                        </item>
+                      </dictionary>
+                      <int>64</int>
+                      <int>1</int>
+                      <int>16</int>
+                    </tuple>
+                  </state>
+                </object>
+              </value>
+          </item>
+          <item>
+              <key> <string>_order</string> </key>
+              <value> <string>C</string> </value>
+          </item>
+          <item>
+              <key> <string>_shape</string> </key>
+              <value>
+                <tuple>
+                  <int>4</int>
+                </tuple>
+              </value>
+          </item>
+          <item>
+              <key> <string>_stridev</string> </key>
+              <value>
+                <tuple>
+                  <int>64</int>
+                </tuple>
+              </value>
+          </item>
+        </dictionary>
+        <dictionary>
+          <item>
+              <key> <string>zfile</string> </key>
+              <value>
+                <persistent> <string encoding="base64">AAAAAAAAAAM=</string> </persistent>
+              </value>
+          </item>
+        </dictionary>
+      </tuple>
+    </pickle>
+  </record>
+  <record id="3" aka="AAAAAAAAAAM=">
+    <pickle>
+      <global name="ZBigFile" module="wendelin.bigfile.file_zodb"/>
+    </pickle>
+    <pickle>
+      <tuple>
+        <int>2097152</int>
+        <persistent> <string encoding="base64">AAAAAAAAAAQ=</string> </persistent>
+      </tuple>
+    </pickle>
+  </record>
+  <record id="4" aka="AAAAAAAAAAQ=">
+    <pickle>
+      <global name="LOBTree" module="BTrees.LOBTree"/>
+    </pickle>
+    <pickle>
+      <tuple>
+        <tuple>
+          <tuple>
+            <tuple>
+              <int>0</int>
+              <persistent> <string encoding="base64">AAAAAAAAAAU=</string> </persistent>
+            </tuple>
+          </tuple>
+        </tuple>
+      </tuple>
+    </pickle>
+  </record>
+  <record id="5" aka="AAAAAAAAAAU=">
+    <pickle>
+      <global name="ZBlk0" module="wendelin.bigfile.file_zodb"/>
+    </pickle>
+    <pickle> <string encoding="base64">AQAAAAAAAACrqqqqqqowQAAAAAAAACRAAAAAAAAACECjBgkAXn+QQPG80ZtJ7FBA5dxqxLkm8T+p
+rNUHGjLlPwEAAAAAAAAAq6qqqqqqMEBWVVVVVVU3QAAAAAAAABRAUAKknR/ZlEAtk8bCt05QQPZU
+ivwDMPI/FDqfjmeK6j8BAAAAAAAAAKuqqqqqqjBAVlVVVVVVQkAAAAAAAAAcQN56a4NfeZVADk7w
+rYLYT0D9OOgvkk/yP3r+b8hxE+0/AQAAAAAAAACrqqqqqqowQAAAAAAAAElAAAAAAAAAIkB6Anmc
+hYSVQPs7uBj+UU9A+Vuu83SI8j/nzqiZyl3uPw==</string> </pickle>
+  </record>
+</ZopeData>
