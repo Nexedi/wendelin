@@ -96,3 +96,98 @@ class TestDataIngestion(ERP5TypeTestCase):
     # Assert the topic and the payload
     self.assertEqual(mqtt_message.getTitle(), topic)
     self.assertEqual(mqtt_message.getPayload(), str(payload))
+
+
+  def test_IngestionWithInvalidPolicy(self):
+    """
+    Test ingestion using an invalid ingestion policy.
+    """
+    topic = getRandomString()
+    message1 = getRandomString()
+    message2 = getRandomString()
+
+    # Use an invalid ingestion policy
+    invalid_policy = "invalid_policy_name"
+    data_supply = self.portal.data_supply_module.default_mqtt
+    data_product = self.portal.data_product_module.default_mqtt
+
+    payload = {
+        "message1": message1,
+        "message2": message2
+    }
+
+    data_chunk = {
+        "topic": topic,
+        "payload": payload
+    }
+
+    body = msgpack.packb([0, data_chunk], use_bin_type=True)
+    env = {"CONTENT_TYPE": "application/x-www-form-urlencoded"}
+    body = urllib.urlencode({"data_chunk": body})
+
+    path = invalid_policy + "/ingest?reference=" + data_supply.getReference() + "." + data_product.getReference()
+    publish_kw = dict(user="ERP5TypeTestCase", env=env, request_method="POST", stdin=StringIO(body))
+    response = self.publish(path, **publish_kw)
+
+    # Assert that the response status code indicates an error (e.g., 404 for not found)
+    self.assertEqual(404, response.getStatus())
+    self.tic()
+
+
+  def test_MultipleIngestions(self):
+    """
+    Test multiple data ingestion requests in succession.
+    """
+    topic1 = getRandomString()
+    message1 = getRandomString()
+    topic2 = getRandomString()
+    message2 = getRandomString()
+
+    ingestion_policy = self.portal.portal_ingestion_policies.default_mqtt
+    data_supply = self.portal.data_supply_module.default_mqtt
+    data_product = self.portal.data_product_module.default_mqtt
+
+    payload1 = {
+        "message1": message1
+    }
+
+    payload2 = {
+        "message2": message2
+    }
+
+    data_chunk1 = {
+        "topic": topic1,
+        "payload": payload1
+    }
+
+    data_chunk2 = {
+        "topic": topic2,
+        "payload": payload2
+    }
+
+    body1 = msgpack.packb([0, data_chunk1], use_bin_type=True)
+    body2 = msgpack.packb([0, data_chunk2], use_bin_type=True)
+    env = {"CONTENT_TYPE": "application/x-www-form-urlencoded"}
+    body1 = urllib.urlencode({"data_chunk": body1})
+    body2 = urllib.urlencode({"data_chunk": body2})
+
+    path = ingestion_policy.getPath() + "/ingest?reference=" + data_supply.getReference() + "." + data_product.getReference()
+    publish_kw = dict(user="ERP5TypeTestCase", env=env, request_method="POST", stdin=StringIO(body1))
+    response1 = self.publish(path, **publish_kw)
+
+    publish_kw["stdin"] = StringIO(body2)
+    response2 = self.publish(path, **publish_kw)
+
+    # Assert the response status codes for both requests
+    self.assertEqual(NO_CONTENT, response1.getStatus())
+    self.assertEqual(NO_CONTENT, response2.getStatus())
+    self.tic()
+
+    mqtt_message1 = self.portal.portal_catalog.getResultValue(portal_type="MQTT Message", title=topic1)
+    mqtt_message2 = self.portal.portal_catalog.getResultValue(portal_type="MQTT Message", title=topic2)
+
+    # Assert the topics and payloads for both messages
+    self.assertEqual(mqtt_message1.getTitle(), topic1)
+    self.assertEqual(mqtt_message1.getPayload(), str(payload1))
+    self.assertEqual(mqtt_message2.getTitle(), topic2)
+    self.assertEqual(mqtt_message2.getPayload(), str(payload2))
