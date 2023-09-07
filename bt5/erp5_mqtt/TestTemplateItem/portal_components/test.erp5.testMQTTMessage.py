@@ -60,11 +60,15 @@ class TestDataIngestion(ERP5TypeTestCase):
     msgpack encoded message simulating input from MQTT.
     """
 
-    ingestion_policy = self.portal.portal_ingestion_policies.default_mqtt
+    reference = getRandomString()
     topic = getRandomString()
-
     message1 = getRandomString()
     message2 = getRandomString()
+
+    # Get ingestion policy
+    ingestion_policy = self.portal.portal_ingestion_policies.default_mqtt
+    data_supply = self.portal.data_supply_module.default_mqtt
+    data_product = self.portal.data_product_module.default_mqtt
 
     payload = {
       "message1": message1,
@@ -77,10 +81,10 @@ class TestDataIngestion(ERP5TypeTestCase):
     }
 
     body = msgpack.packb([0, data_chunk], use_bin_type=True)
-    env = {"CONTENT_TYPE": "application/x-www-form-urlencoded"}
-    body = urllib.urlencode({"data_chunk": body})
+    env = { "CONTENT_TYPE": "application/x-www-form-urlencoded" }
+    body = urllib.urlencode({ "data_chunk": body })
 
-    path = ingestion_policy.getPath() + "/ingest?reference=test_sensor.test_product"
+    path = ingestion_policy.getPath() + "/ingest?reference=" + data_supply.getReference() + "." + data_product.getReference()
     publish_kw = dict(user="ERP5TypeTestCase", env=env, request_method="POST", stdin=StringIO(body))
     response = self.publish(path, **publish_kw)
 
@@ -88,8 +92,8 @@ class TestDataIngestion(ERP5TypeTestCase):
     self.assertEqual(NO_CONTENT, response.getStatus())
     self.tic()
 
-    data_product = self.portal.mqtt_message_module.portal_catalog.getResultValue(portal_type="MQTT Message", title=topic)
+    mqtt_message = self.portal.portal_catalog.getResultValue(portal_type="MQTT Message", title=topic)
 
     # Assert the topic and the payload
-    self.assertEqual(data_product.getTitle(), topic)
-    self.assertEqual(data_product.getPayload(), str(payload))
+    self.assertEqual(mqtt_message.getTitle(), topic)
+    self.assertEqual(mqtt_message.getPayload(), str(payload))
