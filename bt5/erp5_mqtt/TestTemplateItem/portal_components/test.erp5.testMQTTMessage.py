@@ -55,6 +55,7 @@ class TestDataIngestion(ERP5TypeTestCase):
 
 
   def test_IngestionFromMQTT(self):
+
     """
     Test ingestion using a POST Request containing a
     msgpack encoded message simulating input from MQTT.
@@ -64,7 +65,7 @@ class TestDataIngestion(ERP5TypeTestCase):
     message1 = getRandomString()
     message2 = getRandomString()
 
-    # Get ingestion policy
+    # Get ingestion policy, data supply and data product
     ingestion_policy = self.portal.portal_ingestion_policies.default_mqtt
     data_supply = self.portal.data_supply_module.default_mqtt
     data_product = self.portal.data_product_module.default_mqtt
@@ -91,6 +92,7 @@ class TestDataIngestion(ERP5TypeTestCase):
     self.assertEqual(NO_CONTENT, response.getStatus())
     self.tic()
 
+    # Get the latest MQTT Message
     mqtt_message = self.portal.portal_catalog.getResultValue(portal_type="MQTT Message", title=topic)
 
     # Assert the topic and the payload
@@ -99,14 +101,17 @@ class TestDataIngestion(ERP5TypeTestCase):
 
 
   def test_IngestionWithInvalidPolicy(self):
+
     """
     Test ingestion using an invalid ingestion policy.
     """
+
     topic = getRandomString()
     message1 = getRandomString()
     message2 = getRandomString()
 
     # Use an invalid ingestion policy
+    # Get data supply and data product
     invalid_policy = "invalid_policy_name"
     data_supply = self.portal.data_supply_module.default_mqtt
     data_product = self.portal.data_product_module.default_mqtt
@@ -135,11 +140,14 @@ class TestDataIngestion(ERP5TypeTestCase):
 
 
   def test_MultipleIngestions(self):
+
     """
     Test multiple data ingestion requests in succession.
     """
+
     topic1 = getRandomString()
     message1 = getRandomString()
+
     topic2 = getRandomString()
     message2 = getRandomString()
 
@@ -183,6 +191,7 @@ class TestDataIngestion(ERP5TypeTestCase):
     self.assertEqual(NO_CONTENT, response2.getStatus())
     self.tic()
 
+    # Get the latest MQTT Messages
     mqtt_message1 = self.portal.portal_catalog.getResultValue(portal_type="MQTT Message", title=topic1)
     mqtt_message2 = self.portal.portal_catalog.getResultValue(portal_type="MQTT Message", title=topic2)
 
