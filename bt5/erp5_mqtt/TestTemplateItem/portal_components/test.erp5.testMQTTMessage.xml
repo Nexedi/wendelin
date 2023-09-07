@@ -35,9 +35,7 @@
         <item>
             <key> <string>text_content_warning_message</string> </key>
             <value>
-              <tuple>
-                <string>W: 63,  4: Unused variable \'reference\' (unused-variable)</string>
-              </tuple>
+              <tuple/>
             </value>
         </item>
         <item>

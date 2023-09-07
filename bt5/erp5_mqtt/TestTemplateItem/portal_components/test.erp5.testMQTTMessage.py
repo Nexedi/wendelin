@@ -60,7 +60,6 @@ class TestDataIngestion(ERP5TypeTestCase):
     msgpack encoded message simulating input from MQTT.
     """
 
-    reference = getRandomString()
     topic = getRandomString()
     message1 = getRandomString()
     message2 = getRandomString()
