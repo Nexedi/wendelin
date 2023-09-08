@@ -12,6 +12,7 @@ data_supply_module/4
 data_transformation_module/4
 data_transformation_module/5
 data_transformation_module/6
+notebook_module/1
 portal_callables/DataIngestionline_writeFluentdIngestionToDataBucketStream
 portal_callables/convert_log_array_script
 portal_callables/fitness_score_drones
