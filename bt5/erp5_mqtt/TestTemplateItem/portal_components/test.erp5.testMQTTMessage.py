@@ -45,7 +45,6 @@ def getRandomString():
 
 
 class TestDataIngestion(ERP5TypeTestCase):
-
   """
   Test Class for Data Ingestion via MQTT
   """
@@ -68,10 +67,16 @@ class TestDataIngestion(ERP5TypeTestCase):
     env = { "CONTENT_TYPE": "application/x-www-form-urlencoded" }
     body = urllib.urlencode({ "data_chunk": body })
 
-    if isinstance(ingestion_policy, str):
-      path = ingestion_policy + "/ingest?reference=" + data_supply.getReference() + "." + data_product.getReference()
-    else:
-      path = ingestion_policy.getPath() + "/ingest?reference=" + data_supply.getReference() + "." + data_product.getReference()
+    if not isinstance(ingestion_policy, str):
+      ingestion_policy = ingestion_policy.getPath()
+
+    if not isinstance(data_supply, str):
+      data_supply = data_supply.getReference()
+
+    if not isinstance(data_product, str):
+      data_product = data_product.getReference()
+
+    path = ingestion_policy + "/ingest?reference=" + data_supply + "." + data_product
     publish_kw = dict(user="ERP5TypeTestCase", env=env, request_method="POST", stdin=StringIO(body))
     response = self.publish(path, **publish_kw)
 
@@ -109,6 +114,22 @@ class TestDataIngestion(ERP5TypeTestCase):
     """
 
     topic = getRandomString()
+    message = getRandomString()
+
+    payload = {
+      "message": message
+    }
+
+    self._assertIngestion(topic, payload)
+
+
+  def test_IngestionFromMQTTWithMultipleMessages(self):
+    """
+    Test ingestion using a POST Request containing a
+    msgpack encoded messages simulating input from MQTT.
+    """
+
+    topic = getRandomString()
     message1 = getRandomString()
     message2 = getRandomString()
 
@@ -119,6 +140,7 @@ class TestDataIngestion(ERP5TypeTestCase):
 
     self._assertIngestion(topic, payload)
 
+
   def test_IngestionWithInvalidPolicy(self):
     """
     Test ingestion using an invalid ingestion policy.
@@ -128,8 +150,6 @@ class TestDataIngestion(ERP5TypeTestCase):
     message1 = getRandomString()
     message2 = getRandomString()
 
-    # Use an invalid ingestion policy
-    # Get data supply and data product
     invalid_policy = "invalid_policy_name"
     data_supply = self.portal.data_supply_module.default_mqtt
     data_product = self.portal.data_product_module.default_mqtt
@@ -141,10 +161,56 @@ class TestDataIngestion(ERP5TypeTestCase):
 
     response = self._sendIngestionRequest(topic, payload, invalid_policy, data_supply, data_product)
 
-    # Assert that the response status code indicates an error (e.g., 404 for not found)
     self.assertEqual(404, response.getStatus())
     self.tic()
 
+
+  def test_IngestionWithInvalidDataSupply(self):
+    """
+    Test ingestion using an invalid data supply.
+    """
+
+    topic = getRandomString()
+    message1 = getRandomString()
+    message2 = getRandomString()
+
+    invalid_policy = self.portal.portal_ingestion_policies.default_mqtt
+    data_supply = "invalid_supply_name"
+    data_product = self.portal.data_product_module.default_mqtt
+
+    payload = {
+      "message1": message1,
+      "message2": message2
+    }
+
+    response = self._sendIngestionRequest(topic, payload, invalid_policy, data_supply, data_product)
+
+    self.assertEqual(500, response.getStatus())
+    self.tic()
+
+
+  def test_IngestionWithInvalidDataProduct(self):
+    """
+    Test ingestion using an invalid data product.
+    """
+
+    topic = getRandomString()
+    message1 = getRandomString()
+    message2 = getRandomString()
+
+    invalid_policy = self.portal.portal_ingestion_policies.default_mqtt
+    data_supply = self.portal.data_supply_module.default_mqtt
+    data_product = "invalid_product_name"
+
+    payload = {
+      "message1": message1,
+      "message2": message2
+    }
+
+    response = self._sendIngestionRequest(topic, payload, invalid_policy, data_supply, data_product)
+
+    self.assertEqual(500, response.getStatus())
+    self.tic()
 
   def test_MultipleIngestions(self):
     """
