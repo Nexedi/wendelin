@@ -53,6 +53,14 @@
             </value>
         </item>
         <item>
+            <key> <string>aggregated_portal_type</string> </key>
+            <value>
+              <tuple>
+                <string>Data Ingestion Batch</string>
+              </tuple>
+            </value>
+        </item>
+        <item>
             <key> <string>default_reference</string> </key>
             <value> <string>mqtt_ingestion_operation</string> </value>
         </item>
@@ -152,7 +160,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>1010.49269.2062.8055</string> </value>
+                      <value> <string>1010.63573.16357.13397</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -172,7 +180,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1694076794.97</float>
+                              <float>1694169220.23</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
