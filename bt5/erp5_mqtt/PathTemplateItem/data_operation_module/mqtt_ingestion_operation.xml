@@ -56,7 +56,15 @@
             <key> <string>aggregated_portal_type</string> </key>
             <value>
               <tuple>
-                <string>Data Ingestion Batch</string>
+                <string>Data Acquisition Unit</string>
+              </tuple>
+            </value>
+        </item>
+        <item>
+            <key> <string>categories</string> </key>
+            <value>
+              <tuple>
+                <string>use/big_data/ingestion/batch_ingestion</string>
               </tuple>
             </value>
         </item>
@@ -160,7 +168,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>1010.63573.16357.13397</string> </value>
+                      <value> <string>1011.5328.44298.13431</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -180,7 +188,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1694169220.23</float>
+                              <float>1694514304.17</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
