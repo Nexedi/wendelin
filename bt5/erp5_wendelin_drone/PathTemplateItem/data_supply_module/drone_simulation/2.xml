@@ -2,7 +2,7 @@
 <ZopeData>
   <record id="1" aka="AAAAAAAAAAE=">
     <pickle>
-      <global name="Data Supply" module="erp5.portal_type"/>
+      <global name="Data Supply Line" module="erp5.portal_type"/>
     </pickle>
     <pickle>
       <dictionary>
@@ -14,8 +14,9 @@
                 <string>Assignor</string>
                 <string>Associate</string>
                 <string>Auditor</string>
+                <string>Author</string>
                 <string>Manager</string>
-                <string>shm</string>
+                <string>Owner</string>
               </tuple>
             </value>
         </item>
@@ -26,7 +27,9 @@
                 <string>Assignee</string>
                 <string>Assignor</string>
                 <string>Associate</string>
+                <string>Author</string>
                 <string>Manager</string>
+                <string>Owner</string>
               </tuple>
             </value>
         </item>
@@ -37,7 +40,9 @@
                 <string>Assignee</string>
                 <string>Assignor</string>
                 <string>Associate</string>
+                <string>Author</string>
                 <string>Manager</string>
+                <string>Owner</string>
               </tuple>
             </value>
         </item>
@@ -49,55 +54,42 @@
                 <string>Assignor</string>
                 <string>Associate</string>
                 <string>Auditor</string>
+                <string>Author</string>
                 <string>Manager</string>
-                <string>shm</string>
+                <string>Owner</string>
               </tuple>
-            </value>
-        </item>
-        <item>
-            <key> <string>_count</string> </key>
-            <value>
-              <persistent> <string encoding="base64">AAAAAAAAAAI=</string> </persistent>
             </value>
         </item>
         <item>
             <key> <string>_identity_criterion</string> </key>
             <value>
-              <persistent> <string encoding="base64">AAAAAAAAAAM=</string> </persistent>
-            </value>
-        </item>
-        <item>
-            <key> <string>_mt_index</string> </key>
-            <value>
-              <persistent> <string encoding="base64">AAAAAAAAAAQ=</string> </persistent>
+              <persistent> <string encoding="base64">AAAAAAAAAAI=</string> </persistent>
             </value>
         </item>
         <item>
             <key> <string>_range_criterion</string> </key>
             <value>
-              <persistent> <string encoding="base64">AAAAAAAAAAU=</string> </persistent>
-            </value>
-        </item>
-        <item>
-            <key> <string>_tree</string> </key>
-            <value>
-              <persistent> <string encoding="base64">AAAAAAAAAAY=</string> </persistent>
+              <persistent> <string encoding="base64">AAAAAAAAAAM=</string> </persistent>
             </value>
         </item>
         <item>
             <key> <string>categories</string> </key>
             <value>
               <tuple>
-                <string>source/person_module/1</string>
-                <string>source_section/person_module/1</string>
-                <string>destination/organisation_module/1</string>
-                <string>destination_section/organisation_module/2</string>
+                <string>resource/data_operation_module/ingest_fluent_bucket_data</string>
+                <string>aggregate/data_acquisition_unit_module/drone_laptop</string>
               </tuple>
             </value>
         </item>
         <item>
+            <key> <string>comment</string> </key>
+            <value>
+              <none/>
+            </value>
+        </item>
+        <item>
             <key> <string>default_reference</string> </key>
-            <value> <string>drone_simulation</string> </value>
+            <value> <string>ingest_data</string> </value>
         </item>
         <item>
             <key> <string>description</string> </key>
@@ -107,24 +99,29 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>3</string> </value>
+            <value> <string>2</string> </value>
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>Drone Simulation</string> </value>
-        </item>
-        <item>
-            <key> <string>version</string> </key>
-            <value> <string>001</string> </value>
+            <value> <string>Ingest bucket data</string> </value>
         </item>
       </dictionary>
     </pickle>
   </record>
   <record id="2" aka="AAAAAAAAAAI=">
     <pickle>
-      <global name="Length" module="BTrees.Length"/>
+      <global name="PersistentMapping" module="Persistence.mapping"/>
     </pickle>
-    <pickle> <int>0</int> </pickle>
+    <pickle>
+      <dictionary>
+        <item>
+            <key> <string>data</string> </key>
+            <value>
+              <dictionary/>
+            </value>
+        </item>
+      </dictionary>
+    </pickle>
   </record>
   <record id="3" aka="AAAAAAAAAAM=">
     <pickle>
@@ -139,37 +136,6 @@
             </value>
         </item>
       </dictionary>
-    </pickle>
-  </record>
-  <record id="4" aka="AAAAAAAAAAQ=">
-    <pickle>
-      <global name="OOBTree" module="BTrees.OOBTree"/>
-    </pickle>
-    <pickle>
-      <none/>
-    </pickle>
-  </record>
-  <record id="5" aka="AAAAAAAAAAU=">
-    <pickle>
-      <global name="PersistentMapping" module="Persistence.mapping"/>
-    </pickle>
-    <pickle>
-      <dictionary>
-        <item>
-            <key> <string>data</string> </key>
-            <value>
-              <dictionary/>
-            </value>
-        </item>
-      </dictionary>
-    </pickle>
-  </record>
-  <record id="6" aka="AAAAAAAAAAY=">
-    <pickle>
-      <global name="OOBTree" module="BTrees.OOBTree"/>
-    </pickle>
-    <pickle>
-      <none/>
     </pickle>
   </record>
 </ZopeData>

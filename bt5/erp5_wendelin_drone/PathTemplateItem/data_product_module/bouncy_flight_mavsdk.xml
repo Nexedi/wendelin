@@ -2,7 +2,7 @@
 <ZopeData>
   <record id="1" aka="AAAAAAAAAAE=">
     <pickle>
-      <global name="Data Operation" module="erp5.portal_type"/>
+      <global name="Data Product" module="erp5.portal_type"/>
     </pickle>
     <pickle>
       <dictionary>
@@ -56,6 +56,8 @@
             <key> <string>aggregated_portal_type</string> </key>
             <value>
               <tuple>
+                <string>Data Bucket Stream</string>
+                <string>Progress Indicator</string>
                 <string>Data Array</string>
               </tuple>
             </value>
@@ -65,12 +67,13 @@
             <value>
               <tuple>
                 <string>quantity_unit/unit/piece</string>
+                <string>use/big_data/ingestion/stream</string>
               </tuple>
             </value>
         </item>
         <item>
             <key> <string>default_reference</string> </key>
-            <value> <string>create_score_list</string> </value>
+            <value> <string>bouncy_flight_mavsdk</string> </value>
         </item>
         <item>
             <key> <string>description</string> </key>
@@ -80,7 +83,7 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>create_score_list</string> </value>
+            <value> <string>bouncy_flight_mavsdk</string> </value>
         </item>
         <item>
             <key> <string>language</string> </key>
@@ -89,16 +92,8 @@
             </value>
         </item>
         <item>
-            <key> <string>script_id</string> </key>
-            <value> <string>DataAnalysisLine_convertDroneDataArrayToScoreArray</string> </value>
-        </item>
-        <item>
             <key> <string>title</string> </key>
-            <value> <string>Create Score List</string> </value>
-        </item>
-        <item>
-            <key> <string>version</string> </key>
-            <value> <string>001</string> </value>
+            <value> <string>Bouncy Flight Mavsdk</string> </value>
         </item>
       </dictionary>
     </pickle>

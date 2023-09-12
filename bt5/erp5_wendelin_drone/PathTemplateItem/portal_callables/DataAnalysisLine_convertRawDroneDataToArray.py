@@ -83,5 +83,3 @@ if end > start:
 
 if end < len(keys):
   return 1
-
-return

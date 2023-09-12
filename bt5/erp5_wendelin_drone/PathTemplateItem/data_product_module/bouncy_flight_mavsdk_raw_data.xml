@@ -14,7 +14,9 @@
                 <string>Assignor</string>
                 <string>Associate</string>
                 <string>Auditor</string>
+                <string>Author</string>
                 <string>Manager</string>
+                <string>Owner</string>
               </tuple>
             </value>
         </item>
@@ -25,7 +27,9 @@
                 <string>Assignee</string>
                 <string>Assignor</string>
                 <string>Associate</string>
+                <string>Author</string>
                 <string>Manager</string>
+                <string>Owner</string>
               </tuple>
             </value>
         </item>
@@ -36,7 +40,9 @@
                 <string>Assignee</string>
                 <string>Assignor</string>
                 <string>Associate</string>
+                <string>Author</string>
                 <string>Manager</string>
+                <string>Owner</string>
               </tuple>
             </value>
         </item>
@@ -48,7 +54,9 @@
                 <string>Assignor</string>
                 <string>Associate</string>
                 <string>Auditor</string>
+                <string>Author</string>
                 <string>Manager</string>
+                <string>Owner</string>
               </tuple>
             </value>
         </item>
@@ -65,8 +73,8 @@
             <key> <string>categories</string> </key>
             <value>
               <tuple>
-                <string>quantity_unit/unit/piece</string>
                 <string>use/big_data/ingestion/stream</string>
+                <string>quantity_unit/unit/piece</string>
               </tuple>
             </value>
         </item>

@@ -70,7 +70,7 @@
         </item>
         <item>
             <key> <string>default_reference</string> </key>
-            <value> <string>convert_log_array</string> </value>
+            <value> <string>convert_raw_data_to_array</string> </value>
         </item>
         <item>
             <key> <string>description</string> </key>
@@ -90,7 +90,7 @@
         </item>
         <item>
             <key> <string>script_id</string> </key>
-            <value> <string>convert_log_array_script</string> </value>
+            <value> <string>DataAnalysisLine_convertRawDroneDataToArray</string> </value>
         </item>
         <item>
             <key> <string>title</string> </key>

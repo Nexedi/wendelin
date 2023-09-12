@@ -86,7 +86,7 @@
             <key> <string>categories</string> </key>
             <value>
               <tuple>
-                <string>resource/data_product_module/bouncy_flight_mavsdk_raw_data</string>
+                <string>resource/data_product_module/drone_raw_data</string>
               </tuple>
             </value>
         </item>
@@ -98,7 +98,7 @@
         </item>
         <item>
             <key> <string>default_reference</string> </key>
-            <value> <string>convert-drone-raw-real-data</string> </value>
+            <value> <string>convert-drone-raw-data</string> </value>
         </item>
         <item>
             <key> <string>description</string> </key>
@@ -108,11 +108,11 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>6</string> </value>
+            <value> <string>convert_drone_raw_data</string> </value>
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>Convert Drone Raw Real Data</string> </value>
+            <value> <string>Convert Drone Raw Data</string> </value>
         </item>
         <item>
             <key> <string>version</string> </key>

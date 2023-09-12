@@ -73,7 +73,13 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>1</string> </value>
+            <value> <string>drone_data_graph</string> </value>
+        </item>
+        <item>
+            <key> <string>language</string> </key>
+            <value>
+              <none/>
+            </value>
         </item>
         <item>
             <key> <string>short_title</string> </key>
@@ -95,10 +101,9 @@ js: jio.js\n
 js: ndarray_bundle.js\n
 js: wendelin.js\n
 js: https://cdn.plot.ly/plotly-latest.min.js\n
-js: https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js\n
 \n
 %% js\n
-hateoas_url = "https://softinst195526.host.vifib.net/erp5/web_site_module/renderjs_runner/hateoas/";\n
+hateoas_url = "https://softinst216244.host.vifib.net/erp5/web_site_module/renderjs_runner/hateoas/";\n
 jio = jIO.createJIO({\n
   type: "erp5",\n
   url: hateoas_url,\n
@@ -140,16 +145,17 @@ ratio = screen.availWidth / 1024,\n
 interval,\n
 frequency,\n
 start_index = 0,\n
-stop_index = 10000,\n
+stop_index = 239,\n
 array_id;\n
 \n
 \n
 return jio.allDocs({\n
 query: \'portal_type:"Data Array" AND \' +\n
-\'title: "Create Plot Datas"\'\n
+\'title: "Create Score List Array"\'\n
 })\n
 .push(function (result) {\n
 array_id = result.data.rows[0].id;\n
+console.log(array_id);\n
 return wendelin.getArrayRawSlice(gadget, array_id, start_index, stop_index);\n
 })\n
 .push(function(result) {\n
@@ -215,22 +221,20 @@ var graph_data=[],\n
 ratio = screen.availWidth / 1024,\n
 interval,\n
 frequency,\n
-start_index,\n
-stop_index,\n
+start_index = 0,\n
+stop_index = 239,\n
 array_id;\n
 \n
 return jio.allDocs({\n
 query: \'portal_type:"Data Array" AND \' +\n
-\'title: "Create Plot Datas"\'\n
+\'title: "Create Score List Array"\'\n
 })\n
 .push(function (result) {\n
 array_id = result.data.rows[0].id;\n
-console.log(array_id);\n
+// Problem is, that currently both the array with the score data and the array with the plot data have the same name. So we might need to hardcode the array ID\n
 return wendelin.getArrayRawSlice(gadget, array_id, 0, 1);\n
 })\n
 .push(function (result) {\n
-start_index = 0,\n
-stop_index = 100000;\n
 \n
 return wendelin.getArrayRawSlice(gadget, array_id, start_index, stop_index);\n
 })\n

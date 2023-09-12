@@ -209,7 +209,7 @@ zbigarray.append(ndarray)
 
 
 
-new_key = None
+new_key = "Iteration_1"
 
 try:
   max_nr = 0
@@ -261,7 +261,6 @@ dtypes = {'time': 'f8', 'distance': 'f8', 'ASML': 'f8',
 ndarray2 = df.to_records(column_dtypes=dtypes, index = False)
 context.log(ndarray2)
 if zbigarray2 is None:
-  context.log("zbigarray2 is none")
   zbigarray2 = out_array_plot_data["Data Array"].initArray(shape=(0,), dtype=ndarray2.dtype.fields)
 
 
@@ -275,7 +274,7 @@ new_key_plot = "PlotIteration_1"
 plot_names = list(out_array_plot_data["Data Array"])
 context.log(plot_names)
 try:
-  context.log("OK")
+
   max_nr = 0
   for key in plot_names:
     old_key_nr = int(key.split("_")[1])
@@ -284,10 +283,9 @@ try:
     new_key_plot = "PlotIteration_" + str(max_nr+1)
     
 except:
-  context.log("h")
   new_key_plot = "PlotIteration_1"
 
-context.log(new_key_plot)
+
 
 
 

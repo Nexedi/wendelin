@@ -56,7 +56,7 @@
             <key> <string>aggregated_portal_type</string> </key>
             <value>
               <tuple>
-                <string>Data Array</string>
+                <string>Data Acquisition Unit</string>
               </tuple>
             </value>
         </item>
@@ -70,7 +70,7 @@
         </item>
         <item>
             <key> <string>default_reference</string> </key>
-            <value> <string>create_score_list</string> </value>
+            <value> <string>ingest_fluent_bucket_data</string> </value>
         </item>
         <item>
             <key> <string>description</string> </key>
@@ -80,7 +80,7 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>create_score_list</string> </value>
+            <value> <string>ingest_fluent_bucket_data</string> </value>
         </item>
         <item>
             <key> <string>language</string> </key>
@@ -90,11 +90,11 @@
         </item>
         <item>
             <key> <string>script_id</string> </key>
-            <value> <string>DataAnalysisLine_convertDroneDataArrayToScoreArray</string> </value>
+            <value> <string>DataIngestionLine_writeFluentdIngestionToDataBucketStream</string> </value>
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>Create Score List</string> </value>
+            <value> <string>Ingest Fluentd Bucket Data</string> </value>
         </item>
         <item>
             <key> <string>version</string> </key>

@@ -2,7 +2,7 @@
 <ZopeData>
   <record id="1" aka="AAAAAAAAAAE=">
     <pickle>
-      <global name="Data Transformation" module="erp5.portal_type"/>
+      <global name="Data Supply" module="erp5.portal_type"/>
     </pickle>
     <pickle>
       <dictionary>
@@ -15,6 +15,7 @@
                 <string>Associate</string>
                 <string>Auditor</string>
                 <string>Manager</string>
+                <string>shm</string>
               </tuple>
             </value>
         </item>
@@ -49,6 +50,7 @@
                 <string>Associate</string>
                 <string>Auditor</string>
                 <string>Manager</string>
+                <string>shm</string>
               </tuple>
             </value>
         </item>
@@ -86,19 +88,16 @@
             <key> <string>categories</string> </key>
             <value>
               <tuple>
-                <string>resource/data_product_module/drone_raw_data</string>
+                <string>source/person_module/1</string>
+                <string>source_section/person_module/1</string>
+                <string>destination/organisation_module/1</string>
+                <string>destination_section/organisation_module/2</string>
               </tuple>
             </value>
         </item>
         <item>
-            <key> <string>comment</string> </key>
-            <value>
-              <none/>
-            </value>
-        </item>
-        <item>
             <key> <string>default_reference</string> </key>
-            <value> <string>convert-drone-raw-data</string> </value>
+            <value> <string>drone_simulation</string> </value>
         </item>
         <item>
             <key> <string>description</string> </key>
@@ -108,17 +107,21 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>4</string> </value>
+            <value> <string>drone_simulation</string> </value>
         </item>
         <item>
-            <key> <string>title</string> </key>
-            <value> <string>Convert Drone Raw Data</string> </value>
-        </item>
-        <item>
-            <key> <string>version</string> </key>
+            <key> <string>language</string> </key>
             <value>
               <none/>
             </value>
+        </item>
+        <item>
+            <key> <string>title</string> </key>
+            <value> <string>Drone Simulation</string> </value>
+        </item>
+        <item>
+            <key> <string>version</string> </key>
+            <value> <string>001</string> </value>
         </item>
       </dictionary>
     </pickle>

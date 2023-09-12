@@ -83,15 +83,15 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>fitness_score_drones</string> </value>
+            <value> <string>DataAnalysisLine_convertDroneDataArrayToScoreArray</string> </value>
         </item>
         <item>
             <key> <string>reference</string> </key>
-            <value> <string>fitness_score_drones</string> </value>
+            <value> <string>DataAnalysisLine_convertDroneDataArrayToScoreArray</string> </value>
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>fitness_score_drones</string> </value>
+            <value> <string>DataAnalysisLine_convertDroneDataArrayToScoreArray</string> </value>
         </item>
       </dictionary>
     </pickle>

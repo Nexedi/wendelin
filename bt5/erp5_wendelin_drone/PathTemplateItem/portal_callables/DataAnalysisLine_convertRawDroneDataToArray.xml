@@ -67,7 +67,7 @@
         </item>
         <item>
             <key> <string>_params</string> </key>
-            <value> <string>data_chunk, bucket_stream={}</string> </value>
+            <value> <string>in_stream=None, out_array=None</string> </value>
         </item>
         <item>
             <key> <string>description</string> </key>
@@ -77,15 +77,15 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>DataIngestionline_writeFluentdIngestionToDataBucketStream</string> </value>
+            <value> <string>DataAnalysisLine_convertRawDroneDataToArray</string> </value>
         </item>
         <item>
             <key> <string>reference</string> </key>
-            <value> <string>DataIngestionline_writeFluentdIngestionToDataBucketStream</string> </value>
+            <value> <string>DataAnalysisLine_convertRawDroneDataToArray</string> </value>
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>DataIngestionline_writeFluentdIngestionToDataBucketStream</string> </value>
+            <value> <string>DataAnalysisLine_convertRawDroneDataToArray</string> </value>
         </item>
       </dictionary>
     </pickle>

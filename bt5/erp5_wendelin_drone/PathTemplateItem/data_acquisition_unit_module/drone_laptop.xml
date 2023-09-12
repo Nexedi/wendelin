@@ -64,7 +64,7 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>laptop</string> </value>
+            <value> <string>drone_laptop</string> </value>
         </item>
         <item>
             <key> <string>language</string> </key>
