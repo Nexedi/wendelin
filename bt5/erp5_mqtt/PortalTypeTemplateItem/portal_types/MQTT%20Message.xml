@@ -23,6 +23,14 @@
             <value> <string>addXMLObject</string> </value>
         </item>
         <item>
+            <key> <string>group_list</string> </key>
+            <value>
+              <tuple>
+                <string>item</string>
+              </tuple>
+            </value>
+        </item>
+        <item>
             <key> <string>id</string> </key>
             <value> <string>MQTT Message</string> </value>
         </item>
@@ -44,7 +52,7 @@
         </item>
         <item>
             <key> <string>type_class</string> </key>
-            <value> <string>XMLObject</string> </value>
+            <value> <string>Item</string> </value>
         </item>
         <item>
             <key> <string>type_interface</string> </key>
