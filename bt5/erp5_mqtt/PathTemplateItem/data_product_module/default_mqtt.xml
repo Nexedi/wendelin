@@ -56,8 +56,7 @@
             <key> <string>aggregated_portal_type</string> </key>
             <value>
               <tuple>
-                <string>Data Stream</string>
-                <string>Progress Indicator</string>
+                <string>MQTT Message</string>
               </tuple>
             </value>
         </item>
@@ -162,7 +161,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>1009.57120.8319.58333</string> </value>
+                      <value> <string>1010.33465.20753.51831</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -182,7 +181,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1692270318.96</float>
+                              <float>1694691508.23</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
