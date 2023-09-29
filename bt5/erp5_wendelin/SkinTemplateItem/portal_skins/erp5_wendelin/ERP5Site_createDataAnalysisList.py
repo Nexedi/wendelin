@@ -189,7 +189,7 @@ for movement in portal_catalog(query = query):
           if item is None:
             module = portal.getDefaultModule(item_type)
             item = module.newContent(portal_type = item_type,
-                              title = transformation.getTitle(),
+                              title = "%s-%s" % (transformation.getTitle(), transformation_line.getTitle()),
                               reference = "%s-%s" %(transformation.getTitle(),
                                                     delivery.getReference()),
                               version = '001')
