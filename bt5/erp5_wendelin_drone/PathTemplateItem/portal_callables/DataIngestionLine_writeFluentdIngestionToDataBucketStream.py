@@ -2,7 +2,7 @@
 l=[(c[1]["filepath"].split("/")[-1], c[1]["message"]) for c in context.unpack_lazy(data_chunk, use_list=False)]
 
 names_message_dir = {}
-
+context.log("New data")
 for file_name, message in l:
   try:
     names_message_dir[file_name].append(message)

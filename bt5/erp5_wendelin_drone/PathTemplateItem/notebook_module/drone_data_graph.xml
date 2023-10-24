@@ -91,10 +91,6 @@
             <key> <string>text_content</string> </key>
             <value> <string encoding="cdata"><![CDATA[
 
-%% md\n
-# Drone Simulation Results (best current simulation)\n
-<div class="plot_div" id="plot_div"/>\n
-\n
 \n
 %% fetch\n
 js: jio.js\n
@@ -102,8 +98,104 @@ js: ndarray_bundle.js\n
 js: wendelin.js\n
 js: https://cdn.plot.ly/plotly-latest.min.js\n
 \n
+js: https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML\n
+\n
+%% md\n
+# Drone Simmulations with the help of headless-chromium servers and wendelin\n
+Given the truth values of a drone flight (for a given flight), including the coordinates at each timestep, the ground speed, the climb rate and the ASML (Above Sea Level Maximum), we want to find the parameters such that our simulated drones have a similar flight pattern.\n
+To achieve this we have two parts working together:\n
+\n
+1. Headless chrome-servers: This contains two parts, the python script that generates the parameters, starts the headless-chromium servers, retrieves the generated simulation data writes a file that contains the data (the headless-chromium servers do not write anything, the script reads their output and writes the files) and the fluentd agent that sends the data to our wendelin instance on another SlapOS instance.\n
+2. Wendelin: Given the simulation data create data arrays, use these data arrays to calculate the score (see Score Plot for the formula) and plot the data here.\n
+\n
+\n
+The next few section will display some information about the best 5 parameters and their simulation. In the next section we can see a flowchart describing the whole process of gathering and processing the simulation data.\n
+\n
+\n
+%% md\n
+## Table of Contents\n
+- [Flow Chart](#flowchart)\n
+- [Score Plot](#plot_div5)\n
+- [Distance Deviation Plot](#plot_div)\n
+- [ASML Deviation Plot](#plot_div2)\n
+- [Ground Speed Deviation Plot](#plot_div3)\n
+- [Climb Rate Deviation Plot](#plot_div4)\n
+\n
+\n
+%% md\n
+# Flowchart\n
+<div class="flowchart" id="flowchart"/>\n
+\n
+<iframe frameborder="0" style="width:100%;height:519px;" src="https://viewer.diagrams.net/?tags=%7B%7D&highlight=0000ff&edit=_blank&layers=1&nav=1&title=Untitled%20Diagram.drawio.html#Uhttps%3A%2F%2Fraw.githubusercontent.com%2FDemonkeys%2FDodgeTheLasers%2Fmain%2FUntitled%2520Diagram.drawio.html"></iframe>\n
+\n
+\n
+We start with a python script inside the first SlapOS instance. This script is responsible for requesting and starting the selenium headless-chrome servers. The script also generates the parameters for each simulation. Currently only the drone speed and the drone max roll are parameters we can set, while drone min pitch and drone max pitch are not used, or at least can not be chosen. \n
+After the headless-chrome servers have generated the simulation data, the script process the data and saves it localy. This data is then read by the fluentd agent which sends this data to wendelin.\n
+\n
+The wendelin instance, on another SlapOS instance, retrieves the raw simulation data, which is then processed and stored inside a data array.\n
+\n
+The next step is to use the simulated data and compare it to the ground truth. In this step we calculate the score (see [Score Plot](#plot_div5)) and store it in two data arrays: one containing the score data and the other containing some additional information, such as the deviation between the simulation and the ground truth at each timestamp.\n
+\n
+In the last step we use the previously calculated score data to find the best 5 simulations (and with it the best 5 parameters). This generates two data arrays: one containing the score data for the best 5 simulations and the other containing some addtional information, such as the deviation between the best 5 simulations and the ground truth at each timestamp, which is used in the next step to create the plots we can see in this notebook.\n
+\n
+The data arrays created in the last step are now used for two things: \n
+  1. Plot information about the simulations\n
+  2. Inform the python script from the SlapOS 1 instance that the data has been processed.\n
+\n
+The plot data can be seen in this notebook.\n
+The python script from the SlapOS 1 instance, after generating the simulation data, periodically performs a GET request on the generated score data array. This array contains a column called "Iteration" which the python script can use to determine if the data processing has finished. The script can also use the score data to determine which parameters should be chosen for the next iteration, but this is currently not used.\n
+\n
+\n
+\n
+\n
+%% md\n
+# Bar Plot\n
+## Reciprocal Score\n
+The reciprocal Score for the best 5 parameters with have found. The higher the score, the better the parameters. The maximal score is 1, which means that the simulation and the real drone flight are identical. The score is calculated by this formula:\n
+$$\n
+\\sum_{x \\in \\text{\\{distance, ASML, ground speed, climb rate \\}}} \\frac{1}{4}\\frac{1}{(1 + (\\text{truth\\_value}(x) - \\text{simulated\\_value}(x)))}\n
+$$\n
+<div class="plot_div5" id="plot_div5"/>\n
+\n
+\n
+\n
+\n
+%% md\n
+# Deviation Plot\n
+## Distance/Positional difference\n
+This line plot illustrates the deviation between the simulation data and the ground truth values, focusing on the common timestamps. It\'s important to note that the simulations may end at different times, resulting in a representation of a shorter timeframe for some simulations compared to others.\n
+<div class="plot_div" id="plot_div"/>\n
+\n
+%% md\n
+# Deviation Plot\n
+## ASML difference\n
+This line plot illustrates the deviation between the simulation data and the ground truth values, focusing on the common timestamps. It\'s important to note that the simulations may end at different times, resulting in a representation of a shorter timeframe for some simulations compared to others.\n
+<div class="plot_div2" id="plot_div2"/>\n
+\n
+\n
+%% md\n
+# Deviation Plot\n
+## Ground speed difference\n
+This line plot illustrates the deviation between the simulation data and the ground truth values, focusing on the common timestamps. It\'s important to note that the simulations may end at different times, resulting in a representation of a shorter timeframe for some simulations compared to others.\n
+<div class="plot_div3" id="plot_div3"/>\n
+\n
+\n
+%% md\n
+# Deviation Plot\n
+## Climb rate difference\n
+This line plot illustrates the deviation between the simulation data and the ground truth values, focusing on the common timestamps. It\'s important to note that the simulations may end at different times, resulting in a representation of a shorter timeframe for some simulations compared to others.\n
+<div class="plot_div4" id="plot_div4"/>\n
+\n
+\n
+\n
+\n
+\n
 %% js\n
-hateoas_url = "https://softinst216244.host.vifib.net/erp5/web_site_module/renderjs_runner/hateoas/";\n
+\n
+\n
+\n
+\n
+hateoas_url = "https://softinst218290.host.vifib.net/erp5/web_site_module/renderjs_runner/hateoas/";\n
 jio = jIO.createJIO({\n
   type: "erp5",\n
   url: hateoas_url,\n
@@ -127,9 +219,9 @@ gadget = {\n
 }\n
 \n
 \n
-var graph = document.getElementById(\'plot_div\'),\n
-graph_data = [],\n
-label_list = ["ASML",\t"climb_rate",\t"distance",\t"ground_speed",\t"time"]; \n
+\n
+var graph_data = [],\n
+label_list = ["ASML_diff","ground_speed_diff","climb_rate_diff","timestamp","distance_diff","Param2","Param1"]\n
 \n
 \n
 \n
@@ -138,157 +230,447 @@ function unpack(rows, key) {\n
 return rows.map(function(row) { return row[key]; });\n
 }\n
 \n
-// TODO we still need to manually type in the index range for the iteration we are interested in, because for some reason the data array lines are not ploted\n
-function getData(){\n
-var graph_data=[],\n
-ratio = screen.availWidth / 1024,\n
-interval,\n
-frequency,\n
-start_index = 0,\n
-stop_index = 239,\n
-array_id;\n
 \n
 \n
-return jio.allDocs({\n
-query: \'portal_type:"Data Array" AND \' +\n
-\'title: "Create Score List Array"\'\n
-})\n
-.push(function (result) {\n
-array_id = result.data.rows[0].id;\n
-console.log(array_id);\n
-return wendelin.getArrayRawSlice(gadget, array_id, start_index, stop_index);\n
-})\n
-.push(function(result) {\n
-for (i = 0; i < label_list.length; i += 1) {\n
-graph_data = graph_data.concat(nj.unpack(result.pick( null, label_list[i])));\n
-}\n
-\n
-return graph_data\n
-})\n
-.push(function (graph_data) {\n
-var trace1 = {\n
-        type: "scattergl",\n
-        mode: "markers",\n
-        name: "distance",\n
-        x: unpack(graph_data, label_list.indexOf("time")),\n
-        y: unpack(graph_data, label_list.indexOf("distance")),\n
-        line: {color: \'#1f77b4\'}\n
-        };\n
-        \n
-var trace2 = {\n
-        type: "scattergl",\n
-        mode: "markers",\n
-        name: \'ASML\',\n
-        x: unpack(graph_data, label_list.indexOf("time")),\n
-        y: unpack(graph_data, label_list.indexOf("ASML")),\n
-        line: {color: \'#ff7f0e\'}\n
+function findNewestIteration(arrayTitle, rank) {\n
+    \n
+    parent_url = ""\n
+    return jio.allDocs({\n
+          query: \'portal_type:"Data Array" AND \' +\n
+            \'title: "\' + arrayTitle + \'"\'\n
+        })\n
+        .then( function (results) {\n
+        return RSVP.all(results.data.rows.map((key) => key.id))\n
         }\n
-        \n
-var data = [trace1, trace2];\n
-return data\n
-});\n
+        )\n
+        .then ( function (results) {\n
+          //normally we would expect to only find one id, but we will manually add the correct id here for now.\n
+          parent_url = results\n
+          return results\n
+        })\n
+        .then (function (results) {\n
+        return jio.allDocs({\n
+          query: \'portal_type:"Data Array Line" AND \' +\n
+            \'title: "\' + rank + \'"\'\n
+            \n
+        })})\n
+          .then(function (result) {\n
+            array_id = result.data.rows[0].id; //would be the correct thing, but as we have multiple data arrays with the same name, we need to fix it like this\n
+          return gadget.jio_get(array_id)\n
+    })\n
+    .then(function (result) {\n
+\n
+      return result.index_expression.split(":")\n
+    \n
+    })\n
+    \n
 }\n
 \n
 \n
-function plot () {\n
-return getData()\n
-.push(function (data) {\n
-Plotly.newPlot(\n
-graph,\n
-data,\n
-    { \'title\' :\'Distance and ASML over time\'\n
-    });\n
-    graph.on(\'plotly_relayout\', function(eventdata) {\n
-      var start_date = new Date(eventdata["xaxis.range[0]"]),\n
-      stop_date = new Date(eventdata["xaxis.range[1]"]);\n
-      return update_graph(start_date, stop_date);\n
-    });\n
-  });\n
-}\n
 \n
 \n
-plot();\n
-\n
-%% md\n
-<div class="plot_div2" id="plot_div2"/>\n
 \n
 \n
-%% js\n
 \n
-var graph = document.getElementById(\'plot_div2\');\n
-function getData(){\n
-var graph_data=[],\n
-ratio = screen.availWidth / 1024,\n
-interval,\n
-frequency,\n
-start_index = 0,\n
-stop_index = 239,\n
-array_id;\n
-\n
-return jio.allDocs({\n
-query: \'portal_type:"Data Array" AND \' +\n
-\'title: "Create Score List Array"\'\n
-})\n
-.push(function (result) {\n
-array_id = result.data.rows[0].id;\n
-// Problem is, that currently both the array with the score data and the array with the plot data have the same name. So we might need to hardcode the array ID\n
-return wendelin.getArrayRawSlice(gadget, array_id, 0, 1);\n
-})\n
-.push(function (result) {\n
-\n
-return wendelin.getArrayRawSlice(gadget, array_id, start_index, stop_index);\n
-})\n
-.push(function(result) {\n
-for (i = 0; i < label_list.length; i += 1) {\n
-graph_data = graph_data.concat(nj.unpack(result.pick( null, label_list[i])));\n
-}\n
-return graph_data\n
-})\n
-.push(function (graph_data) {\n
-\n
-var trace1 = {\n
-        type: "scatter",\n
-        mode: "markers",\n
-        name: "ground speed",\n
-        x: unpack(graph_data, label_list.indexOf("time")),\n
-        y: unpack(graph_data, label_list.indexOf("ground_speed")),\n
-        line: {color: \'#1f77b4\'}\n
-        };\n
-        \n
-var trace2 = {\n
-        type: "scatter",\n
-        mode: "markers",\n
-        name: \'climb rate\',\n
-        x: unpack(graph_data, label_list.indexOf("time")),\n
-        y: unpack(graph_data, label_list.indexOf("climb_rate")),\n
-        line: {color: \'#ff7f0e\'}\n
+function getAllData(arrayTitle, ranks, column_names) {\n
+    intervals_strings = []\n
+    intervals = []\n
+    for (rank of ranks) {\n
+      interval = findNewestIteration(arrayTitle, rank);\n
+      intervals_strings.push(interval)\n
+    }\n
+    return RSVP.all(ranks.map((rank) => findNewestIteration(arrayTitle, rank)))\n
+    .then( function (result) {\n
+    intervals = []\n
+    for (interval of result) {\n
+      start_index = interval[0];\n
+      stop_index = interval[1];\n
+      intervals.push([Number(start_index), Number(stop_index)]);\n
+    }\n
+    return jio.allDocs({\n
+    query: \'portal_type:"Data Array" AND \' +\n
+    \'title: "\' + arrayTitle + \'"\'\n
+    })\n
+    })\n
+    .then(function (result) {\n
+    array_id = result.data.rows[0].id;\n
+    console.log("intervals")\n
+    console.log(intervals)\n
+    return wendelin.getArrayRawSlice(gadget, array_id, intervals[0][0], intervals[4][1]);\n
+    })\n
+    .then(function(result) {\n
+    console.log(result);\n
+    all_tables_column_data = []\n
+    for (interval of intervals){\n
+      console.log(interval)\n
+      table_data = []\n
+      for (i = interval[0]; i< interval[1]; i +=1 ) {\n
+          table_data = table_data.concat([nj.unpack(result.pick(i, null))])\n
+      }\n
+      for (i = 0; i < column_names.length; i += 1) {\n
+        column_data = []\n
+        for (row of table_data) {\n
+            column_data.push(row[i])\n
         }\n
-        \n
-var data = [trace1, trace2];\n
-return data\n
-});\n
+        graph_data.push(column_data)\n
+      }\n
+    \n
+    all_tables_column_data.push(graph_data)\n
+    graph_data = []\n
+    }\n
+    return all_tables_column_data\n
+    })\n
+    .then(function (all_data) {\n
+        console.log(all_data)\n
+        return all_data\n
+      }\n
+    )\n
+}\n
+\n
+\n
+function createLinePlotData(arrayData, column_names, label_list){\n
+    all_trace_templates = []\n
+    const plotlyColors = [\n
+  \'rgb(31, 119, 180)\', // Blue\n
+  \'rgb(255, 127, 14)\', // Orange\n
+  \'rgb(44, 160, 44)\',  // Green\n
+  \'rgb(214, 39, 40)\',  // Red\n
+  \'rgb(148, 103, 189)\' // Purple\n
+];\n
+      for (i = 0; i< arrayData.length; i = i +1){\n
+      trace_templates = []\n
+          for (j = 0; j< label_list.length; j = j +1) {\n
+              if (label_list[j] != "timestamp") {\n
+                  console.log("is this working?")\n
+                  name_string = "The parameters are (drone_speed, drone_max_roll): " + [arrayData[i][column_names.indexOf("Param1")][0], arrayData[i][column_names.indexOf("Param2")][0]].join(\', \')\n
+                  console.log(name_string)\n
+                  console.log("---------")\n
+                  trace_template = {\n
+                      type: "scatter",\n
+                      name: name_string,\n
+                      x: arrayData[i][column_names.indexOf("timestamp")],\n
+                      y: arrayData[i][column_names.indexOf(label_list[j])],\n
+                      line: {color: plotlyColors[i]}\n
+                  }\n
+              trace_templates = trace_templates.concat(trace_template);\n
+              }\n
+          }\n
+      all_trace_templates.push(trace_template)\n
+    }\n
+    console.log(all_trace_templates)\n
+    return all_trace_templates;\n
+\n
 }\n
 \n
 \n
 \n
-function plot () {\n
-return getData()\n
-.push(function (data) {\n
-Plotly.newPlot(\n
-graph,\n
-data,\n
-    { \'title\' :\'Ground speed and climb rate over time\'\n
-    });\n
-    graph.on(\'plotly_relayout\', function(eventdata) {\n
-      var start_date = new Date(eventdata["xaxis.range[0]"]),\n
-      stop_date = new Date(eventdata["xaxis.range[1]"]);\n
-      return update_graph(start_date, stop_date);\n
-    });\n
-  });\n
+\n
+\n
+function createBarPlotData(arrayData, column_names, label_list){\n
+    all_trace_templates = []\n
+    const plotlyColors = [\n
+  \'rgb(31, 119, 180)\', // Blue\n
+  \'rgb(255, 127, 14)\', // Orange\n
+  \'rgb(44, 160, 44)\',  // Green\n
+  \'rgb(214, 39, 40)\',  // Red\n
+  \'rgb(148, 103, 189)\' // Purple\n
+];\n
+      for (i = 0; i< arrayData.length; i = i +1){\n
+      trace_templates = []\n
+          for (j = 0; j< label_list.length; j = j +1) {\n
+              if (label_list[j] != "timestamp") {\n
+                  console.log("is this working?")\n
+                  name_string = "The parameters are (drone_speed, drone_max_roll): " + [arrayData[i][column_names.indexOf("Param1")][0], arrayData[i][column_names.indexOf("Param2")][0]].join(\', \')\n
+                  console.log(name_string)\n
+                  console.log("---------")\n
+                  trace_template = {\n
+                    type: "bar", // Set type to "bar" for a bar plot\n
+                    name: name_string,\n
+                    x: ["Value"],//arrayData[i][column_names.indexOf("timestamp")],\n
+                    y: [arrayData[i][column_names.indexOf(label_list[j])][0]/4],\n
+                    marker: {color: plotlyColors[i]}\n
+                };\n
+              trace_templates = trace_templates.concat(trace_template);\n
+              }\n
+          }\n
+      all_trace_templates.push(trace_template)\n
+    }\n
+    console.log(all_trace_templates)\n
+    return all_trace_templates;\n
+\n
 }\n
 \n
 \n
-plot();
+\n
+\n
+\n
+function getColumnNames (arrayTitle) {\n
+    return jio.allDocs({\n
+        query: \'portal_type:"Data Array" AND \' +\n
+        \'title: "\' + arrayTitle + \'"\'\n
+        })\n
+    .then(function (result) {\n
+        array_id = result.data.rows[0].id //; would be the correct thing, but as we have multiple data arrays with the same name, we need to fix it like this\n
+        return gadget.jio_get(array_id)\n
+        })\n
+    .then(function (result) {\n
+        column_names = result.array_dtype.match(/\\(\'(.*?)\',/g);\n
+        column_names = column_names.map(match => match.match(/\\(\'(.*?)\',/))\n
+        column_names = column_names.map(thing => thing[1]);\n
+        return column_names\n
+    })\n
+}\n
+function plot (data, plotTitle=null, graph=null, layout=null) {\n
+    if (layout == null) {\n
+    layout = { \'title\' :plotTitle,\n
+    xaxis: {\n
+      title: \'Timestamp\'\n
+    },\n
+    yaxis: {\n
+      title: \'Difference\'\n
+    }\n
+        }\n
+    }\n
+    Plotly.newPlot(\n
+    graph,\n
+    data,\n
+    layout);\n
+}\n
+\n
+function prepareData () {\n
+    column_names = getColumnNames("Recalculate Score List Array-Recaculates Plots")\n
+    return column_names\n
+    .then(function (column_names) {\n
+      return RSVP.all([column_names, getAllData("Recalculate Score List Array-Recaculates Plots", [1,2,3,4,5], column_names)])\n
+    })\n
+}\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+prepareData().then(function(result){\n
+  \n
+  const layout = {\n
+    barmode: \'group\',\n
+    title: \'Bar Chart\',\n
+    xaxis: {\n
+      title: \'The different simulations\'\n
+    },\n
+    yaxis: {\n
+      title: \'The score of the simulations\'\n
+    }\n
+  };\n
+  graph = document.getElementById(\'plot_div\')\n
+  data = createLinePlotData(result[1], result[0], ["distance_diff"])\n
+  console.log(data)\n
+  plot(data, "", graph, null)\n
+  \n
+  graph = document.getElementById(\'plot_div2\')\n
+  data = createLinePlotData(result[1], result[0], ["ASML_diff"])\n
+  console.log(data)\n
+  plot(data, "", graph,null)\n
+  \n
+  \n
+  graph = document.getElementById(\'plot_div3\')\n
+  data = createLinePlotData(result[1], result[0], ["ground_speed_diff"])\n
+  console.log(data)\n
+  plot(data, "", graph,null)\n
+  \n
+  \n
+  graph = document.getElementById(\'plot_div4\')\n
+  data = createLinePlotData(result[1], result[0], ["climb_rate_diff"])\n
+  console.log(data)\n
+  plot(data, "", graph,null)\n
+  \n
+  \n
+  graph = document.getElementById(\'plot_div5\')\n
+ data = createBarPlotData(result[1], result[0], ["score_reciprocal"])\n
+  console.log(data)\n
+  plot(data, "", graph, layout)\n
+\n
+})\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+\n
+/*\n
+function getData(arrayTitle, column_names, label_list, rank){\n
+\n
+\n
+    interval = findNewestIteration(arrayTitle, rank);\n
+    return interval\n
+    .then( function (result) {\n
+    \n
+    interval = result\n
+    start_index = interval[0],\n
+    stop_index = interval[1];\n
+\n
+\n
+    return jio.allDocs({\n
+    query: \'portal_type:"Data Array" AND \' +\n
+    \'title: "\' + arrayTitle + \'"\'\n
+    })\n
+    })\n
+    .then(function (result) {\n
+    array_id = result.data.rows[0].id; //would be the correct thing, but as we have multiple data arrays with the same name, we need to fix it like this\n
+\n
+    return wendelin.getArrayRawSlice(gadget, array_id, start_index, stop_index);\n
+    })\n
+    .then(function(result) {\n
+\n
+    for (i = 0; i < column_names.length; i += 1) {\n
+      graph_data = graph_data.concat([nj.unpack(result.pick(null, i))])\n
+    }\n
+\n
+    return graph_data\n
+    })\n
+    .then(function (all_data) {\n
+        trace_templates = []\n
+          for (j = 0; j< label_list.length; j = j +1) {\n
+          if (label_list[j] != "timestamp") {\n
+            trace_template = {\n
+                type: "scatter",\n
+                //mode: "markers",\n
+                name: label_list[j],\n
+                x: all_data[column_names.indexOf("timestamp")],\n
+                y: all_data[column_names.indexOf(label_list[j])],\n
+                line: {color: \'#\'+(0x1000000+Math.random()*0xffffff).toString(16).substr(1,6)}\n
+              }\n
+            trace_templates = trace_templates.concat(trace_template);\n
+          }\n
+        }\n
+        return trace_templates;\n
+      }\n
+    )\n
+}\n
+*/\n
+/*\n
+function plot_old (arrayTitle=null, columnNames=null, labelList=null, plotTitle=null, graph=null, rank=1) {\n
+      column = getColumnNames("Recalculate Score List Array-Recaculates Plots")\n
+      return column\n
+      .then(function (column_names) {\n
+    arrayDatas = getAllData("Recalculate Score List Array-Recaculates Plots", [1,2,3,4], column_names)//getData("Recalculate Score List Array-Recaculates Plots", column_names, labelList, rank)\n
+    console.log("here")\n
+    console.log(arrayDatas)\n
+    return createLinePlotData(arrayDatas[0], column_names, label_list, null, null)\n
+    })\n
+    .then(function (data) {\n
+    Plotly.newPlot(\n
+    graph,\n
+    data,\n
+        { \'title\' :plotTitle\n
+        });\n
+      });\n
+}\n
+*/\n
+\n
+/*\n
+function findNewestIteration(arrayTitle, rank) {\n
+    \n
+    parent_url = ""\n
+    return jio.allDocs({\n
+          query: \'portal_type:"Data Array" AND \' +\n
+            \'title: "\' + arrayTitle + \'"\'\n
+        })\n
+        .then( function (results) {\n
+        return RSVP.all(results.data.rows.map((key) => key.id))\n
+        }\n
+        )\n
+        .then ( function (results) {\n
+          //normally we would expect to only find one id, but we will manually add the correct id here for now.\n
+          parent_url = results\n
+          return results\n
+        })\n
+        .then (function (results) {\n
+        return jio.allDocs({\n
+          query: \'portal_type:"Data Array Line" AND \' +\n
+            \'title: "\' + rank + \'"\'\n
+            \n
+        })})\n
+         .then( function (results) {\n
+        return RSVP.all(results.data.rows.map((key) => key.id))\n
+        }\n
+        )\n
+        .then ( function (results) {\n
+          return RSVP.all(results.map((key) => gadget.jio_get(key)))\n
+        })\n
+        .then (function (results) {\n
+        plot_array_lines = []\n
+        for (i = 0; i<results.length; i += 1) {\n
+          if (results[i].parent_relative_url == parent_url[0]) {\n
+\n
+          plot_array_lines.push(results[i])\n
+          }\n
+        }\n
+          return plot_array_lines\n
+          })\n
+          .then (function (results) {\n
+          results.map((doc) => doc.index_expression.split(":")[0])\n
+          \n
+          let highestIndex = -Infinity;\n
+          let objectWithHighestIndex = null;\n
+          for (const obj of results) {\n
+          const indexExpression = obj.index_expression;\n
+          const [startIndex, endIndex] = indexExpression.split(\':\').map(Number);\n
+  \n
+          // Check the highest integer (before or after :)\n
+          if (endIndex > highestIndex) {\n
+              highestIndex = endIndex;\n
+              objectWithHighestIndex = obj;\n
+          }\n
+      }\n
+  \n
+        return objectWithHighestIndex.index_expression.split(":").map(Number);\n
+          })\n
+    \n
+    }\n
+*/\n
+
 
 ]]></string> </value>
         </item>

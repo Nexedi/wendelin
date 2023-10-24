@@ -31,10 +31,9 @@
             <key> <string>categories</string> </key>
             <value>
               <tuple>
+                <string>resource/data_product_module/drone_simulation_performance_data</string>
                 <string>trade_phase/data/convert</string>
                 <string>use/big_data/analysis</string>
-                <string>resource/data_product_module/11</string>
-                <string>quantity_unit/unit/piece</string>
               </tuple>
             </value>
         </item>

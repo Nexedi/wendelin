@@ -2,73 +2,80 @@ import math
 import pandas as pd
 import numpy as np
 import re
+# Do not forget to check why the diff attributes are objects (maybe it is still a list?)
 
+"""
+#Use this to delete the output (data arrray lines need to be removed manually)
+
+score_dtypes = {'name': 'S256', 'Param1': 'f16', 'Param2': 'f16', 
+          'distance_reciprocal': 'f8', 'ASML_reciprocal': 'f8', 
+          'ground_speed_reciprocal': 'f8', 'climb_rate_reciprocal': 'f8', 
+          'score_reciprocal': 'f16', 'score_cosine_row': 'f16', 
+          'score_cosine_column': 'f16'}
+
+
+#Uncomment this to set the array to empty
+out_array_scores["Data Array"] = out_array_scores["Data Array"].initArray(shape=(0,), dtype=list(score_dtypes.items()))
+
+plot_dtypes = {
+    'name': 'S256',
+    'Param1': 'f8',
+    'Param2': 'f8',
+    'timestamp': 'f8',
+    'distance_diff': 'f8',
+    'ASML_diff': 'f8',
+    'ground_speed_diff': 'f8',
+    'climb_rate_diff': 'f8',
+    'distance_reciprocal': 'f8',
+    'ASML_reciprocal': 'f8',
+    'ground_speed_reciprocal': 'f8',
+    'climb_rate_reciprocal': 'f8',
+    'score_reciprocal': 'f16',
+    'score_cosine_row': 'f16',
+    'score_cosine_column': 'f16'
+}
+
+
+out_array_plot_data["Data Array"] = out_array_plot_data["Data Array"].initArray(shape=(0,), dtype=list(plot_dtypes.items()))
+return
+"""
 
 R = 6371e3
 
+def cosine_similarity_rows(df1, df2):
+  # Why am I not allowed to use np.linalg.norm()?
+  # I get an "You are not allowed to access 'norm' in this context error.
+  # I can just implement it myself, but numpy would do this just that much more efficient....
+  dot_product = (df1 * df2).sum(axis=1)
+  norm_df1 = np.linalg.norm(df1, axis=1)
+  norm_df2 = np.linalg.norm(df2, axis=1)
+  similarity = dot_product / (norm_df1 * norm_df2)
+  return similarity.mean()
 
 def mean_operation(data):
   return float(sum(data)/len(data))
 
 
 def distance(lat1, lon1, lat2, lon2):
-    lat1_rad = lat1 * math.pi / 180
-    lat2_rad = lat2 * math.pi / 180
-    lon1_rad = lon1 * math.pi / 180
-    lon2_rad = lon2 * math.pi / 180
-    haversine_phi = math.sin((lat2_rad - lat1_rad) / 2) ** 2
-    sin_lon = math.sin((lon2_rad - lon1_rad) / 2)
-    h = haversine_phi + math.cos(lat1_rad) * math.cos(lat2_rad) * sin_lon * sin_lon
-    return 2 * R * math.sin(math.sqrt(h))
+  lat1_rad = lat1 * math.pi / 180
+  lat2_rad = lat2 * math.pi / 180
+  lon1_rad = lon1 * math.pi / 180
+  lon2_rad = lon2 * math.pi / 180
+  haversine_phi = math.sin((lat2_rad - lat1_rad) / 2) ** 2
+  sin_lon = math.sin((lon2_rad - lon1_rad) / 2)
+  h = haversine_phi + math.cos(lat1_rad) * math.cos(lat2_rad) * sin_lon * sin_lon
+  return 2 * R * math.sin(math.sqrt(h))
 
 def rated_value(next_value, previous_value, rate):
-    if rate > 0.5:
-        return next_value - (next_value - previous_value) * (1 - rate)
-    else:
-        return previous_value + (next_value - previous_value) * rate
+  if rate > 0.5:
+    return next_value - (next_value - previous_value) * (1 - rate)
+  else:
+    return previous_value + (next_value - previous_value) * rate
 
 
 
 
-def create_scorelist(scores):
-    answer = []
-    for i in scores:
-        index = i[0]
-        input_string = simulated_flights_value_dict_list[index]["name"]
-        pattern = r'\((.*?)\)'
 
-        match = re.search(pattern, input_string)
-        if match:
-            values_str = match.group(1)
-            values = [float(val.strip()) for val in values_str.split(',')]
-            answer.append([index, input_string, values, i[1]])
-    return answer
-
-
-
-def create_score_dataframe(scores, mean_lists):
-    df = pd.DataFrame(columns=['Sim_name', 'Parameters1', 'Parameters2', 'Score', 'Distance mean', 'ASML mean', 'Ground Speed mean', 'Climb Rate mean'])
-    for score in scores:
-        row=[]
-        row.extend([score[1],score[2][0],score[2][1], int(score[3])])
-        for data in mean_lists:
-            for i in data:
-                if i[1] == score[0]:
-                    row.append(i[0])
-                    break
-        new_row = pd.DataFrame([row], columns=df.columns)
-        df = pd.concat([df, new_row], ignore_index=True)
-    return df
-
-def create_plot_dataframe(plot_data):
-  df = pd.DataFrame({
-    "time": plot_data[0],
-    "distance":plot_data[1],
-    "ASML": plot_data[2],
-    "ground_speed": plot_data[3],
-    "climb_rate": plot_data[4]
-    })
-  return df
 
 real_array = input_array_real["Data Array"]
 sim_array = input_array_sim["Data Array"]
@@ -87,16 +94,22 @@ real_flight = pd.DataFrame(data=nparray_real, columns=["timestamp (ms)","latitud
 
 progress_indicator_sim = input_array_sim["Progress Indicator"]
 
-start = progress_indicator_sim.getIntOffsetIndex()
-# Probably should use array.getSize()
-end = len(sim_flight_names)
 
-if end <= start:
-  return 0
-
+seen_sims = progress_indicator_sim.getStringOffsetIndex()
+new_seen = ""
+if seen_sims is None:
+  seen_sims = ""
 simulated_flight_list = []
 simulated_flights_value_dict_list = []
-for name in sim_flight_names[start:end]:
+selected_simulation_data_dict_list = []
+
+if len([x for x in sim_flight_names if x not in seen_sims]) == 0:
+  return 
+
+context.log("Started Score calculation")
+not_seen_list = [x for x in sim_flight_names if x not in seen_sims]
+for name in not_seen_list[:]:
+  context.log("Data for score calculation found")
   if name[:14] == 'simulation_log':
     splitted_filename = name[:-4].split('_')
     distance_list_tuple = ([],[], [], [], []) 
@@ -107,114 +120,198 @@ for name in sim_flight_names[start:end]:
     simulated_flight_list.append(simulated_flight)
         
     max_simulator_timestamp = simulated_flight["timestamp (ms)"].max()
-
+    min_simulator_timestamp = simulated_flight["timestamp (ms)"].min()
+    
+    
+    tmp_sim = {
+    'longitude': [],
+    'latitude': [],
+    'asml': [],
+    'ground_speed': [],
+    'climb_rate': []
+    }
+    tmp_real = {
+    'longitude': [],
+    'latitude': [],
+    'asml': [],
+    'ground_speed': [],
+    'climb_rate': []
+    }
+    
     for idx, row in real_flight.iterrows():
-        if max_simulator_timestamp < row["timestamp (ms)"]:
-            break
-        over_timestamp = simulated_flight[simulated_flight["timestamp (ms)"] > row["timestamp (ms)"]].head(1)
-        under_timestamp = simulated_flight[simulated_flight["timestamp (ms)"] < row["timestamp (ms)"]].tail(1)       
-        rate = (float(over_timestamp["timestamp (ms)"]) - row["timestamp (ms)"])/(float(over_timestamp["timestamp (ms)"]) - float(under_timestamp["timestamp (ms)"]))
-        
+      if max_simulator_timestamp < row["timestamp (ms)"]:
+        break
+      if min_simulator_timestamp > row["timestamp (ms)"]:
+        continue
+      over_timestamp = simulated_flight[simulated_flight["timestamp (ms)"] > row["timestamp (ms)"]].head(1)
+      under_timestamp = simulated_flight[simulated_flight["timestamp (ms)"] < row["timestamp (ms)"]].tail(1)
+      
+      rate = (float(over_timestamp["timestamp (ms)"]) - row["timestamp (ms)"])/(float(over_timestamp["timestamp (ms)"]) - float(under_timestamp["timestamp (ms)"]))
+      
+      tmp_sim["latitude"].append(rated_value(float(over_timestamp["latitude ()"]), float(under_timestamp["latitude ()"]), rate)) 
+      tmp_sim["longitude"].append(rated_value(float(over_timestamp["longitude ()"]), float(under_timestamp["longitude ()"]), rate))
+      tmp_sim["asml"].append(rated_value(float(over_timestamp["AMSL (m)"]), float(under_timestamp["AMSL (m)"]), rate))
+      tmp_sim["ground_speed"].append(rated_value(float(over_timestamp["ground speed (m/s)"]), float(under_timestamp["ground speed (m/s)"]), rate))
+      tmp_sim["climb_rate"].append(rated_value(float(over_timestamp["climb rate (m/s)"]), float(under_timestamp["climb rate (m/s)"]), rate))  
+      tmp_real["latitude"].append(row["latitude ()"])
+      tmp_real["longitude"].append(row["longitude ()"])
+      tmp_real["asml"].append(row["AMSL (m)"])
+      tmp_real["ground_speed"].append(row["ground speed (m/s)"])
+      tmp_real["climb_rate"].append(row["climb rate (m/s)"])
+  
+      for index, value in enumerate((
+            row["timestamp (ms)"] / 1000,
+            distance(
+                row["latitude ()"],
+                row["longitude ()"],
+                rated_value(float(over_timestamp["latitude ()"]), float(under_timestamp["latitude ()"]), rate),
+                rated_value(float(over_timestamp["longitude ()"]), float(under_timestamp["longitude ()"]), rate),
+            ),
+            rated_value(float(over_timestamp["AMSL (m)"]), float(under_timestamp["AMSL (m)"]), rate) - row["AMSL (m)"],
+            rated_value(float(over_timestamp["ground speed (m/s)"]), float(under_timestamp["ground speed (m/s)"]), rate) - row["ground speed (m/s)"],
+            rated_value(float(over_timestamp["climb rate (m/s)"]), float(under_timestamp["climb rate (m/s)"]), rate) - row["climb rate (m/s)"]
+        )):
+        distance_list_tuple[index].append(value)
+        # If we have at least 100 entries (timestamps) analysed, add the filename to the list
 
-        for index, value in enumerate((
-                row["timestamp (ms)"] / 1000,
-                distance(
-                    row["latitude ()"],
-                    row["longitude ()"],
-                    rated_value(float(over_timestamp["latitude ()"]), float(under_timestamp["latitude ()"]), rate),
-                    rated_value(float(over_timestamp["longitude ()"]), float(under_timestamp["longitude ()"]), rate),
-                ),
-                rated_value(float(over_timestamp["AMSL (m)"]), float(under_timestamp["AMSL (m)"]), rate) - row["AMSL (m)"],
-                rated_value(float(over_timestamp["ground speed (m/s)"]), float(under_timestamp["ground speed (m/s)"]), rate) - row["ground speed (m/s)"],
-                rated_value(float(over_timestamp["climb rate (m/s)"]), float(under_timestamp["climb rate (m/s)"]), rate) - row["climb rate (m/s)"]
-            )):
-                distance_list_tuple[index].append(value)
-    # If we have at least 100 entries (timestamps) analysed, add the filename to the list
     if len(distance_list_tuple[0]) > 100:
-        # Add it to the dictionary
-        simulated_flights_value_dict_list.append({
+      # Add it to the dictionary
+      # A list of simulations, and their values over time
+      pattern = r'\((.*?)\)'
+      match = re.search(pattern, name)
+      if match:
+        values_str = match.group(1)
+        parameters = [float(val.strip()) for val in values_str.split(',')]
+        
+      reciprocal_of_difference = [1/(1+mean_operation(list(map(abs, x)))) for x in distance_list_tuple[1:]]
+      score_reciprocal = sum(reciprocal_of_difference)
+
+      tmp_df_sim = pd.DataFrame(tmp_sim)
+      tmp_df_real = pd.DataFrame(tmp_real)
+      # Uncomment once you can actually use np..norm
+      score_cosine_row =0# cosine_similarity_rows(tmp_df_real, tmp_df_sim).mean()
+      score_cosine_column = 0#cosine_similarity_rows(tmp_df_real.T, tmp_df_sim.T).mean()
+
+      simulated_flights_value_dict_list.append({
             "name": name,
+            "Param1" : parameters[0],
+            "Param2": parameters[1],
             "timestamp": distance_list_tuple[0],
-            "distance": distance_list_tuple[1],
-            "ASML" : distance_list_tuple[2],
-            "ground speed" : distance_list_tuple[3],
-            "climb rate" : distance_list_tuple[4]
+            "distance_diff": distance_list_tuple[1],
+            "ASML_diff" : distance_list_tuple[2],
+            "ground_speed_diff" : distance_list_tuple[3],
+            "climb_rate_diff" : distance_list_tuple[4],
+            "distance_reciprocal": reciprocal_of_difference[0],
+            "ASML_reciprocal" : reciprocal_of_difference[1],
+            "ground_speed_reciprocal" : reciprocal_of_difference[2],
+            "climb_rate_reciprocal" : reciprocal_of_difference[3],
+            "score_reciprocal": score_reciprocal,
+            "score_cosine_row" : score_cosine_row,
+            "score_cosine_column" : score_cosine_column
+        })
+
+      selected_simulation_data_dict_list.append({
+            "name": name,
+            "Param1" : parameters[0],
+            "Param2": parameters[1],
+            "distance_reciprocal": reciprocal_of_difference[0],
+            "ASML_reciprocal" : reciprocal_of_difference[1],
+            "ground_speed_reciprocal" : reciprocal_of_difference[2],
+            "climb_rate_reciprocal" : reciprocal_of_difference[3],
+            "score_reciprocal": score_reciprocal,
+            "score_cosine_row" : score_cosine_row,
+            "score_cosine_column" : score_cosine_column
         })
 
 
+combined_data = pd.DataFrame()  # Initialize an empty DataFrame
 
-mean_list_list = []
-
-for figure_index, (distance_list_list, limit_tuple) in enumerate((
-    ([x["distance"] for x in simulated_flights_value_dict_list], (500, 600, 650)), #Distances
-    ([x["ASML"] for x in simulated_flights_value_dict_list], (12.5, 14.5, 16)), #ASML
-    ([x["ground speed"] for x in simulated_flights_value_dict_list], (3.1, 3.15, 3.25)), #ground speed
-    ([x["climb rate"] for x in simulated_flights_value_dict_list], (0.75, 0.8, 0.85)), #climb rate
-)):
-    mean_list_list.append([])
-    sizes = [0, 0, 0, 0]
-    # For each line of the analysed sim thing we take the absolute mean of the values (distances, asml, ground speed, climb rate)
-    # the figure index
-    for distance_list_index, distance_list in enumerate(distance_list_list):
-        mean = mean_operation(map(abs, distance_list))
-        mean_list_list[figure_index].append((mean, distance_list_index))
-        if mean >= limit_tuple[-1]:
-            sizes[-1] = sizes [-1] + 1
-        else:
-            for index, limit in enumerate(limit_tuple):
-                if mean < limit:
-                    sizes[index] = sizes[index] + 1
+# Iterate through the list of dictionaries
+for data_dict in simulated_flights_value_dict_list:
+    tmp = pd.DataFrame(data_dict)  # Wrap data_dict in a list and create a DataFrame
+    combined_data = pd.concat([combined_data, tmp], ignore_index=True)
 
 
-    mean_list_list[figure_index].sort()
+
+plot_dtypes = {
+    'name': 'S256',
+    'Param1': 'float64',
+    'Param2': 'float64',
+    'timestamp': 'float64',
+    'distance_diff': 'float64',
+    'ASML_diff': 'float64',
+    'ground_speed_diff': 'float64',
+    'climb_rate_diff': 'float64',
+    'distance_reciprocal': 'float64',
+    'ASML_reciprocal': 'float64',
+    'ground_speed_reciprocal': 'float64',
+    'climb_rate_reciprocal': 'float64',
+    'score_reciprocal': 'float64',  # Use 'float64' instead of 'float128'
+    'score_cosine_row': 'float64',  # Use 'float64' instead of 'float128'
+    'score_cosine_column': 'float64',  # Use 'float64' instead of 'float128'
+}
+
+plots_df = combined_data
+plots_df=plots_df.astype(plot_dtypes)
 
 
-score_dict = {}
+# Initialize a dictionary to store the combined values
+combined_data = {}
 
-for mean_list in mean_list_list:
-    for index, (_, simulation_index) in enumerate(mean_list):
-        if not simulation_index in score_dict:
-            score_dict[simulation_index] = index
-        else:
-            score_dict[simulation_index] = score_dict[simulation_index] + index
-sorted_score_list = sorted(score_dict.items(), key=lambda item: item[1])
+# Iterate through the list of dictionaries
+for data_dict in selected_simulation_data_dict_list:
+  context.log("----------------_")
+  context.log(data_dict)
+  context.log("----------------_")
+  for key, value in data_dict.items():
+    # Initialize a list for the key if it doesn't exist
+    if key not in combined_data:
+      combined_data[key] = []
+        
+    # Append the value to the list
+    combined_data[key].append(value)
 
-to_plot_index = sorted_score_list[0][0]
-timestamp_list = simulated_flights_value_dict_list[to_plot_index]["timestamp"]
-
-score_list2 = create_scorelist(sorted_score_list)
+context.log("----------------_")
+#context.log(pd.DataFrame(combined_data)["ASML_reciprocal"])
 
 
-zbigarray = out_array_scores["Data Array"].getArray()
+score_dtypes = {'name': 'S256', 'Param1': 'f16', 'Param2': 'f16', 
+          'distance_reciprocal': 'f8', 'ASML_reciprocal': 'f8', 
+          'ground_speed_reciprocal': 'f8', 'climb_rate_reciprocal': 'f8', 
+          'score_reciprocal': 'f16', 'score_cosine_row': 'f16', 
+          'score_cosine_column': 'f16'}
+scores_df = pd.DataFrame(combined_data)
+context.log(scores_df.dtypes)
+scores_df = scores_df.astype(score_dtypes)
+###############################
+
+
+
+zbigarray_scores = out_array_scores["Data Array"].getArray()
 
 score_names = list(out_array_scores["Data Array"])
 
 
-df = create_score_dataframe(score_list2, mean_list_list)
-dtypes = {'index': 'i8','Sim_name':'S256', 'Parameters1': 'f16', 'Parameters2': 'f16',
-          'Score': 'f8', 'Distance_mean': 'f8', 'ASML_mean': 'f8',
-          'Ground_Speed_mean': 'f8', 'Climb_Rate_mean': 'f8'}
 
-ndarray = df.to_records(column_dtypes=dtypes, index = False)
 
-#Uncomment this to set the array to empty
-#out_array_scores["Data Array"] = out_array_scores["Data Array"].initArray(shape=(0,), dtype=ndarray.dtype.fields)
 
-if zbigarray is None:
-  zbigarray = out_array_scores["Data Array"].initArray(shape=(0,), dtype=ndarray.dtype.fields)
+scores_ndarray = scores_df.to_records(column_dtypes=score_dtypes, index = False)
 
-score_array_start_idx = zbigarray.shape[0]
 
-zbigarray.append(ndarray)
+if zbigarray_scores is None:
+  zbigarray_scores = out_array_scores["Data Array"].initArray(shape=(0,), dtype=scores_ndarray.dtype.fields)
+
+score_array_start_idx = zbigarray_scores.shape[0]
+
+zbigarray_scores.append(scores_ndarray)
 
 
 
 new_key = "Iteration_1"
-
 try:
   max_nr = 0
   for key in score_names:
-    old_key_nr = int(key.split("_")[1])
+    old_key_nr = int(key.split("_")[-1])
     if old_key_nr>max_nr:
       max_nr=old_key_nr
     new_key = "Iteration_" + str(max_nr+1)
@@ -232,47 +329,38 @@ if data_array_line_score is None:
                                              portal_type="Data Array Line")
 
 data_array_line_score.edit(reference=new_key,
-     index_expression="%s:%s" %(score_array_start_idx, zbigarray.shape[0])
+     index_expression="%s:%s" %(score_array_start_idx, zbigarray_scores.shape[0])
   )
 
+##########################
 
 
-zbigarray2 = out_array_plot_data["Data Array"].getArray()
-#Uncomment this to set the array to empty
-#out_array_plot_data["Data Array"] = out_array_plot_data["Data Array"].initArray(shape=(0,), dtype=ndarray.dtype.fields)
-
-things = [timestamp_list,
-    simulated_flights_value_dict_list[to_plot_index]["distance"],
-    simulated_flights_value_dict_list[to_plot_index]["ASML"],
-    simulated_flights_value_dict_list[to_plot_index]["ground speed"],
-    simulated_flights_value_dict_list[to_plot_index]["climb rate"]]
+zbigarray_plots = out_array_plot_data["Data Array"].getArray()
 
 
 
+#dtypes = {'time': 'f8', 'distance': 'f8', 'ASML': 'f8',
+#          'ground_speed': 'f8', 'climb_rate': 'f8'}
 
 
 
+plots_ndarray = plots_df.to_records(column_dtypes=plot_dtypes, index = False)
 
-df = create_plot_dataframe(things)
-dtypes = {'time': 'f8', 'distance': 'f8', 'ASML': 'f8',
-          'ground_speed': 'f8', 'climb_rate': 'f8'}
+context.log(plots_ndarray.shape)
 
-
-ndarray2 = df.to_records(column_dtypes=dtypes, index = False)
-context.log(ndarray2)
-if zbigarray2 is None:
-  zbigarray2 = out_array_plot_data["Data Array"].initArray(shape=(0,), dtype=ndarray2.dtype.fields)
+if zbigarray_plots is None:
+  zbigarray_plots = out_array_plot_data["Data Array"].initArray(shape=(0,), dtype=zbigarray_plots.dtype.fields)
 
 
-plot_array_start_idx = zbigarray2.shape[0]
+plot_array_start_idx = zbigarray_plots.shape[0]
 
-zbigarray2.append(ndarray2)
+zbigarray_plots.append(plots_ndarray)
 
 
 
 new_key_plot = "PlotIteration_1"
 plot_names = list(out_array_plot_data["Data Array"])
-context.log(plot_names)
+
 try:
 
   max_nr = 0
@@ -281,10 +369,9 @@ try:
     if old_key_nr>max_nr:
       max_nr=old_key_nr
     new_key_plot = "PlotIteration_" + str(max_nr+1)
-    
+
 except:
   new_key_plot = "PlotIteration_1"
-
 
 
 
@@ -297,11 +384,9 @@ if data_array_line_plot is None:
                                              portal_type="Data Array Line")
 
 data_array_line_plot.edit(reference=new_key_plot,
-     index_expression="%s:%s" %(plot_array_start_idx, zbigarray2.shape[0])
+     index_expression="%s:%s" %(plot_array_start_idx, zbigarray_plots.shape[0])
   )
 
-if end > start:
-  progress_indicator_sim.setIntOffsetIndex(end)
-
-if end < len(sim_flight_names):
-  return 1
+new_seen = seen_sims.join([x for x in sim_flight_names if x not in seen_sims])
+progress_indicator_sim.setStringOffsetIndex(new_seen)
+context.log("Finished Score calculation")

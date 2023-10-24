@@ -24,6 +24,7 @@
               <tuple>
                 <string>Data Array</string>
                 <string>Progress Indicator</string>
+                <string>Data Bucket Stream</string>
               </tuple>
             </value>
         </item>
@@ -31,16 +32,15 @@
             <key> <string>categories</string> </key>
             <value>
               <tuple>
-                <string>quantity_unit/unit/piece</string>
-                <string>resource/data_product_module/bouncy_flight_mavsdk</string>
                 <string>trade_phase/data/convert</string>
-                <string>use/big_data/ingestion/stream</string>
+                <string>use/big_data/analysis</string>
+                <string>resource/data_product_module/recalculated_plots</string>
               </tuple>
             </value>
         </item>
         <item>
             <key> <string>default_reference</string> </key>
-            <value> <string>input_array_real</string> </value>
+            <value> <string>out_array_plots</string> </value>
         </item>
         <item>
             <key> <string>description</string> </key>
@@ -54,15 +54,15 @@
         </item>
         <item>
             <key> <string>int_index</string> </key>
-            <value> <int>1</int> </value>
+            <value> <int>3</int> </value>
         </item>
         <item>
             <key> <string>quantity</string> </key>
-            <value> <float>-1.0</float> </value>
+            <value> <float>1.0</float> </value>
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>Real Flight</string> </value>
+            <value> <string>Recalculated Plots</string> </value>
         </item>
       </dictionary>
     </pickle>

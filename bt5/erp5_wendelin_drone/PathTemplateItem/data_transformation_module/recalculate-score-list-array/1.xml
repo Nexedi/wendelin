@@ -2,7 +2,7 @@
 <ZopeData>
   <record id="1" aka="AAAAAAAAAAE=">
     <pickle>
-      <global name="Data Transformation Resource Line" module="erp5.portal_type"/>
+      <global name="Data Transformation Operation Line" module="erp5.portal_type"/>
     </pickle>
     <pickle>
       <dictionary>
@@ -23,7 +23,6 @@
             <value>
               <tuple>
                 <string>Data Array</string>
-                <string>Progress Indicator</string>
               </tuple>
             </value>
         </item>
@@ -31,16 +30,16 @@
             <key> <string>categories</string> </key>
             <value>
               <tuple>
-                <string>quantity_unit/unit/piece</string>
-                <string>resource/data_product_module/bouncy_flight_mavsdk</string>
                 <string>trade_phase/data/convert</string>
-                <string>use/big_data/ingestion/stream</string>
+                <string>use/big_data/analysis</string>
+                <string>quantity_unit/unit/piece</string>
+                <string>resource/data_operation_module/recalculate_scores</string>
               </tuple>
             </value>
         </item>
         <item>
             <key> <string>default_reference</string> </key>
-            <value> <string>input_array_real</string> </value>
+            <value> <string>data_operation</string> </value>
         </item>
         <item>
             <key> <string>description</string> </key>
@@ -50,7 +49,7 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>2</string> </value>
+            <value> <string>1</string> </value>
         </item>
         <item>
             <key> <string>int_index</string> </key>
@@ -58,11 +57,11 @@
         </item>
         <item>
             <key> <string>quantity</string> </key>
-            <value> <float>-1.0</float> </value>
+            <value> <float>1.0</float> </value>
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>Real Flight</string> </value>
+            <value> <string>Recaculates Scores</string> </value>
         </item>
       </dictionary>
     </pickle>

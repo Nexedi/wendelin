@@ -14,9 +14,7 @@
                 <string>Assignor</string>
                 <string>Associate</string>
                 <string>Auditor</string>
-                <string>Author</string>
                 <string>Manager</string>
-                <string>Owner</string>
               </tuple>
             </value>
         </item>
@@ -27,9 +25,7 @@
                 <string>Assignee</string>
                 <string>Assignor</string>
                 <string>Associate</string>
-                <string>Author</string>
                 <string>Manager</string>
-                <string>Owner</string>
               </tuple>
             </value>
         </item>
@@ -40,9 +36,7 @@
                 <string>Assignee</string>
                 <string>Assignor</string>
                 <string>Associate</string>
-                <string>Author</string>
                 <string>Manager</string>
-                <string>Owner</string>
               </tuple>
             </value>
         </item>
@@ -54,9 +48,7 @@
                 <string>Assignor</string>
                 <string>Associate</string>
                 <string>Auditor</string>
-                <string>Author</string>
                 <string>Manager</string>
-                <string>Owner</string>
               </tuple>
             </value>
         </item>
@@ -66,6 +58,7 @@
               <tuple>
                 <string>Data Array</string>
                 <string>Progress Indicator</string>
+                <string>Data Bucket Stream</string>
               </tuple>
             </value>
         </item>
@@ -73,8 +66,9 @@
             <key> <string>categories</string> </key>
             <value>
               <tuple>
-                <string>use/big_data/analysis</string>
                 <string>quantity_unit/unit/piece</string>
+                <string>use/big_data/analysis</string>
+                <string>use/big_data/ingestion/stream</string>
               </tuple>
             </value>
         </item>
