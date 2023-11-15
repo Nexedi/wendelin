@@ -74,6 +74,303 @@ class Test(ERP5TypeTestCase):
     finally:
       removeZODBPythonScript(script_container, name)
 
+  def createScript(self, code, expected=None):
+    # we do not care the script name for security test thus use uuid1
+    name = str(uuid.uuid1())
+    script_container = self.portal.portal_skins.custom
+    createZODBPythonScript(script_container, name, '**kw', textwrap.dedent(code))
+    return name, script_container
+
+  def randomword(self, length):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for _ in range(length))
+  
+
+  def afterSetUp(self):
+    """
+    This is ran before anything, used to set the environment
+    """
+    self.column_names = ["timestamp (ms)","latitude (°)","longitude (°)","AMSL (m)","rel altitude (m)","yaw (°)","ground speed (m/s)","climb rate (m/s)"]
+    self.title_prefix = "Data-Analysis-Test"
+    self.test_function_to_organisation = {}
+    # Create organisations
+    for self.test_function in ("source", "destination", "source2"):
+      self.organisation = self.portal.organisation_module.newContent(
+        portal_typle="Organisation",
+        title="%s %s" % (self.title_prefix, self.test_function),
+      )
+      self.organisation.validate()
+      self.test_function_to_organisation.update({self.test_function: self.organisation})
+
+      
+      
+    fluentd_code = r"""
+try:
+  l=[(c[1]["filepath"].split("/")[-1], c[1]["message"]) for c in context.unpackLazy(data_chunk, use_list=False)]
+  names_message_dir = {}
+  for file_name, message in l:
+    try:
+      names_message_dir[file_name].append(message)
+    except:
+      names_message_dir[file_name] = [message]
+  for tag in names_message_dir:
+    bucket_stream["Data Bucket Stream"].insertBucket(tag,"\n".join(names_message_dir[tag]))
+except:
+  pass
+    """
+    name, container = self.createScript(fluentd_code)
+    #self.assertEqual(container, "hg")
+    
+    # Create data operation
+    self.data_supply_operation = self.portal.data_operation_module.newContent(
+      portal_typle="Data Operation",
+      title="%s Data Operation" % self.title_prefix,
+      reference = "%s_data_operation"% self.title_prefix,
+      script_id=name, #"DataIngestionLine_writeFluentdIngestionToDataBucketStream",
+      version = '001',
+    )
+    self.data_supply_operation.validate()
+
+    # Create Data Product
+    self.resource = self.portal.data_product_module.newContent(
+      portal_type="Data Product",
+      title="Data Product for resource",
+      reference = "data_product_resource"+self.randomword(5),
+      use = "big_data/ingestion/stream",
+      quantity_unit="unit/piece",
+      aggregated_portal_type_list = ["Data Bucket Stream", "Progress Indicator"],
+    )
+
+    self.resource.validate()
+
+
+
+    self.data_supply = self.portal.data_supply_module.newContent(
+      portal_type="Data Supply",
+      title="Test Data Supply 1",
+      source = self.test_function_to_organisation["source"].getRelativeUrl(),
+      source_section = self.test_function_to_organisation["source2"].getRelativeUrl(),
+      destination = self.test_function_to_organisation["destination"].getRelativeUrl(),
+      destination_section = self.test_function_to_organisation["source2"].getRelativeUrl(),
+      reference = "test-supply-analysis2"+self.randomword(5),
+    )
+    self.data_supply.validate()
+
+    self.data_supply.newContent(
+      portal_type="Data Supply Line",
+      title="Stream Test",
+      reference="bucket_stream",
+      use = "big_data/ingestion/stream",
+      resource= self.resource.getRelativeUrl(),
+    )
+
+
+    self.data_supply.newContent(
+      portal_type="Data Supply Line",
+      title="Bucket Operation Test",
+      reference="ingest_data",
+      resource= self.data_supply_operation.getRelativeUrl(),
+    )
+
+    data_operation_code = r"""
+import pandas as pd
+import numpy as np
+
+# Function to remove non-ASCII characters from a string, because I can not be bothered to make to_records with utf8 right now
+def remove_non_ascii(text):
+    return ''.join(char for char in str(text) if ord(char) < 128)
+
+
+
+progress_indicator = in_stream["Progress Indicator"]
+in_data_stream = in_stream["Data Bucket Stream"]
+out_data_array = out_array["Data Array"]
+
+keys = in_data_stream.getKeyList()
+
+start = progress_indicator.getIntOffsetIndex()
+# Later we can add a chunk variable, which would tell us how many buckets we can process each call. But currently we do not have many buckets.
+end = progress_indicator.getStringOffsetIndex()
+if end is None:
+  end = ""
+
+if len(keys) == 0:
+  context.log("No Keys found")
+  return 
+
+
+dtype= {'timestamp (ms)': '<f8',
+'latitude ()': '<f8',
+'longitude ()': '<f8',
+'AMSL (m)': '<f8',
+'rel altitude (m)': '<f8',
+'yaw ()': '<f8',
+'ground speed (m/s)': '<f8',
+'climb rate (m/s)': '<f8'}
+
+if len([x for x in keys if x not in end]) == 0:
+  context.log("No new keys found")
+  return
+
+new_end = ""
+for key in [x for x in keys if x not in end]:
+  try:
+    log = in_data_stream.getBucketByKey(key)
+    df = pd.read_csv(log, sep=';', dtype=dtype)
+
+    if df.shape[0] == 0:
+      return
+    
+    # Remove non-ASCII characters from DataFrame values
+    df = df.applymap(remove_non_ascii)
+    # Remove non-ASCII characters from column names (headers)
+    df.columns = df.columns.map(remove_non_ascii)
+    non_numeric_columns = df.select_dtypes(exclude=[np.number]).columns
+    df[non_numeric_columns] = df[non_numeric_columns].apply(pd.to_numeric, errors='coerce')
+
+    ndarray = df.to_records(index = False) #column_dtypes does not work here for some reasone, even if it is an actuall parameter
+
+    #Use to delete the array
+    #out_data_array = out_data_array.initArray(shape=(0,), dtype=ndarray.dtype.fields)
+    #return 
+    zbigarray = out_data_array.getArray()
+    
+    if zbigarray is None:
+      zbigarray = out_data_array.initArray(shape=(0,), dtype=ndarray.dtype.fields)
+    start_array = zbigarray.shape[0]
+    zbigarray.append(ndarray)
+
+    try:
+      data_array_line = out_array.get(key)
+      if data_array_line is None:
+        data_array_line = out_data_array.newContent(id=key,
+                                             portal_type="Data Array Line")
+      data_array_line.edit(reference=key,
+           index_expression="%s:%s" %(start_array, zbigarray.shape[0])
+        )
+    except:
+      context.log("Can not create Data Array Line")
+  except:
+    context.log("File "+str(key)+ " is not well formated")
+  new_end = new_end + str(key)
+
+
+progress_indicator.setStringOffsetIndex(end + new_end)
+
+
+    """
+    data_operation_code_name, _ = self.createScript(data_operation_code)
+
+    # Data operation
+    self.data_operation = self.portal.data_operation_module.newContent(
+      portal_typle="Data Operation",
+      title="%s Data Operation for array" % self.title_prefix,
+      reference = "%s_data_operation_for_array"% self.title_prefix,
+      script_id=data_operation_code_name,#"DataAnalysisLine_convertRawDroneDataToArray",
+      version = '001',
+    )
+    self.data_operation.validate()
+
+    # Out array product
+    self.test_array = self.portal.data_product_module.newContent(
+      portal_type="Data Product",
+      title="%s Data Product for array" % self.title_prefix,
+      reference = "%s_data_product_test_array"% self.title_prefix,
+      use = "big_data/ingestion/stream",
+      quantity_unit="unit/piece",
+      aggregated_portal_type_list = ["Data Bucket Stream", "Progress Indicator", "Data Array"],
+    )
+
+    self.test_array.validate()
+
+
+    self.data_transformation = self.portal.data_transformation_module.newContent(
+      portal_type="Data Transformation",
+      title="%s Data Transformation" % self.title_prefix,
+      reference = "test-data-transformation"+ self.randomword(5),
+      resource = self.resource.getRelativeUrl(),
+    )
+    self.data_transformation.validate()
+
+    self.data_transformation.newContent(
+      portal_type="Data Transformation Operation Line",
+      title="Convert Test to Test Array",
+      reference="data_operation",
+      resource= self.data_operation.getRelativeUrl(),
+      quantity=1,
+      quantity_unit="unit/piece",
+      trade_phase = "Data/Convert",
+      use = "big_data/ingestion/stream",
+    )
+
+    self.data_transformation.newContent(
+      portal_type="Data Transformation Resource Line",
+      title="Input Data",
+      reference="in_stream",
+      resource= self.resource.getRelativeUrl(),
+      quantity=-1,
+      quantity_unit="unit/piece",
+      trade_phase = "Data/Convert",
+      use = "big_data/ingestion/stream",
+      aggregated_portal_type_list = ["Data Bucket Stream", "Progress Indicator"],
+    )
+
+
+    self.data_transformation.newContent(
+      portal_type="Data Transformation Resource Line",
+      title="Out Data",
+      reference="out_array",
+      resource= self.test_array.getRelativeUrl(),
+      quantity=1,
+      quantity_unit="unit/piece",
+      trade_phase = "Data/Convert",
+      use = "big_data/ingestion/stream",
+      aggregated_portal_type_list = ["Data Bucket Stream", "Progress Indicator", "Data Array"],
+    )
+  def stepCallAnalyses(self):
+    self.portal.portal_alarms.wendelin_handle_analysis.activeSense()
+    self.tic()
+  
+  def create_random_name(self):
+    return "simulation_log_D0_"+str((random.uniform(5,20), random.uniform(5,20)))+".log"
+
+  def create_random_dataframe_string(self, column_names):
+    l = []
+    nr_lines = random.randint(10,100)
+    timestamp = sorted([random.uniform(1,100) for _ in range(nr_lines)]) 
+    x = [[random.uniform(-100,100) if name !="timestamp (ms)" else timestamp[i] for name in column_names] for i in range(nr_lines)]
+    x.insert(0, column_names)
+    for line in x:
+      l.append(";".join(map(str, line)))
+    
+    return "\n".join(l)
+    
+  def create_random_data_msg(self, column_names):
+    return {"message": self.create_random_dataframe_string(column_names), "filepath": self.create_random_name()}
+
+  def stepIngestSimDroneData(self, ingestion_policy, tag, data):
+    """
+      Ingest some data
+    """
+    request = self.portal.REQUEST
+    
+    # simulate fluentd by setting proper values in REQUEST
+    request.environ['REQUEST_METHOD'] = 'POST'
+    data_chunk = msgpack.packb([0, data], use_bin_type=True)
+    request.set('reference', tag)
+    request.set('data_chunk', data_chunk)
+    ingestion_policy.ingest()
+    self.tic()
+    # check that new data ingestion was correctly created
+    data_ingestion = self.portal.portal_catalog.getResultValue(
+        portal_type = "Data Ingestion",
+        specialise_uid = self.data_supply.getUid(),
+        reference = self.data_supply.getReference())
+
+    self.assertNotEquals(data_ingestion, None)
+    
+    return data_ingestion
+  
   def test_01_IngestionFromFluentd(self, old_fluentd=False):
     """
     Test ingestion using a POST Request containing a msgpack encoded message
@@ -882,3 +1179,42 @@ result = [x for x in data_bucket_stream.getBucketIndexKeySequenceByIndex()]
     self.assertRaises(ValueError,
                       portal.Base_wendelinTextToNumpy,
                       wendelin_text)
+
+  def test_19_checkArrayReferebce(self):
+    portal = self.getPortalObject()
+    ingestion_policy = portal.portal_ingestion_policies.default
+    self.tic()
+    tag_bin = self.data_supply.getReference() + "." + self.resource.getReference()
+    bin_chunk = self.create_random_data_msg(self.column_names)
+    data_ingestion_bin = self.stepIngestSimDroneData(ingestion_policy,
+                                             tag_bin,
+                                             bin_chunk)
+    self.tic()
+    bin_line = None
+    for line in data_ingestion_bin.objectValues(
+        portal_type = "Data Ingestion Line"):
+      if line.getReference() == "bucket_stream":
+        bin_line = line
+        
+
+    self.assertNotEquals(bin_line, None)
+    self.assertEquals(bin_line.getQuantity(), 1)
+    self.assertEquals(bin_line.getResource(), 
+      "data_product_module/"+self.resource.getId())
+    
+    destination_data_stream_bucket = bin_line.getAggregateDataBucketStreamValue()
+    self.assertNotEquals(destination_data_stream_bucket, None)
+
+    self.stepCallAnalyses()
+    self.assertNotEqual(None, self.data_transformation)
+    data_analysis = portal.portal_catalog.getResultValue(
+                                   portal_type = 'Data Analysis',
+                                   reference = self.data_supply.getReference(),
+                                   specialise_uid = self.data_transformation.getUid(),
+                                   simulation_state = 'started')
+    self.assertNotEqual(None, data_analysis)
+    
+    data_array = portal.portal_catalog.getResultValue(
+                                   portal_type = 'Data Array',
+                                   reference = "Data-Analysis-Test Data Transformation-Out Data-"+self.data_supply.getReference())
+    self.assertNotEqual(None, data_array)
