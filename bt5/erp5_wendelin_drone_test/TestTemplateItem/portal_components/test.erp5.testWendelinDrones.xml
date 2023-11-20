@@ -7,12 +7,6 @@
     <pickle>
       <dictionary>
         <item>
-            <key> <string>_recorded_property_dict</string> </key>
-            <value>
-              <persistent> <string encoding="base64">AAAAAAAAAAI=</string> </persistent>
-            </value>
-        </item>
-        <item>
             <key> <string>default_reference</string> </key>
             <value> <string>testWendelinDrones</string> </value>
         </item>
@@ -51,12 +45,12 @@
                 <string>W: 52,  0: Cannot decode using encoding "ascii", unexpected byte at position 53 (invalid-encoded-data)</string>
                 <string>W: 53,  0: Cannot decode using encoding "ascii", unexpected byte at position 55 (invalid-encoded-data)</string>
                 <string>W: 50,  4: Unused variable \'portal\' (unused-variable)</string>
-                <string>W: 81,  4: Unused variable \'timestamp\' (unused-variable)</string>
-                <string>W:105,  4: Unused variable \'document_to_delete_list\' (unused-variable)</string>
-                <string>W:252,  8: No exception type(s) specified (bare-except)</string>
-                <string>W:371,  4: Unused variable \'test_sim_dataframe\' (unused-variable)</string>
-                <string>W:368,  8: Unused variable \'data_array_line_names_sim_flight_list\' (unused-variable)</string>
-                <string>W:392,  8: Unused variable \'data_array_line_names_sim_flight_score_list\' (unused-variable)</string>
+                <string>W: 82,  4: Unused variable \'timestamp\' (unused-variable)</string>
+                <string>W:106,  4: Unused variable \'document_to_delete_list\' (unused-variable)</string>
+                <string>W:253,  8: No exception type(s) specified (bare-except)</string>
+                <string>W:372,  4: Unused variable \'test_sim_dataframe\' (unused-variable)</string>
+                <string>W:369,  8: Unused variable \'data_array_line_names_sim_flight_list\' (unused-variable)</string>
+                <string>W:393,  8: Unused variable \'data_array_line_names_sim_flight_score_list\' (unused-variable)</string>
               </tuple>
             </value>
         </item>
@@ -67,7 +61,7 @@
         <item>
             <key> <string>workflow_history</string> </key>
             <value>
-              <persistent> <string encoding="base64">AAAAAAAAAAM=</string> </persistent>
+              <persistent> <string encoding="base64">AAAAAAAAAAI=</string> </persistent>
             </value>
         </item>
       </dictionary>
@@ -84,29 +78,9 @@
             <value>
               <dictionary>
                 <item>
-                    <key> <string>reference</string> </key>
-                    <value> <string>WendelinDrones</string> </value>
-                </item>
-              </dictionary>
-            </value>
-        </item>
-      </dictionary>
-    </pickle>
-  </record>
-  <record id="3" aka="AAAAAAAAAAM=">
-    <pickle>
-      <global name="PersistentMapping" module="Persistence.mapping"/>
-    </pickle>
-    <pickle>
-      <dictionary>
-        <item>
-            <key> <string>data</string> </key>
-            <value>
-              <dictionary>
-                <item>
                     <key> <string>component_validation_workflow</string> </key>
                     <value>
-                      <persistent> <string encoding="base64">AAAAAAAAAAQ=</string> </persistent>
+                      <persistent> <string encoding="base64">AAAAAAAAAAM=</string> </persistent>
                     </value>
                 </item>
               </dictionary>
@@ -115,7 +89,7 @@
       </dictionary>
     </pickle>
   </record>
-  <record id="4" aka="AAAAAAAAAAQ=">
+  <record id="3" aka="AAAAAAAAAAM=">
     <pickle>
       <global name="WorkflowHistoryList" module="Products.ERP5Type.Workflow"/>
     </pickle>
@@ -128,11 +102,11 @@
                 <dictionary>
                   <item>
                       <key> <string>action</string> </key>
-                      <value> <string>modify</string> </value>
+                      <value> <string>validate</string> </value>
                   </item>
                   <item>
                       <key> <string>validation_state</string> </key>
-                      <value> <string>modified</string> </value>
+                      <value> <string>validated</string> </value>
                   </item>
                 </dictionary>
               </list>

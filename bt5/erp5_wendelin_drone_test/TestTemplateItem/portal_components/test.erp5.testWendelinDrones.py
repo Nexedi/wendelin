@@ -65,6 +65,7 @@ class Test(ERP5TypeTestCase):
       l.append(";".join(map(str, line)))
     
     return "\n".join(l)
+
     
   def create_random_data_msg(self, column_names):
     return {"message": self.create_random_dataframe_string(column_names), "filepath": self.create_random_name()}
