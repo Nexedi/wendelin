@@ -46,11 +46,11 @@
                 <string>W: 53,  0: Cannot decode using encoding "ascii", unexpected byte at position 55 (invalid-encoded-data)</string>
                 <string>W: 50,  4: Unused variable \'portal\' (unused-variable)</string>
                 <string>W: 82,  4: Unused variable \'timestamp\' (unused-variable)</string>
-                <string>W:106,  4: Unused variable \'document_to_delete_list\' (unused-variable)</string>
-                <string>W:253,  8: No exception type(s) specified (bare-except)</string>
-                <string>W:372,  4: Unused variable \'test_sim_dataframe\' (unused-variable)</string>
-                <string>W:369,  8: Unused variable \'data_array_line_names_sim_flight_list\' (unused-variable)</string>
-                <string>W:393,  8: Unused variable \'data_array_line_names_sim_flight_score_list\' (unused-variable)</string>
+                <string>W:108,  4: Unused variable \'document_to_delete_list\' (unused-variable)</string>
+                <string>W:255,  8: No exception type(s) specified (bare-except)</string>
+                <string>W:374,  4: Unused variable \'test_sim_dataframe\' (unused-variable)</string>
+                <string>W:371,  8: Unused variable \'data_array_line_names_sim_flight_list\' (unused-variable)</string>
+                <string>W:395,  8: Unused variable \'data_array_line_names_sim_flight_score_list\' (unused-variable)</string>
               </tuple>
             </value>
         </item>

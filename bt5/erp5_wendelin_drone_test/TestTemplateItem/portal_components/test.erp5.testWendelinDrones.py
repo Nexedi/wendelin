@@ -98,6 +98,8 @@ class Test(ERP5TypeTestCase):
   def stepCallAnalyses(self):
     self.portal.portal_alarms.wendelin_handle_analysis.activeSense()
     self.tic()
+    self.portal.portal_alarms.wendelin_handle_analysis.activeSense()
+    self.tic()
 
   def stepIngestSimDroneData(self, ingestion_policy, tag, data):
     """
@@ -287,7 +289,7 @@ class Test(ERP5TypeTestCase):
   def test_03_RealIngestion(self):
     portal = self.getPortalObject()
     ingestion_policy = portal.portal_ingestion_policies.default
-    
+    portal.log("here we are")
     self.tic()
 
     #ingest real data
