@@ -33,7 +33,7 @@
               <tuple>
                 <string>trade_phase/data/convert</string>
                 <string>resource/data_product_module/simulation_scores</string>
-                <string>use/big_data/ingestion/batch_ingestion</string>
+                <string>use/big_data/ingestion/stream</string>
               </tuple>
             </value>
         </item>

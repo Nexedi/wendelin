@@ -239,7 +239,7 @@ It also has two outputs: An array with the score list and an array with the info
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>1012.36562.17706.18176</string> </value>
+                      <value> <string>1012.36578.1503.1740</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -259,7 +259,7 @@ It also has two outputs: An array with the score list and an array with the info
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1700234232.4</float>
+                              <float>1700563013.33</float>
                               <string>UTC</string>
                             </tuple>
                           </state>

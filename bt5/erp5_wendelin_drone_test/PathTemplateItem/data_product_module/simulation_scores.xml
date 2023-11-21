@@ -58,7 +58,6 @@
               <tuple>
                 <string>Data Array</string>
                 <string>Progress Indicator</string>
-                <string>Data Bucket Stream</string>
               </tuple>
             </value>
         </item>
@@ -163,7 +162,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>1012.36562.17706.18176</string> </value>
+                      <value> <string>1012.36579.24518.51660</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -183,7 +182,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1700234343.07</float>
+                              <float>1700564130.34</float>
                               <string>UTC</string>
                             </tuple>
                           </state>

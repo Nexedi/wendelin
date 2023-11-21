@@ -34,7 +34,7 @@
                 <string>trade_phase/data/convert</string>
                 <string>quantity_unit/unit/piece</string>
                 <string>resource/data_product_module/drone_raw_array</string>
-                <string>use/big_data/ingestion/batch_ingestion</string>
+                <string>use/big_data/ingestion/stream</string>
               </tuple>
             </value>
         </item>

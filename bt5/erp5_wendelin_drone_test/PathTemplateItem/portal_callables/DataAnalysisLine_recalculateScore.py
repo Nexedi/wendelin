@@ -9,20 +9,18 @@ import re
 # This new array will give us the final overview of the ranking of the parameters. This can be used by our genetic algorithm to decide when we can stop and which parameters worked the best.
 
 
-
-
-score_dtypes = {'name': 'S256', 'Param1': 'f16', 'Param2': 'f16', 
+score_dtypes = {'name': 'S256', 'Param1': 'f8', 'Param2': 'f8', 
           'distance_reciprocal': 'f8', 'ASML_reciprocal': 'f8', 
           'ground_speed_reciprocal': 'f8', 'climb_rate_reciprocal': 'f8', 
-          'score_reciprocal': 'f16', 'score_cosine_row': 'f16', 
-          'score_cosine_column': 'f16'}
+          'score_reciprocal': 'f8', 'score_cosine_row': 'f8', 
+          'score_cosine_column': 'f8'}
 
-new_score_dtypes= {'name': 'S256', 'Param1': 'f16', 'Param2': 'f16', 
+new_score_dtypes= {'name': 'S256', 'Param1': 'f8', 'Param2': 'f8', 
           'distance_reciprocal': 'f8', 'ASML_reciprocal': 'f8', 
           'ground_speed_reciprocal': 'f8', 'climb_rate_reciprocal': 'f8', 
-          'score_reciprocal': 'f16', 'score_cosine_row': 'f16', 
-          'score_cosine_column': 'f16',
-          'iteration': 'f16'}
+          'score_reciprocal': 'f8', 'score_cosine_row': 'f8', 
+          'score_cosine_column': 'f8',
+          'iteration': 'i8'}
           
     
 plot_dtypes = {
@@ -38,10 +36,10 @@ plot_dtypes = {
     'ASML_reciprocal': 'f8',
     'ground_speed_reciprocal': 'f8',
     'climb_rate_reciprocal': 'f8',
-    'score_reciprocal': 'f16',
-    'score_cosine_row': 'f16',
-    'score_cosine_column': 'f16',
-    'iteration': 'f16'
+    'score_reciprocal': 'f8',
+    'score_cosine_row': 'f8',
+    'score_cosine_column': 'f8',
+    'iteration': 'i8'
 }
 
 new_plot_dtypes = {
@@ -59,7 +57,7 @@ new_plot_dtypes = {
     'score_reciprocal': 'f8',
     'score_cosine_row': 'f8',
     'score_cosine_column': 'f8',
-    'iteration': 'f8'
+    'iteration': 'i8'
 }
 
 
@@ -84,8 +82,10 @@ if seen_sims is None:
   
 sim_flight_names = list(old_score_df["name"])
   
-#if len([x for x in sim_flight_names if x not in seen_sims]) == 0: #That is completely wrong. We still need to update the iteration, else we would just stop
-#  return 
+# We will only continue if there is new data available.
+if len([x for x in sim_flight_names if x not in seen_sims]) == 0: 
+  return 
+
 
 
 
@@ -117,16 +117,17 @@ new_plot_df = pd.DataFrame.from_records(new_plot_nparray[:].copy())
 
 
 
-
-
-
-
 new_score_iteration = new_score_df["iteration"].max()
+if math.isnan(new_score_iteration):
+  new_score_iteration = 0
+
 
 new_score_df = new_score_df.drop(["iteration"],axis=1)
 
 
 new_plot_iteration = new_plot_df["iteration"].max()
+if math.isnan(new_plot_iteration):
+  new_plot_iteration = 0
 
 #new_plot_df = new_plot_df.drop(columns=["iteration"])
 
@@ -146,10 +147,10 @@ answer_plots = old_plot_df[old_plot_df["name"].isin(list(answer_scores["name"]))
 
 # Change this when everything works
 
+context.log("LLOOOKKK")
+context.log(new_score_iteration)
+context.log(new_plot_iteration)
 
-if not new_score_iteration or not new_plot_iteration:
-  new_score_iteration = 0
-  new_plot_iteration = 0
 new_score_iteration = new_score_iteration + 1
 new_plot_iteration = new_plot_iteration + 1
 
@@ -194,6 +195,7 @@ for df in resulting_dfs:
   data_array_line_plot = out_array_plots["Data Array"].get(str(current_rank))
   context.log(data_array_line_plot)
   df = df.drop_duplicates()
+  context.log(df)
   new_plot_nparray.append(df.to_records(index = False))
 
   if data_array_line_plot is None:

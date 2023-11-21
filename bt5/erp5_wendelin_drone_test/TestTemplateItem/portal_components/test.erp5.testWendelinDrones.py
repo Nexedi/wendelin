@@ -28,6 +28,7 @@ import msgpack
 import random
 import string
 import pandas as pd
+import numpy as np
 from Products.ERP5Type.tests.ERP5TypeTestCase import ERP5TypeTestCase
 
 class Test(ERP5TypeTestCase):
@@ -289,7 +290,6 @@ class Test(ERP5TypeTestCase):
   def test_03_RealIngestion(self):
     portal = self.getPortalObject()
     ingestion_policy = portal.portal_ingestion_policies.default
-    portal.log("here we are")
     self.tic()
 
     #ingest real data
@@ -415,3 +415,34 @@ class Test(ERP5TypeTestCase):
       # Because we can be sure that each flight_dataframe is only one row (because each simulation is represented with exactly one row), we can use .item()
       self.assertAlmostEqual((flight_dataframe["climb_rate_reciprocal"] + flight_dataframe["ground_speed_reciprocal"] + flight_dataframe["ASML_reciprocal"] + flight_dataframe["distance_reciprocal"]).item()/4,
                             flight_dataframe["score_reciprocal"].item())
+      
+  def test_05_RecalculateScores(self):
+    data_transformation = self.portal.portal_catalog.getResultValue(
+                                 portal_type = 'Data Transformation',
+                                 reference = 'recalculate-score-list-array',
+                                 validation_state = 'validated')
+    self.assertNotEqual(data_transformation, None)
+    
+    self.stepCallAnalyses()
+
+    data_analysis = self.portal.portal_catalog.getResultValue(
+                                   portal_type = 'Data Analysis',
+                                   reference = 'drone_simulation',
+                                   specialise_uid = data_transformation.getUid(),
+                                   simulation_state = 'started')
+    self.assertNotEqual(data_analysis, None)
+
+    zarray = None
+    for data_analysis_line in data_analysis.objectValues():
+      reference = data_analysis_line.getReference()
+
+      if reference == 'out_array_scores':
+        data_array = data_analysis_line.getAggregateValueList(portal_type = 'Data Array')[0]
+        zarray = data_array
+        data_array_line_names_sim_flight_score_list = list(zarray)
+
+    self.assertNotEqual(zarray.getArray(), None)
+    recalculated_scores = pd.DataFrame.from_records(zarray.getArray()[:].copy())
+    
+    # Determine if there are nan values
+    self.assertIsInstance(recalculated_scores["iteration"], np.int64)

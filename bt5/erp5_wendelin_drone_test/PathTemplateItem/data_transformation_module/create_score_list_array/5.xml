@@ -33,7 +33,7 @@
               <tuple>
                 <string>resource/data_product_module/drone_simulation_performance_data</string>
                 <string>trade_phase/data/convert</string>
-                <string>use/big_data/ingestion/batch_ingestion</string>
+                <string>use/big_data/ingestion/stream</string>
               </tuple>
             </value>
         </item>
