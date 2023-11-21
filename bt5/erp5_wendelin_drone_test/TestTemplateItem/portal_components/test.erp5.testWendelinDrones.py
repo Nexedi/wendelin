@@ -29,6 +29,7 @@ import random
 import string
 import pandas as pd
 import numpy as np
+import math
 from Products.ERP5Type.tests.ERP5TypeTestCase import ERP5TypeTestCase
 
 class Test(ERP5TypeTestCase):
@@ -445,4 +446,4 @@ class Test(ERP5TypeTestCase):
     recalculated_scores = pd.DataFrame.from_records(zarray.getArray()[:].copy())
     
     # Determine if there are nan values
-    self.assertIsInstance(recalculated_scores["iteration"], np.int64)
+    self.assertFalse(math.isnan(recalculated_scores["iteration"].max()))

@@ -69,9 +69,14 @@ new_plot_array = out_array_plots["Data Array"]
 
 # Should only look at the newest few
 score_nparray = score_array.getArray()
-old_score_df = pd.DataFrame.from_records(score_nparray[:].copy())
+if score_nparray is None:
+  score_nparray = out_array_scores["Data Array"].initArray(shape=(0,), dtype=list(new_score_dtypes.items()))
 
 plot_nparray = plot_array.getArray()
+if plot_nparray is None:
+  plot_nparray = out_array_plots["Data Array"].initArray(shape=(0,), dtype=list(new_plot_dtypes.items()))
+  
+old_score_df = pd.DataFrame.from_records(score_nparray[:].copy())
 old_plot_df = pd.DataFrame.from_records(plot_nparray[:].copy())
 
 progress_indicator = input_array_scores["Progress Indicator"]
@@ -84,6 +89,7 @@ sim_flight_names = list(old_score_df["name"])
   
 # We will only continue if there is new data available.
 if len([x for x in sim_flight_names if x not in seen_sims]) == 0: 
+  context.log("No new data for recalculation")
   return 
 
 
