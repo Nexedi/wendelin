@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002-2015 Nexedi SA and Contributors. All Rights Reserved.
+# Copyright (c) 2002-2024 Nexedi SA and Contributors. All Rights Reserved.
 #
 # This program is free software: you can Use, Study, Modify and Redistribute
 # it under the terms of the GNU General Public License version 3, or (at your
@@ -882,3 +882,26 @@ result = [x for x in data_bucket_stream.getBucketIndexKeySequenceByIndex()]
     self.assertRaises(ValueError,
                       portal.Base_wendelinTextToNumpy,
                       wendelin_text)
+
+  def test_19_Base_deleteZBigArray(self):
+    """
+      Simple test to ensure 'Base_deleteZBigArray' runs without errors.
+    """
+    def c():
+      self.commit()
+      self.tic()
+
+    portal = self.portal
+    data_array = portal.newContent(portal_type = "Data Array")
+    data_array.initArray((1, 2), int)
+    c()
+
+    A = data_array.getArray()
+    A.append([[1, 2] for _ in range(5000)])
+    c()
+
+    data_array.setArray(None)
+    portal.Base_deleteZBigArray(A)
+    c()
+
+    self.assertTrue(True)

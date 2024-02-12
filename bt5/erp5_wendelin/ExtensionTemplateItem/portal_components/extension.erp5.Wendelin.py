@@ -4,6 +4,17 @@
 """
 from wendelin.bigarray.array_zodb import ZBigArray
 import numpy as np
+import ZODB
+import transaction
+from ZODB.FileStorage import FileStorage
+try:  # duplication wrt neo/client/patch
+  from ZODB.Connection import TransactionMetaData
+except ImportError: # BBB: ZODB < 5
+  from ZODB.BaseStorage import TransactionRecord
+  TransactionMetaData = lambda user='', description='', extension=None: \
+      TransactionRecord(None, None, user, description, extension)
+import sys
+
 
 def DataStream_copyCSVToDataArray(data_stream, chunk_list, start, end, \
                                   data_array_reference=None):
@@ -58,3 +69,57 @@ def DataStream_copyCSVToDataArray(data_stream, chunk_list, start, end, \
   zarray[-ndarray_shape[0]:] = ndarray
   
   return start, end
+
+
+def Base_deleteZBigArray(zbigarray):
+  conn = zbigarray._p_jar
+  storage = conn.db().storage
+
+  # NOTE: The ZODB API doesn't provide a method to know how
+  # many changes are assigned to a specific object. In order
+  # to ensure we really delete all versions of an object, we
+  # therefore need a work-around to know how many maximum changes
+  # there could be:
+  if isinstance(storage, FileStorage):
+    max_size = float("inf")
+  else:
+    # NEO doesn't support float('inf'), we therefore use
+    # the highest possible number that can be send via msgpack.
+    try:
+      max_size = sys.maxint  # prevent long (not supported by neo/msgpack protocol)
+    except AttributeError:  # python3
+      max_size = 16 ** 100  # arbitrary
+
+  txn = TransactionMetaData()
+
+  def rm(obj):
+    _deleteObject(obj, txn, storage, max_size)
+
+  storage.tpc_begin(txn)
+
+  zfile = zbigarray.zfile
+  blktab = zfile.blktab
+
+  for _, b in blktab.items():
+    rm(b)
+
+  for obj in (blktab, zfile, zbigarray):
+    rm(obj)
+
+  storage.tpc_vote(txn)
+  storage.tpc_finish(txn)
+  transaction.commit()
+
+
+def _deleteObject(obj, txn, storage, size):
+  oid = obj._p_oid
+  for change in storage.history(oid, size):
+    tid = change['tid']
+    try:
+      storage.deleteObject(oid, tid, txn)
+    except (
+      KeyError,
+      ZODB.POSException.POSKeyError,
+      ZODB.POSException.ConflictError
+    ):
+      pass
