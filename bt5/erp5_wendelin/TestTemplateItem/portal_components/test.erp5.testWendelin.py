@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002-2015 Nexedi SA and Contributors. All Rights Reserved.
+# Copyright (c) 2002-2024 Nexedi SA and Contributors. All Rights Reserved.
 #
 # This program is free software: you can Use, Study, Modify and Redistribute
 # it under the terms of the GNU General Public License version 3, or (at your
@@ -33,6 +33,9 @@ import textwrap
 import urllib
 import uuid
 from zExceptions import BadRequest
+from ZODB.POSException import POSKeyError
+
+from golang import defer, func
 
 from Products.ERP5Type.tests.ERP5TypeTestCase import ERP5TypeTestCase
 from Products.ERP5Type.tests.utils import createZODBPythonScript, removeZODBPythonScript
@@ -882,3 +885,46 @@ result = [x for x in data_bucket_stream.getBucketIndexKeySequenceByIndex()]
     self.assertRaises(ValueError,
                       portal.Base_wendelinTextToNumpy,
                       wendelin_text)
+
+  @func
+  def test_19_Base_deleteZBigArray(self):
+    """Test 'Base_deleteZBigArray' garbage collects ZBigArray & associated OIDs"""
+    conn = self.portal._p_jar
+    db = conn.db()
+
+    @func
+    def get(obj):
+      tempconn = db.open()
+      defer(tempconn.close)
+      return tempconn.get(obj._p_oid)
+
+    def assertInDB(obj):
+      self.assertNotEqual(None, get(obj))
+
+    def assertNotInDB(obj):
+      self.assertRaises(POSKeyError, get, obj)
+
+    root = conn.root()
+    arr = root.arr = ZBigArray(shape=(0, 1), dtype=int)
+    @defer
+    def _():
+      del root.arr
+      self.tic()
+    self.tic()
+
+    assertInDB(arr)
+    assertInDB(arr.zfile)
+    assertInDB(arr.zfile.blktab)
+
+    arr.append([[0]])
+    self.tic()
+
+    blk = arr.zfile.blktab[0]
+    assertInDB(blk)
+
+    self.portal.Base_deleteZBigArray(arr)
+
+    assertNotInDB(arr)
+    assertNotInDB(arr.zfile)
+    assertNotInDB(arr.zfile.blktab)
+    assertNotInDB(blk)
