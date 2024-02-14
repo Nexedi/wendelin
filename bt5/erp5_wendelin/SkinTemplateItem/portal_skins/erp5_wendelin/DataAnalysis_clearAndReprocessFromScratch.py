@@ -12,6 +12,7 @@ for line in context.objectValues(portal_type="Data Analysis Line"):
   if line.getResourceValue().getPortalType() == "Data Product" and line.getQuantity() == 1:
     data_array = line.getAggregateDataArrayValue()
     if data_array is not None:
+      context.Base_deleteZBigArray(data_array.getArray())
       data_array.setArray(None)
       data_array.setStartDate(None)
       data_array.manage_delObjects(list(data_array.keys()))
