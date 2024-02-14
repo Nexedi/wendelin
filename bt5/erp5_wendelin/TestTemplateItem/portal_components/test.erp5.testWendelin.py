@@ -928,3 +928,29 @@ result = [x for x in data_bucket_stream.getBucketIndexKeySequenceByIndex()]
     assertNotInDB(arr.zfile)
     assertNotInDB(arr.zfile.blktab)
     assertNotInDB(blk)
+
+  @func
+  def test_20_gcOrphanedArrays(self):
+    """Ensure 'gcOrphanedArrays' garbage collects all ZBigArray that were orphaned by a 'Data Array'"""
+    portal = self.portal
+    db = portal._p_jar.db()
+    data_array = portal.data_array_module.newContent(portal_type = "Data Array")
+    self.tic()
+
+    orphan_list = []
+    for _ in range(10):
+      data_array.initArray((1,), int)
+      orphan_list.append(data_array.getArray())
+      data_array.setArray(None)
+      self.tic()
+
+    @func
+    def mapoids(f):
+      tempconn = db.open()
+      defer(tempconn.close)
+      for arr in orphan_list:
+        f(tempconn, arr._p_oid)
+
+    mapoids(lambda conn, oid: conn.get(oid))  # before GC, orphans are still in DB
+    data_array.gcOrphanedArrays()
+    mapoids(lambda conn, oid: self.assertRaises(POSKeyError, conn.get, oid))
