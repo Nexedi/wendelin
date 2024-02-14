@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2015 Nexedi SA and Contributors. All Rights Reserved.
+# Copyright (c) 2015-2024 Nexedi SA and Contributors. All Rights Reserved.
 #                    Ivan Tyagov <ivan@nexedi.com>
+#                    Levin Zimmermann <levin.zimmermann@nexedi.com>
 #
 # This program is free software: you can Use, Study, Modify and Redistribute
 # it under the terms of the GNU General Public License version 3, or (at your
@@ -152,6 +153,31 @@ class DataArray(BigFile):
 
     # return default view
     return self.view()
+
+  def gcOrphanedArrays(self):
+    """
+      If 'setArray(None)' has been called, the previously assigned
+      ZBigArrays are orphaned (no longer related to any other object).
+      In order to free some storage space, we can therefore remove
+      them from the database by explicitly garbage collecting them.
+
+      Beware: calling this breaks ZODB undo functionality.
+    """
+    conn = self._p_jar
+    storage = conn.db().storage
+    self._p_activate()
+    oid, tid = self._p_oid, self._p_serial
+    is_orphan = self.getArray() is None
+    while 1:
+      data = storage.loadBefore(oid, tid)
+      if not data:
+        break
+      state = conn.oldstate(self, data[1])
+      array = state['array']
+      if is_orphan and array:  # GC current ZBigArray
+        self.Base_deleteZBigArray(array)
+      is_orphan = array is None
+      tid = data[1]
 
   # FIXME this duplicates a lot of code from ERP5's BigFile
   # -> TODO reuse BigFile streaming capability without copying its code
