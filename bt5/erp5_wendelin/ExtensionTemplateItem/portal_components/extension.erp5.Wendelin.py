@@ -4,6 +4,13 @@
 """
 from wendelin.bigarray.array_zodb import ZBigArray
 import numpy as np
+try:  # duplication wrt neo/client/patch
+  from ZODB.Connection import TransactionMetaData
+except ImportError: # BBB: ZODB < 5
+  from ZODB.BaseStorage import TransactionRecord
+  TransactionMetaData = lambda user='', description='', extension=None: \
+      TransactionRecord(None, None, user, description, extension)
+
 
 def DataStream_copyCSVToDataArray(data_stream, chunk_list, start, end, \
                                   data_array_reference=None):
@@ -58,3 +65,30 @@ def DataStream_copyCSVToDataArray(data_stream, chunk_list, start, end, \
   zarray[-ndarray_shape[0]:] = ndarray
   
   return start, end
+
+
+def Base_deleteZBigArray(zbigarray):
+  conn = zbigarray._p_jar
+  storage = conn.db().storage
+
+  txn = TransactionMetaData()
+
+  def rm(obj):
+    obj._p_activate()
+    oid, tid = obj._p_oid, obj._p_serial
+    obj._p_deactivate()
+    storage.deleteObject(oid, tid, txn)
+
+  storage.tpc_begin(txn)
+
+  zfile = zbigarray.zfile
+  blktab = zfile.blktab
+
+  for _, b in blktab.items():
+    rm(b)
+
+  for obj in (blktab, zfile, zbigarray):
+    rm(obj)
+
+  storage.tpc_vote(txn)
+  storage.tpc_finish(txn)
