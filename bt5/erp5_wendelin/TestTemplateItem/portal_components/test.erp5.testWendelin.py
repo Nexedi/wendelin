@@ -49,11 +49,11 @@ if getZopeVersion() < (4, ): # BBB Zope2
 
 def getRandomString():
   return 'test_%s' %''.join([random.choice(string.ascii_letters + string.digits) \
-    for _ in xrange(32)])
+    for _ in range(32)])
 
 def chunks(l, n):
   """Yield successive n-sized chunks from l."""
-  for i in xrange(0, len(l), n):
+  for i in range(0, len(l), n):
     yield l[i:i+n]
 
 class Test(ERP5TypeTestCase):
