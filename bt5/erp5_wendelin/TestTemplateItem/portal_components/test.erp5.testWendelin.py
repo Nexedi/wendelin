@@ -23,7 +23,7 @@
 from ui import BytesIO
 import base64
 import binascii
-from httplib import NO_CONTENT
+from six.moves.http_client import NO_CONTENT
 import msgpack
 import numpy as np
 import string
