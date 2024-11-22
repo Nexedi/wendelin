@@ -13,7 +13,8 @@ for line in context.objectValues(portal_type="Data Analysis Line"):
     data_array = line.getAggregateDataArrayValue()
     if data_array is not None:
       data_array.setArray(None)
-      data_array.setStartDate(None)
+      if data_array.hasProperty('start_date'):
+        data_array.setStartDate(None)
       data_array.manage_delObjects(list(data_array.keys()))
 
 if context.getRefreshState() != "refresh_started":
