@@ -1,9 +1,11 @@
 import pandas as pd
 import numpy as np
 import re
+from six.moves import range
 import transaction
 from DateTime import DateTime
 from wendelin.bigarray.array_zodb import ZBigArray
+import six
 
 
 class ZBigArrayConverter(object):
@@ -58,7 +60,7 @@ class ZBigArrayConverter(object):
       data_array = result[0]
       
     array = data_array.getArray()
-    for index in xrange(len(array)): 
+    for index in range(len(array)):
       # We need to order everything related to the data schema here. The Results methods
       # `tuples()`, `names` and `data_dictionary` returns the fields in a different order
       # and order is very important in the conversion to a ZBigArray. So we build
@@ -179,7 +181,7 @@ class ZBigArrayExtender(object):
     extension_dtype = DtypeIdentifier(self.extension).identify()
     if not self.source.dtype == extension_dtype:
       raise TypeError('Source and extension data types does not match.')
-    for index in xrange(len(self.extension)): 
+    for index in range(len(self.extension)):
       # Basically the same problem here with the order of Results instance fields
       # when we convert it to an array.
       ordered_movements = []
@@ -264,11 +266,11 @@ class CategoryProcessor(object):
         field_category_name = field+'_category'
         field_name = field+'_uid'
       if verbose:
-        print 'Processing %s' % field_name
+        print('Processing %s' % field_name)
       uids = [str(row[0]) for row in array[:][[field_name]]]
       objects = self.context.portal_catalog(uid=uids)
       if verbose:
-        print 'Found %s %s' % (len(objects), field)
+        print('Found %s %s' % (len(objects), field))
         
       for resource in objects:
         categories = resource.getCategoryList()
@@ -278,8 +280,8 @@ class CategoryProcessor(object):
             category_uids.append(str(categories_df.ix[category]['uid']))
           except KeyError:
             if verbose:
-              print 'Category %s not found from %s' % (category, field_category_name)
-              print '...adding to the DataFrame.'
+              print('Category %s not found from %s' % (category, field_category_name))
+              print('...adding to the DataFrame.')
             categories_df.loc[category] = self.context.portal_categories.resolveCategory(category).getUid()
         fields_objects_categories[field][int(resource.getUid())] = ','.join(category_uids)
     
@@ -312,7 +314,7 @@ class CategoryProcessor(object):
           row[field_category_name] = categories
     transaction.commit()
     if duplicate_category:
-      print 'Duplication added to the array: %s' % total_duplication 
+      print('Duplication added to the array: %s' % total_duplication)
     return
   
   def _getCategoriesDf(self):
@@ -419,7 +421,7 @@ class InventoryDataFrameQuery(object):
   def _filterCategoryParameters(self, **kw):
     category_kw = {}
     keys_to_delete = []
-    for key, value in kw.iteritems():
+    for key, value in six.iteritems(kw):
       for field in self.FIELDS_WITH_CATEGORY:
         regex = re.compile(r'%s_.*_uid$' % field)
         if regex.match(key):
@@ -546,7 +548,7 @@ class InventoryDataFrameQuery(object):
   
   def _filterCategories(self):
     partial_filter = self._true_array()
-    for field, value in self.category_kw.iteritems():
+    for field, value in six.iteritems(self.category_kw):
       if self.duplicated_categories:
         partial_filter = (partial_filter) & (self.df[field] == value)
       else:
