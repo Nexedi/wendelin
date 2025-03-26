@@ -1,4 +1,5 @@
 from Products.ERP5Type.tests.SecurityTestCase import SecurityTestCase
+from io import BytesIO
 import string
 import random
 import csv
@@ -6,6 +7,7 @@ import os
 import time
 import numpy as np
 import base64
+from six.moves.http_client import NO_CONTENT
 
 class TestDataIngestion(SecurityTestCase):
 
@@ -81,15 +83,17 @@ class TestDataIngestion(SecurityTestCase):
     return data_stream_list
 
   def ingestRequest(self, reference, eof, data_chunk, ingestion_policy):
-    encoded_data_chunk = base64.b64encode(data_chunk)
-    request = self.portal.REQUEST
-    # only POST for Wendelin allowed
-    request.environ["REQUEST_METHOD"] = 'POST'
+    encoded_data_chunk = base64.b64encode(data_chunk.encode('utf-8'))
     reference = reference + eof + self.SIZE_HASH
-    self.portal.log("Ingest with reference=%s" %reference)
-    request.set('reference', reference)
-    request.set('data_chunk', encoded_data_chunk)
-    ingestion_policy.ingest()
+    self.portal.log("Ingest with reference=%s" % reference)
+
+    env = {'CONTENT_TYPE': 'application/octet-stream'}
+    path = ingestion_policy.getPath() + '/ingest?reference=' + reference
+    publish_kw = dict(user='ERP5TypeTestCase', env=env,
+      request_method='POST', stdin=BytesIO(encoded_data_chunk))
+    response = self.publish(path, **publish_kw)
+    self.assertEqual(NO_CONTENT, response.getStatus())
+
     self.tic()
 
   def ingest(self, data_chunk, reference, extension, eof, randomize_ingestion_reference=False, data_set_reference=False):
@@ -132,7 +136,7 @@ class TestDataIngestion(SecurityTestCase):
     self.assertNotEqual(None, data_stream)
 
     data_stream_data = data_stream.getData()
-    self.assertEqual(data_chunk, data_stream_data)
+    self.assertEqual(data_chunk.encode('utf-8'), data_stream_data)
 
     return data_set, [data_stream]
 
