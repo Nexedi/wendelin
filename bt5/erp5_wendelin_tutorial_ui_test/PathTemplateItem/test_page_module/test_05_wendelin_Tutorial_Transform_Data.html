@@ -851,11 +851,11 @@ if df.shape[0] == 0:
 
 df.index.name=&quot;date&quot;
 
-ndarray = df.to_records(convert_datetime64=False)
+ndarray = df.to_records()
 
 zbigarray = out_data_array.getArray()
 if zbigarray is None:
-  zbigarray = out_data_array.initArray(shape=(0,), dtype=ndarray.dtype.fields)
+  zbigarray = out_data_array.initArray(shape=(0,), dtype= ndarray.dtype.fields)
 
 zbigarray.append(ndarray)
 
