@@ -1076,7 +1076,7 @@ date_vector = df.index.values.copy()
 context.log(&quot;date_vector = &quot;, date_vector)
 
 # convert data back to ndarray
-default_data = df.to_records(convert_datetime64=False)
+default_data = df.to_records()
 # view as structured array
 
 # set date to zero where all values are 0
@@ -1084,7 +1084,7 @@ mask_zero = (df==0).all(axis=1)
 default_data[&#39;date&#39;][mask_zero] = 0
 
 if default_zbigarray is None:
-  default_zbigarray = default_data_array.initArray(shape=(0,), dtype=default_data.dtype.fields)
+  default_zbigarray = default_data_array.initArray(shape=(0,), dtype=default_data.dtype)
 
 if default_zbigarray.shape[0] == 0:
   default_zbigarray.append(default_data)
@@ -1112,7 +1112,7 @@ for out_array in out_array_list[1:]:
   out_array_resolution = out_array[&quot;resolution&quot;]
   out_zbigarray = out_data_array.getArray()
   if out_zbigarray is None:
-    out_zbigarray = out_data_array.initArray(shape=(0,), dtype=default_data.dtype.fields)
+    out_zbigarray = out_data_array.initArray(shape=(0,), dtype=default_data.dtype)
 
   if out_zbigarray.shape[0] == 0:
     start_index = 0
@@ -1151,7 +1151,7 @@ for out_array in out_array_list[1:]:
   date_vector = df.index.values.copy()
 
   # convert data back to ndarray
-  new_data = df.to_records(convert_datetime64=False)
+  new_data = df.to_records()
 
   # set date to zero where all values are 0
   new_data[&#39;date&#39;][(df==0).all(axis=1)] = 0
@@ -1462,7 +1462,7 @@ date_vector = df.index.values.copy()<br />
 context.log(&quot;date_vector = &quot;, date_vector)<br />
 <br />
 # convert data back to ndarray<br />
-default_data = df.to_records(convert_datetime64=False)<br />
+default_data = df.to_records()<br />
 # view as structured array<br />
 <br />
 # set date to zero where all values are 0<br />
@@ -1470,7 +1470,7 @@ mask_zero = (df==0).all(axis=1)<br />
 default_data[&#039;date&#039;][mask_zero] = 0<br />
 <br />
 if default_zbigarray is None:<br />
-&nbsp;&nbsp;default_zbigarray = default_data_array.initArray(shape=(0,), dtype=default_data.dtype.fields)<br />
+&nbsp;&nbsp;default_zbigarray = default_data_array.initArray(shape=(0,), dtype=default_data.dtype)<br />
 <br />
 if default_zbigarray.shape[0] == 0:<br />
 &nbsp;&nbsp;default_zbigarray.append(default_data)<br />
@@ -1498,7 +1498,7 @@ for out_array in out_array_list[1:]:<br />
 &nbsp;&nbsp;out_array_resolution = out_array[&quot;resolution&quot;]<br />
 &nbsp;&nbsp;out_zbigarray = out_data_array.getArray()<br />
 &nbsp;&nbsp;if out_zbigarray is None:<br />
-&nbsp;&nbsp; &nbsp;out_zbigarray = out_data_array.initArray(shape=(0,), dtype=default_data.dtype.fields)<br />
+&nbsp;&nbsp; &nbsp;out_zbigarray = out_data_array.initArray(shape=(0,), dtype=default_data.dtype)<br />
 <br />
 &nbsp;&nbsp;if out_zbigarray.shape[0] == 0:<br />
 &nbsp;&nbsp; &nbsp;start_index = 0<br />
@@ -1537,7 +1537,7 @@ for out_array in out_array_list[1:]:<br />
 &nbsp;&nbsp;date_vector = df.index.values.copy()<br />
 <br />
 &nbsp;&nbsp;# convert data back to ndarray<br />
-&nbsp;&nbsp;new_data = df.to_records(convert_datetime64=False)<br />
+&nbsp;&nbsp;new_data = df.to_records()<br />
 <br />
 &nbsp;&nbsp;# set date to zero where all values are 0<br />
 &nbsp;&nbsp;new_data[&#039;date&#039;][(df==0).all(axis=1)] = 0<br />
