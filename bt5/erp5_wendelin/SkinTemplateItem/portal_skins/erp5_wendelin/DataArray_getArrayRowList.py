@@ -40,7 +40,7 @@ def createTempBase(nr, row):
 length = context.getArrayShape()[0]
 
 # never access more than 1000 lines at once
-list_lines = min(list_lines, limit, 1000)
+list_lines = min(list_lines, limit[1], 1000)
 
 if context.REQUEST.has_key("limit"):
   list_start = limit[0]
