@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002-2015 Nexedi SA and Contributors. All Rights Reserved.
+# Copyright (c) 2002-2025 Nexedi SA and Contributors. All Rights Reserved.
 #
 # This program is free software: you can Use, Study, Modify and Redistribute
 # it under the terms of the GNU General Public License version 3, or (at your
@@ -254,32 +254,65 @@ class Test(ERP5TypeTestCase):
                                 portal_type = 'Data Bucket Stream')
     self.tic()
 
-    self.assertEqual(0, len(bucket_stream))
+    self.assertEqual(0, bucket_stream.getBucketCount())
 
     # test set and get
     bin_string = "1"*100000
-    key = len(bucket_stream) + 1
+    key = bucket_stream.getBucketCount() + 1
     bucket_stream.insertBucket(key, bin_string )
     self.assertEqual(bin_string, bucket_stream.getBucketByKey(key))
     self.assertEqual(bin_string, bucket_stream.getBucketByIndex(0))
 
     # test sequence
-    self.assertEqual(1, len(bucket_stream))
+    self.assertEqual(1, bucket_stream.getBucketCount())
 
     # test delete bucket by key
     bucket_stream.delBucketByKey(key)
-    self.assertEqual(0, len(bucket_stream))
+    self.assertEqual(0, bucket_stream.getBucketCount())
 
     # set many buckets
     for i in range(100):
       bucket_stream.insertBucket(i, i*10000)
 
-    self.assertEqual(100, len(bucket_stream))
+    self.assertEqual(100, bucket_stream.getBucketCount())
     self.assertEqual(range(100), bucket_stream.getKeyList())
 
     # test as sequence
     bucket = bucket_stream.getBucketKeyItemSequenceByKey(start_key=10, count=1)[0]
     self.assertEqual(100000, bucket[1].value)
+  
+  def test_04_DataBucket_consistency(self):
+    """Ensure 'Data Bucket Stream' doesn't break when running consistency checks [1].
+
+    [1] It broke before https://lab.nexedi.com/nexedi/wendelin/-/commit/72b3dc97
+    """
+    bucket_stream = self._getTestDataBucket()
+    self.assertEqual(bucket_stream.Base_getConsistencyList(), [])
+
+  def test_04_DataBucket_iteritems(self):
+    """Ensure 'Data Bucket Stream' doesn't break when using the Folder API.
+
+    Before the migration of the attribute from '_tree' to '_bucket_tree', it broke.
+    """
+    bucket_stream = self._getTestDataBucket()
+    # Buckets (PersistentStrings) must not be findable with folder API, otherwise
+    # erp5 tries to index them which is bad. Furthermore they are not aquisition
+    # objects and can't be wrapped, therefore they'd also break folders iteritem method.
+    self.assertEqual(list(bucket_stream.iteritems()), [])
+
+  def test_04_DataBucket_recursiveReindexObject(self):
+    """Ensure 'Data Bucket Stream' can be reindexed."""
+    bucket_stream = self._getTestDataBucket()
+    self.assertEqual(None, bucket_stream.recursiveReindexObject())
+    self.tic()
+
+  def _getTestDataBucket(self):
+    data_steam_module = self.portal.data_stream_module
+    bucket_stream = data_steam_module.newContent(portal_type='Data Bucket Stream')
+    self.tic()
+    bucket_stream.insertBucket(1, 'testBucket')
+    self.tic()
+    return bucket_stream
 
   def test_05_DataAnalyses(self):
     """
