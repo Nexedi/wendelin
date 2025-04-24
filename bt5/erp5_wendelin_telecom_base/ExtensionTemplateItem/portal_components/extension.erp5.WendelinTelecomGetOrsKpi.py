@@ -86,8 +86,7 @@ def getOrsEnbKpi(
   if data_array_shape is None \
     or data_array_dtype is None \
     or data_array_shape in [(), (0,)]:
-    RESPONSE.write(json.dumps(dict()))
-    return
+    return json.dumps(dict())
 
   RESPONSE.setHeader("Content-Type", "application/json")
 
@@ -112,7 +111,7 @@ def getOrsEnbKpi(
       v_added_epsb_estab_sr_lo=resampled_data_dict['vAddedEPSBEstabSR_lo'],
       v_added_epsb_estab_sr_hi=resampled_data_dict['vAddedEPSBEstabSR_hi']
     )
-    RESPONSE.write(json.dumps(response_dict))
+    return json.dumps(response_dict)
 
   elif kpi_type == 'e_utran_ip_throughput':
     evt = []
@@ -164,4 +163,4 @@ def getOrsEnbKpi(
       ul_lo=ul_lo,
       ul_hi=ul_hi
     )
-    RESPONSE.write(json.dumps(response_dict))
+    return json.dumps(response_dict)
