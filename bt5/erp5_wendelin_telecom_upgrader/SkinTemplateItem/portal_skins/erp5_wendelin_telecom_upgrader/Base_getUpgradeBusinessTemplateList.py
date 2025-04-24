@@ -4,7 +4,6 @@ bt5_list = [
   "erp5_wendelin_telecom_security",
   "erp5_wendelin_telecom_configurator",
   "erp5_wendelin_telecom_upgrader",
-  "erp5_upgrader",
 ]
 
 keep_bt5_id_set = set([
