@@ -7,7 +7,7 @@ The parameters are
 
   base_category_list -- list of category values we need to retrieve
   user_name          -- string obtained from getSecurityManager().getUser().getId()
-  ob                 -- object which we want to assign roles to
+  obj                -- object which we want to assign roles to
   portal_type        -- portal type of object
 """
 
@@ -15,11 +15,13 @@ The parameters are
 result_list = []
 temp = []
 
-if object is None:
+if obj is None:
   return []
 
-for related_item in object.Base_getRelatedObjectList(portal_type='Data Supply Line'):
-  temp += object.ERP5Type_getSecurityParentCategoryFromContent([base_category_list[0]], user_name, related_item, portal_type)[0][base_category_list[0]]
+if portal_type == 'Data Acquisition Unit':
+  aggregate_data_supply_line_list = obj.getAggregateRelatedValueList(portal_type='Data Supply Line')
+  for aggregate_line in aggregate_data_supply_line_list:
+    temp += obj.ERP5Type_getSecurityParentCategoryFromContent([base_category_list[0]], user_name, aggregate_line, portal_type)[0][base_category_list[0]]
 
 if len(temp) > 0:
   result_list = [{base_category_list[0]: temp}]

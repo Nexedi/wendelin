@@ -12,7 +12,7 @@
               <tuple>
                 <string>before_commit_script/portal_workflow/wendelin_telecom_security_interaction_workflow/script_Base_updateLocalRoles</string>
                 <string>before_commit_script/portal_workflow/wendelin_telecom_security_interaction_workflow/script_DataSupply_updateLineAggregateLocalRoles</string>
-                <string>before_commit_script/portal_workflow/wendelin_telecom_security_interaction_workflow/script_DataSupply_updateRelatedDestinationProject</string>
+                <string>before_commit_script/portal_workflow/wendelin_telecom_security_interaction_workflow/script_DataSupply_updateSpecialiseRelatedDestinationProject</string>
               </tuple>
             </value>
         </item>
