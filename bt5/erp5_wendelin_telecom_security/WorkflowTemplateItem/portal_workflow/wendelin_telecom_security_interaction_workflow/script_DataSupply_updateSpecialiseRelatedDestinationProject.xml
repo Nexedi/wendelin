@@ -60,11 +60,11 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>script_DataSupply_updateRelatedDestinationProject</string> </value>
+            <value> <string>script_DataSupply_updateSpecialiseRelatedDestinationProject</string> </value>
         </item>
         <item>
             <key> <string>title</string> </key>
-            <value> <string>DataSupply_updateRelatedDestinationProject</string> </value>
+            <value> <string>DataSupply_updateSpecialiseRelatedDestinationProject</string> </value>
         </item>
       </dictionary>
     </pickle>
