@@ -188,7 +188,6 @@ class TestWendelinTelecomConfigurator(SecurityTestCase):
       'erp5_oauth2_resource',
       'erp5_wendelin',
       'erp5_jquery_plugin_jqchart',
-      'erp5_stock_cache',
       'erp5_simulation',
       'erp5_crm',
       'erp5_credential',
