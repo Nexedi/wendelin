@@ -1,0 +1,12 @@
+<type_roles>
+  <role id='Auditor'>
+   <property id='title'>Administrator</property>
+   <multi_property id='category'>function/administrator</multi_property>
+  </role>
+  <role id='Auditor'>
+   <property id='title'>Client</property>
+   <property id='base_category_script'>ERP5Type_getSecurityCategoryFromParentRelatedDataAnalysisLine</property>
+   <multi_property id='category'>function/user</multi_property>
+   <multi_property id='base_category'>destination_project</multi_property>
+  </role>
+</type_roles>
