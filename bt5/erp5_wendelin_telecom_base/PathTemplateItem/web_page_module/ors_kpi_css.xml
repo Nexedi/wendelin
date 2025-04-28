@@ -85,7 +85,7 @@
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>rjs_gadget_ors_kpi_css</string> </value>
+            <value> <string>ors_kpi_css</string> </value>
         </item>
         <item>
             <key> <string>language</string> </key>
@@ -238,7 +238,7 @@
                   </item>
                   <item>
                       <key> <string>serial</string> </key>
-                      <value> <string>1018.50775.39991.54254</string> </value>
+                      <value> <string>1024.20575.42884.2099</string> </value>
                   </item>
                   <item>
                       <key> <string>state</string> </key>
@@ -258,7 +258,7 @@
                           </tuple>
                           <state>
                             <tuple>
-                              <float>1724247824.31</float>
+                              <float>1745829998.11</float>
                               <string>UTC</string>
                             </tuple>
                           </state>
