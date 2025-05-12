@@ -2,7 +2,7 @@
 <ZopeData>
   <record id="1" aka="AAAAAAAAAAE=">
     <pickle>
-      <global name="PythonScript" module="Products.PythonScripts.PythonScript"/>
+      <global name="Workflow Script" module="erp5.portal_type"/>
     </pickle>
     <pickle>
       <dictionary>
@@ -50,11 +50,21 @@
         </item>
         <item>
             <key> <string>_params</string> </key>
-            <value> <string>base_category_list, user_name, obj, portal_type</string> </value>
+            <value> <string>state_change</string> </value>
+        </item>
+        <item>
+            <key> <string>description</string> </key>
+            <value>
+              <none/>
+            </value>
         </item>
         <item>
             <key> <string>id</string> </key>
-            <value> <string>ERP5Type_getSecurityCategoryFromParentRelatedDataAnalysisLine</string> </value>
+            <value> <string>script_DataAnalysis_updateLineAggregateLocalRoles</string> </value>
+        </item>
+        <item>
+            <key> <string>title</string> </key>
+            <value> <string>DataAnalysis_updateLineAggregateLocalRoles</string> </value>
         </item>
       </dictionary>
     </pickle>

@@ -10,9 +10,5 @@ if len(data_analysis_line_list) == 0:
   return
 
 for data_analysis_line in data_analysis_line_list:
-  data_analysis_line.activate(after_tag=tag).updateLocalRolesOnSecurityGroups()
   for value in data_analysis_line.getAggregateValueList():
     value.activate(after_tag=tag).updateLocalRolesOnSecurityGroups()
-    content_value_list = value.contentValues()
-    for content_value in content_value_list:
-      content_value.activate(after_tag=tag).updateLocalRolesOnSecurityGroups()
