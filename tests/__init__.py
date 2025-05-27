@@ -18,7 +18,8 @@ class WendelinERP5(ERP5TypeTestSuite):
                               "/test\.[^.]+\.([^.]+).py$")
     return ['%s:%s' % (x.group(1), x.group(2)) \
       for x in [component_re.match(y) for y in glob(os.path.join(
-      BT5, '*', '*', '*', 'test.erp5.test*.py'))]]
+      BT5, '*', '*', '*', 'test.erp5.test*.py'))] \
+      if "WendelinTelecom" not in x.group(2)]
 
   def run(self, full_test):
     test = ':' in full_test and full_test.split(':')[1] or full_test
@@ -61,6 +62,16 @@ class WendelinERP5(ERP5TypeTestSuite):
       status_dict['test_count'] = int(group_dict['total'])
       status_dict['skip_count'] = int(group_dict['expected_failure'])
     return status_dict
+
+class WendelinTelecomERP5(WendelinERP5):
+
+  def getTestList(self):
+    component_re = re.compile(".*/([^/]+)/TestTemplateItem/portal_components"
+                              "/test\.[^.]+\.([^.]+).py$")
+    return ['%s:%s' % (x.group(1), x.group(2)) \
+      for x in [component_re.match(y) for y in glob(os.path.join(
+      BT5, '*', '*', '*', 'test.erp5.test*.py'))] \
+      if "WendelinTelecom" in x.group(2)]
 
 class WendelinBusinessTemplateCodingStyleTestSuite(WendelinERP5):
   """
