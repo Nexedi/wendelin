@@ -36,7 +36,14 @@ class WendelinERP5(ERP5TypeTestSuite):
     #   and to always spawn WCFS for all tests, so that this hack becomes
     #   unnecessary.
     # ---- 8< ----
-    status_dict = self.runUnitTest('--load', '--save', '--with_wendelin_core', full_test)
+    # Always run configurator test from scratch
+    # The load&save mechanism will load previous test data if it's present
+    # If test node run configurator A test, then run configurator B test
+    # It will then load the data created by A to run B
+    if 'Configurator' not in test:
+      status_dict = self.runUnitTest('--load', '--save', '--with_wendelin_core', full_test)
+    else:
+       status_dict = self.runUnitTest(full_test)
     if test.startswith('testFunctional'):
       status_dict = self._updateFunctionalTestResponse(status_dict)
     return status_dict
