@@ -23,6 +23,8 @@ class TestDataIngestion(SecurityTestCase):
   REF_SUPPLIER_PREFIX = "fake-supplier" + REFERENCE_SEPARATOR
   INVALID = "_invalid"
   REF_DATASET = "fake-dataset"
+  DOWNLOADER_USER_ID = "downloader_user"
+  CONTRIBUTOR_USER_ID = "contributor_user"
 
   def getTitle(self):
     return "DataIngestionTest"
