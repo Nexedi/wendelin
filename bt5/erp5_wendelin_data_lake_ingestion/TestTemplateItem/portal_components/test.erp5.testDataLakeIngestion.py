@@ -1,4 +1,5 @@
 from Products.ERP5Type.tests.SecurityTestCase import SecurityTestCase
+from Products.ERP5Type import Permissions
 import string
 import random
 import csv
