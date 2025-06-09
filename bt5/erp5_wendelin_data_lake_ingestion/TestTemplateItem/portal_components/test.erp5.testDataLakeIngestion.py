@@ -1,5 +1,8 @@
 from Products.ERP5Type.tests.SecurityTestCase import SecurityTestCase
 from Products.ERP5Type import Permissions
+from zExceptions import Unauthorized
+from AccessControl import getSecurityManager
+from AccessControl.SecurityManagement import setSecurityManager
 import string
 import random
 import csv
