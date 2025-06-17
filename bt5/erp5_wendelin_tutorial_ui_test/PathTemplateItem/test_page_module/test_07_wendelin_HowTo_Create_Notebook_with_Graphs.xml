@@ -69,9 +69,7 @@
         </item>
         <item>
             <key> <string>content_md5</string> </key>
-            <value>
-              <none/>
-            </value>
+            <value> <string>715da92c66aaf83767009904570d876b</string> </value>
         </item>
         <item>
             <key> <string>content_type</string> </key>

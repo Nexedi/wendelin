@@ -82,7 +82,10 @@
 <code>
 %% md
 # Time Series
-&lt;div class=&quot;plot_div&quot; id=&quot;plot_div&quot;/&gt;
+&lt;div class=&quot;data_info&quot; id=&quot;data_info&quot;&gt&lt;div/&gt
+
+&lt;div class=&quot;plot_div&quot; id=&quot;plot_div&quot;/&gt&lt;div/&gt
+
 
 
 %% fetch
@@ -409,8 +412,9 @@ plot();</code>
 <pre>
 %% md
 # Time Series
-&lt;div class=&quot;plot_div&quot; id=&quot;plot_div&quot;/&gt;
+&lt;div class=&quot;data_info&quot; id=&quot;data_info&quot;&gt&lt;/div&gt
 
+&lt;div class=&quot;plot_div&quot; id=&quot;plot_div&quot;&gt&lt;/div&gt
 
 %% fetch
 js: jio.js
@@ -444,6 +448,7 @@ gadget = {
 }
 
 var graph = document.getElementById(&#39;plot_div&#39;),
+&nbsp; data_info = document.getElementById(&#39;data_info&#39;),
 &nbsp; graph_data = [],
 &nbsp; label_list = [&quot;date&quot;, &quot;humidity_min&quot;,&quot;humidity_mean&quot;,&quot;humidity_max&quot;, &quot;pressure_min&quot;,&quot;pressure_mean&quot;,&quot;pressure_max&quot;, &quot;temperature_min&quot;,&quot;temperature_mean&quot;, &quot;temperature_max&quot;];
 
@@ -497,9 +502,11 @@ function getData(start_date, stop_date){
 &nbsp; &nbsp; interval,
 &nbsp; &nbsp; frequency,
 &nbsp; &nbsp; start_index,
+&nbsp; &nbsp; message,
 &nbsp; &nbsp; stop_index,
 &nbsp; &nbsp; array_id;
-
+&nbsp; message = 'Start Date:' + start_date + 'Stop Date:' + stop_date + '\n';
+&nbsp; data_info.innerHTML = message;
 &nbsp; &nbsp;if (stop_date === undefined) {
 &nbsp; &nbsp; &nbsp;frequency = 30000;
 &nbsp; &nbsp; &nbsp;start_index = 0;
@@ -516,6 +523,7 @@ function getData(start_date, stop_date){
 &nbsp; &nbsp; &nbsp; frequency = 60;
 &nbsp; &nbsp; }
 &nbsp; }
+&nbsp; message = message + 'Frequency: ' + frequency + '\n';
 &nbsp; return jio.allDocs({
 &nbsp; &nbsp; query: &#39;portal_type:&quot;Data Analysis Line&quot; AND &#39; +
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&#39;title: &quot;Resampled Array (&#39; + frequency + &#39; Seconds)&quot; AND &#39; +
@@ -532,6 +540,8 @@ function getData(start_date, stop_date){
 &nbsp; &nbsp; })
 &nbsp; &nbsp; .push(function (result) {
 &nbsp; &nbsp; &nbsp; array_id = result.data.rows[0].id;
+&nbsp; &nbsp; &nbsp; message = message + 'Data Array:' + array_id;
+&nbsp; &nbsp; &nbsp; data_info.innerHTML = message;
 &nbsp; &nbsp; &nbsp; return wendelin.getArrayRawSlice(gadget, array_id, 0, 1);
 &nbsp; &nbsp; })
 &nbsp; &nbsp; .push(function (result) {
