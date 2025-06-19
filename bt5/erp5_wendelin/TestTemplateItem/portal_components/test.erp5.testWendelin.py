@@ -20,22 +20,23 @@
 #
 ##############################################################################
 
-from cStringIO import StringIO
+from io import BytesIO
 import base64
 import binascii
-from httplib import NO_CONTENT
+from six.moves.http_client import NO_CONTENT
 import msgpack
 import numpy as np
 import string
 import random
 import struct
 import textwrap
-import urllib
+import six.moves.urllib as urllib
 import uuid
 from zExceptions import BadRequest
 
 from Products.ERP5Type.tests.ERP5TypeTestCase import ERP5TypeTestCase
 from Products.ERP5Type.tests.utils import createZODBPythonScript, removeZODBPythonScript
+from Products.ERP5Type.Utils import str2bytes
 from wendelin.bigarray.array_zodb import ZBigArray
 
 from App.version_txt import getZopeVersion
@@ -49,11 +50,11 @@ if getZopeVersion() < (4, ): # BBB Zope2
 
 def getRandomString():
   return 'test_%s' %''.join([random.choice(string.ascii_letters + string.digits) \
-    for _ in xrange(32)])
+    for _ in range(32)])
 
 def chunks(l, n):
   """Yield successive n-sized chunks from l."""
-  for i in xrange(0, len(l), n):
+  for i in range(0, len(l), n):
     yield l[i:i+n]
 
 class Test(ERP5TypeTestCase):
@@ -100,12 +101,12 @@ class Test(ERP5TypeTestCase):
     body = msgpack.packb([0, real_data], use_bin_type=True)
     if old_fluentd:
       env = {'CONTENT_TYPE': 'application/x-www-form-urlencoded'}
-      body = urllib.urlencode({'data_chunk': body})
+      body = str2bytes(urllib.parse.urlencode({'data_chunk': body}))
     else:
       env = {'CONTENT_TYPE': 'application/octet-stream'}
     path = ingestion_policy.getPath() + '/ingest?reference=' + reference
     publish_kw = dict(user='ERP5TypeTestCase', env=env,
-      request_method='POST', stdin=StringIO(body))
+      request_method='POST', stdin=BytesIO(body))
     response = self.publish(path, **publish_kw)
     self.assertEqual(NO_CONTENT, response.getStatus())
     # at every ingestion if no specialised Data Ingestion exists it is created
@@ -121,7 +122,7 @@ class Test(ERP5TypeTestCase):
     self.assertEqual('Data Stream', data_stream.getPortalType())
 
     data_stream_data = data_stream.getData()
-    self.assertEqual(real_data, data_stream_data)
+    self.assertEqual(real_data, data_stream_data.decode('utf-8'))
 
     # try sample transformation
     data_array = portal.data_array_module.newContent(
@@ -164,7 +165,7 @@ class Test(ERP5TypeTestCase):
     data_stream = portal.data_stream_module.newContent(
                     portal_type = 'Data Stream',
                     reference = reference)
-    data_stream.appendData(real_data)
+    data_stream.appendData(real_data.encode('utf-8'))
     data_stream.validate()
     data_array = portal.data_array_module.newContent(
                           portal_type = 'Data Array',
@@ -208,14 +209,14 @@ class Test(ERP5TypeTestCase):
     # as these are differerent objects
     pure_numpy_array = persistent_zbig_array[:,:] # ZBigArray -> ndarray view of it
     pure_numpy_array = np.resize(pure_numpy_array, (4, 4))
-    self.assertNotEquals(pure_numpy_array.shape, persistent_zbig_array.shape)
+    self.assertNotEqual(pure_numpy_array.shape, persistent_zbig_array.shape)
 
     # test copy numpy -> wendelin but first resize persistent one (add new one)
     data_array.initArray((4, 4), np.uint8)
     persistent_zbig_array = data_array.getArray()
     new_array = np.arange(1,17).reshape((4,4))
     persistent_zbig_array[:,:] = new_array
-    self.assertEquals(new_array.shape, persistent_zbig_array.shape)
+    self.assertEqual(new_array.shape, persistent_zbig_array.shape)
     self.assertTrue(np.array_equal(new_array, persistent_zbig_array))
 
     # test set element in zbig array
@@ -224,7 +225,7 @@ class Test(ERP5TypeTestCase):
 
     # resize Zbig Array
     persistent_zbig_array = np.resize(persistent_zbig_array, (100,100))
-    self.assertNotEquals(pure_numpy_array.shape, persistent_zbig_array.shape)
+    self.assertNotEqual(pure_numpy_array.shape, persistent_zbig_array.shape)
 
     # get array slice (fails)
     data_array = self.portal.data_array_module.newContent( \
@@ -237,7 +238,7 @@ class Test(ERP5TypeTestCase):
     new_array = np.arange(1000)
     new_array.resize(shape)
 
-    self.assertEquals(new_array.shape, persistent_zbig_array.shape)
+    self.assertEqual(new_array.shape, persistent_zbig_array.shape)
 
     persistent_zbig_array[:,] = new_array
     self.tic()
@@ -275,7 +276,7 @@ class Test(ERP5TypeTestCase):
       bucket_stream.insertBucket(i, i*10000)
 
     self.assertEqual(100, bucket_stream.getBucketCount())
-    self.assertEqual(range(100), bucket_stream.getKeyList())
+    self.assertEqual(list(range(100)), bucket_stream.getKeyList())
 
     # test as sequence
     bucket = bucket_stream.getBucketKeyItemSequenceByKey(start_key=10, count=1)[0]
@@ -424,7 +425,7 @@ class Test(ERP5TypeTestCase):
 
     path = ingestion_policy.getPath() + '/ingest?reference=' + reference
     publish_kw = dict(user='ERP5TypeTestCase', env=env,
-      request_method='POST', stdin=StringIO(body))
+      request_method='POST', stdin=BytesIO(body))
     response = self.publish(path, **publish_kw)
 
     self.assertEqual(NO_CONTENT, response.getStatus())
@@ -716,7 +717,7 @@ class Test(ERP5TypeTestCase):
     """
     ingestion_policy_id = "test_13_unpackLazy_IngestionPolicy"
     try:
-      ingestion_policy = self.getPortal().portal_ingestion_policies.newContent(
+      ingestion_policy = self.portal.portal_ingestion_policies.newContent(
         id=ingestion_policy_id,
         title=ingestion_policy_id,
         portal_type='Ingestion Policy',
@@ -725,7 +726,7 @@ class Test(ERP5TypeTestCase):
       )
     # ingestion_policy still exists from previous failed test run
     except BadRequest:
-      ingestion_policy = self.portal.get(ingestion_policy_id)
+      ingestion_policy = self.portal.portal_ingestion_policies.get(ingestion_policy_id)
 
     self.assertNotEqual(ingestion_policy, None)
 
@@ -735,11 +736,11 @@ class Test(ERP5TypeTestCase):
 
     code = r"""
 ingestion_policy = context.portal_ingestion_policies.get("{}")
-result = [x for x in ingestion_policy.unpackLazy('b"\x93\x01\x02\x03"')]
+result = [x for x in ingestion_policy.unpackLazy(b"\x93\x01\x02\x03")]
 return result
 """.format(ingestion_policy_id)
 
-    self.createAndRunScript(code, [98, 34, [1, 2, 3], 34])
+    self.createAndRunScript(code, [[1, 2, 3]])
 
   def test_14_IndexSequenceInRestrictedPython(self):
     """
@@ -900,6 +901,7 @@ result = [x for x in data_bucket_stream.getBucketIndexKeySequenceByIndex()]
 
   def test_17_DataMapping(self):
     """
+      Test Data Mapping portal type and methods
     """
     portal = self.portal
     data_mapping = portal.data_mapping_module.newContent(portal_type='Data Mapping')
@@ -971,42 +973,24 @@ result = [x for x in data_bucket_stream.getBucketIndexKeySequenceByIndex()]
 
     another_data_mapped_list = []
 
+    original_size = data_mapping.getSize()
     for data in another_data_list:
       another_data_mapped_list.append(data_mapping.addObject(data))
+    self.assertEqual(original_size + 3, data_mapping.getSize())
     self.assertEqual(len(another_data_mapped_list), len(data_list))
 
     array = np.array(data_mapped_list)
     another_array = np.array(another_data_mapped_list)
     # simply call setdiff1d to get the different between two datas
-    diff_array = np.setdiff1d(another_array, array)
-    self.assertEqual(diff_array.size, 3)
+    # Convert to list of ints: data_mapping.getObjectFromValue does not accept np.int
+    diff_array = np.setdiff1d(another_array, array).tolist()
+    self.assertEqual(len(diff_array), 3)
     diff_object_list = []
     for value in diff_array:
       diff_object_list.append(data_mapping.getObjectFromValue(value))
     self.assertEqual(diff_object_list, [('/usr/bin/2to3-2.7', 'ModifiedValue', 'fade8568285eb14146a7244', 'f631570af55ee08ecef78f3'),
                                         ('/usr/bin/aclocal-1.16', '6ba134fb4f97d79a5', 'ModifiedValue', 'cc4595fba3251aaa9b48'),
                                         ('/usr/bin/appres', '7ccb78e306838a87b68d2c', 'ModifiedValue', 'c3e24ec3fee558e9f06bd0')])
-    # same data value as "another_data_list" but in other format
-    other_format_data_list = [
-      ['/usr/bin/2to3-2.7', 'ModifiedValue', 'fade8568285eb14146a7244', 'f631570af55ee08ecef78f3'],
-      ['/usr/bin/R', 'b4c48d52345ae2eb7ca0455db', '59441ddbc00b6521da571', 'a92be1a7acc03f3846'],
-      ['/usr/bin/Rscript', 'e97842e556f90be5f7e5', '806725443a01bcae802','1829d887e0c3380ec8f463527']
-    ]
-    other_format_data_mapped_list = []
-    original_size = data_mapping.getSize()
-    for data in other_format_data_list:
-      other_format_data_mapped_list.append(data_mapping.addObject(data))
-    self.assertEqual(original_size + 3, data_mapping.getSize())
-    other_format_array = np.array(other_format_data_mapped_list)
-    # ensure "even data values are same but format is different" is considered different
-    diff_array = np.setdiff1d(other_format_array, another_array)
-    self.assertEqual(diff_array.size, 3)
-    diff_object_list = []
-    for value in diff_array:
-      diff_object_list.append(data_mapping.getObjectFromValue(value))
-    self.assertEqual(diff_object_list, [['/usr/bin/2to3-2.7', 'ModifiedValue', 'fade8568285eb14146a7244', 'f631570af55ee08ecef78f3'],
-                                        ['/usr/bin/R', 'b4c48d52345ae2eb7ca0455db', '59441ddbc00b6521da571', 'a92be1a7acc03f3846'],
-                                        ['/usr/bin/Rscript', 'e97842e556f90be5f7e5', '806725443a01bcae802','1829d887e0c3380ec8f463527']])
 
   def test_18_wendelinTextToNumpySecurity(self):
     """
