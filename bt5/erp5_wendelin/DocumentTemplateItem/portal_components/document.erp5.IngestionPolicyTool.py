@@ -23,7 +23,7 @@
 ##############################################################################
 from AccessControl import ClassSecurityInfo
 from Products.ERP5Type.Core.Folder import Folder
-from cStringIO import StringIO
+from io import BytesIO
 import msgpack
 from warnings import warn
 
@@ -55,11 +55,11 @@ class IngestionPolicyTool(Folder):
       XXX: use a simple deterministic approach to detect type of data using
       https://github.com/fluent/fluentd/blob/master/lib/fluent/plugin/in_forward.rb#L205
     """
-    data_file = StringIO(data)
+    data_file = BytesIO(data)
     msgpack_list = msgpack.Unpacker(data_file)
     # we need pure primitive list so we avoid zope security in restricted 
     # script environment, but we loose lazyness
-    return [x for x in msgpack_list]
+    return list(msgpack_list)
 
   def unpack_lazy(self, data, use_list=True):
     warn(
@@ -73,5 +73,5 @@ class IngestionPolicyTool(Folder):
       Lazy unpack data, usable in restructed environment
       Setting use_list=False uses tuples instead of lists which is faster
     """
-    data_file = StringIO(data)
-    return (x for x in msgpack.Unpacker(data_file, use_list=use_list))
+    data_file = BytesIO(data)
+    return tuple(msgpack.Unpacker(data_file, use_list=use_list))
