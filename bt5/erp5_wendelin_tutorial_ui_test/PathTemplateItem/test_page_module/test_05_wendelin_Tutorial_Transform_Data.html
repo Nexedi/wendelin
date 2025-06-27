@@ -855,7 +855,7 @@ ndarray = df.to_records()
 
 zbigarray = out_data_array.getArray()
 if zbigarray is None:
-  zbigarray = out_data_array.initArray(shape=(0,), dtype=ndarray.dtype)
+  zbigarray = out_data_array.initArray(shape=(0,), dtype=ndarray.dtype.descr)
 
 zbigarray.append(ndarray)
 

@@ -1084,7 +1084,7 @@ mask_zero = (df==0).all(axis=1)
 default_data[&#39;date&#39;][mask_zero] = 0
 
 if default_zbigarray is None:
-  default_zbigarray = default_data_array.initArray(shape=(0,), dtype=default_data.dtype)
+  default_zbigarray = default_data_array.initArray(shape=(0,), dtype=default_data.dtype.descr)
 
 if default_zbigarray.shape[0] == 0:
   default_zbigarray.append(default_data)
@@ -1112,7 +1112,7 @@ for out_array in out_array_list[1:]:
   out_array_resolution = out_array[&quot;resolution&quot;]
   out_zbigarray = out_data_array.getArray()
   if out_zbigarray is None:
-    out_zbigarray = out_data_array.initArray(shape=(0,), dtype=default_data.dtype)
+    out_zbigarray = out_data_array.initArray(shape=(0,), dtype=default_data.dtype.descr)
 
   if out_zbigarray.shape[0] == 0:
     start_index = 0
@@ -1455,7 +1455,7 @@ mask_zero = (df==0).all(axis=1)<br />
 default_data[&#039;date&#039;][mask_zero] = 0<br />
 <br />
 if default_zbigarray is None:<br />
-&nbsp;&nbsp;default_zbigarray = default_data_array.initArray(shape=(0,), dtype=default_data.dtype)<br />
+&nbsp;&nbsp;default_zbigarray = default_data_array.initArray(shape=(0,), dtype=default_data.dtype.descr)<br />
 <br />
 if default_zbigarray.shape[0] == 0:<br />
 &nbsp;&nbsp;default_zbigarray.append(default_data)<br />
@@ -1483,7 +1483,7 @@ for out_array in out_array_list[1:]:<br />
 &nbsp;&nbsp;out_array_resolution = out_array[&quot;resolution&quot;]<br />
 &nbsp;&nbsp;out_zbigarray = out_data_array.getArray()<br />
 &nbsp;&nbsp;if out_zbigarray is None:<br />
-&nbsp;&nbsp; &nbsp;out_zbigarray = out_data_array.initArray(shape=(0,), dtype=default_data.dtype)<br />
+&nbsp;&nbsp; &nbsp;out_zbigarray = out_data_array.initArray(shape=(0,), dtype=default_data.dtype.descr)<br />
 <br />
 &nbsp;&nbsp;if out_zbigarray.shape[0] == 0:<br />
 &nbsp;&nbsp; &nbsp;start_index = 0<br />
