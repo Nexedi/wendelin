@@ -56,7 +56,7 @@ for key in [x for x in keys if x not in end]:
     zbigarray = out_data_array.getArray()
     
     if zbigarray is None:
-      zbigarray = out_data_array.initArray(shape=(0,), dtype=ndarray.dtype.fields)
+      zbigarray = out_data_array.initArray(shape=(0,), dtype=ndarray.dtype)
     start_array = zbigarray.shape[0]
     zbigarray.append(ndarray)
 
