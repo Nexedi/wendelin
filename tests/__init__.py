@@ -89,7 +89,7 @@ class WendelinBusinessTemplateCodingStyleTestSuite(WendelinERP5):
   Run coding style test on all business templates.
   """
 
-  def getTestList(self):
+  def _getTestList(self):
     test_list = [
       os.path.basename(path)
       for path in chain(
@@ -106,6 +106,10 @@ class WendelinBusinessTemplateCodingStyleTestSuite(WendelinERP5):
 
     return test_list
 
+  def getTestList(self):
+    test_list = self._getTestList()
+    return [x for x in test_list if 'WendelinTelecom' not in x]
+
   def run(self, full_test):
     if full_test.startswith("Python3Style."):
       return self.runUnitTest('Python3StyleTest', TESTED_PRODUCT=full_test[13:])
@@ -119,3 +123,8 @@ class WendelinBusinessTemplateCodingStyleTestSuite(WendelinERP5):
     return log_directory
 
   pass
+
+class WendelinTelecomBusinessTemplateCodingStyleTestSuite(WendelinBusinessTemplateCodingStyleTestSuite):
+  def getTestList(self):
+    test_list = self._getTestList()
+    return [x for x in test_list if 'WendelinTelecom' in x]
