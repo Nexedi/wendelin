@@ -54,17 +54,11 @@ class IngestionPolicy(Folder):
     """
     environ = self.REQUEST.environ
     method = environ.pop('REQUEST_METHOD')
-    try:
-      if method != 'POST':
-        raise BadRequest('Only POST request is allowed.')
-      if self.REQUEST._file is not None:
-        assert not self.REQUEST.form, self.REQUEST.form # Are cgi and HTTPRequest fixed ?
-        # Query string was ignored so parse again, faking a GET request.
-        # Such POST is legit: https://stackoverflow.com/a/14710450
-        self.REQUEST.processInputs()
-        self.REQUEST.form['data_chunk'] = self.REQUEST._file.read()
-    finally:
-      environ['REQUEST_METHOD'] = method
+
+    if method != 'POST':
+      raise BadRequest('Only POST request is allowed.')
+
+    environ['REQUEST_METHOD'] = method
 
     tag_parsing_script_id = self.getScriptId()
 
@@ -81,7 +75,14 @@ class IngestionPolicy(Folder):
       return tag_parsing_script(**kw)
 
     reference = self.REQUEST.get('reference')
-    data_chunk = self.REQUEST.get('data_chunk')
+    data_chunk = None
+    # Compatibility with old fluentd
+    if 'CONTENT_TYPE' in environ and environ['CONTENT_TYPE'] == 'application/x-www-form-urlencoded':
+      data_chunk = self.REQUEST.form['data_chunk'].encode('utf-8', 'surrogateescape')
+    elif self.REQUEST._file is not None:
+      data_chunk = self.REQUEST._file.read()
+    else:
+      data_chunk = self.REQUEST.get('data_chunk')
 
     # the script parses the fluentd tag (reference) and returns a dictionary
     # which describes the ingestion movement. Then we use this dictionary to
