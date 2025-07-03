@@ -2,6 +2,7 @@ import binascii
 import struct
 import numpy as np
 from io import BytesIO
+import six
 
 MAGIC_PREFIX = b'\x92WEN'
 MAGIC_LEN = len(MAGIC_PREFIX) +2
@@ -11,11 +12,17 @@ HEADER_LEN = MAGIC_LEN + CR32_LEN
 # Check that it is Wendelin data
 magic_str = data[0:MAGIC_LEN]
 assert magic_str[:-2] == MAGIC_PREFIX
-major, minor = magic_str[-2:]
+if six.PY2:
+  major, minor = map(ord, magic_str[-2:])
+else:
+  major, minor = magic_str[-2:]
 assert major == 0 and minor == 1
 
 # Verify unsigned crc32 checksum
-checksum = struct.unpack('<I', data[MAGIC_LEN:HEADER_LEN])[0]
+if six.PY2:
+  checksum = struct.unpack('<i', data[MAGIC_LEN:HEADER_LEN])[0]
+else:
+  checksum = struct.unpack('<I', data[MAGIC_LEN:HEADER_LEN])[0]
 assert checksum == binascii.crc32(data[HEADER_LEN:])
 io = BytesIO()
 io.write(data[HEADER_LEN:])
