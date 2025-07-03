@@ -83,7 +83,7 @@ class ZBigArrayConverter(object):
     '''
     if not item or isinstance(item, type(None)):
       return 0
-    if normalize and isinstance(item, (str, unicode)):
+    if normalize and isinstance(item, (bytes, str)):
       return 0
     elif isinstance(item, DateTime):
       return np.datetime64(item.ISO8601())
@@ -123,11 +123,11 @@ class DtypeIdentifier(object):
       for _ in range(10):
         dtypes.append('a90')
       for attribute in self.CATEGORY_LIST:
-        names.append('%s_category' % attribute)    
+        names.append('%s_category' % attribute)
     
     return np.dtype({
       'names': names, 
-      'formats': map(np.dtype, dtypes)
+      'formats': list(map(np.dtype, dtypes))
     })
 
   def _columns_type_to_dtypes(self):
@@ -195,7 +195,7 @@ class ZBigArrayExtender(object):
   def _filterItem(self, item, normalize=False):
     if not item or isinstance(item, type(None)):
       return 0
-    if normalize and isinstance(item, (str, unicode)):
+    if normalize and isinstance(item, (bytes, str)):
       return 0
     elif isinstance(item, DateTime):
       return np.datetime64(item.ISO8601())
@@ -277,7 +277,7 @@ class CategoryProcessor(object):
         category_uids = []
         for category in categories:
           try:
-            category_uids.append(str(categories_df.ix[category]['uid']))
+            category_uids.append(str(categories_df.loc[category]['uid']))
           except KeyError:
             if verbose:
               print('Category %s not found from %s' % (category, field_category_name))
@@ -528,6 +528,7 @@ class InventoryDataFrameQuery(object):
     for key in columns_values.keys():
       if key == 'date':
         range_ = columns_values[key]['range']
+        date_filter = None
         if range_ == 'minmax':
           lower_limit = columns_values[key]['query'][0]
           upper_limit = columns_values[key]['query'][1]
