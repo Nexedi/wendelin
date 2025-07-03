@@ -59,7 +59,7 @@ class IngestionPolicyTool(Folder):
     msgpack_list = msgpack.Unpacker(data_file)
     # we need pure primitive list so we avoid zope security in restricted 
     # script environment, but we loose lazyness
-    return list(msgpack_list)
+    return [x for x in msgpack_list]
 
   def unpack_lazy(self, data, use_list=True):
     warn(
@@ -74,4 +74,4 @@ class IngestionPolicyTool(Folder):
       Setting use_list=False uses tuples instead of lists which is faster
     """
     data_file = BytesIO(data)
-    return tuple(msgpack.Unpacker(data_file, use_list=use_list))
+    return (x for x in msgpack.Unpacker(data_file, use_list=use_list))
