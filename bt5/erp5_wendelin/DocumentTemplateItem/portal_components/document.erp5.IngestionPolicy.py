@@ -24,6 +24,8 @@
 from AccessControl import ClassSecurityInfo
 from Products.ERP5Type.Core.Folder import Folder
 from zExceptions import BadRequest, NotFound
+import six
+
 
 class IngestionPolicy(Folder):
   """
@@ -57,14 +59,20 @@ class IngestionPolicy(Folder):
     try:
       if method != 'POST':
         raise BadRequest('Only POST request is allowed.')
-      if self.REQUEST._file is not None:
-        assert not self.REQUEST.form, self.REQUEST.form # Are cgi and HTTPRequest fixed ?
-        # Query string was ignored so parse again, faking a GET request.
-        # Such POST is legit: https://stackoverflow.com/a/14710450
-        self.REQUEST.processInputs()
+      if 'data_chunk' in self.REQUEST.form:
+        if six.PY3:
+          self.REQUEST.form['data_chunk'] = self.REQUEST.form['data_chunk'].encode('utf-8', 'surrogateescape')
+      elif self.REQUEST._file is not None:
+        if six.PY2:
+          assert not self.REQUEST.form, self.REQUEST.form # cgi and HTTPRequest seems fixed in py3
+          # Query string was ignored so parse again, faking a GET request.
+          # Such POST is legit: https://stackoverflow.com/a/14710450
+          self.REQUEST.processInputs()
         self.REQUEST.form['data_chunk'] = self.REQUEST._file.read()
+
     finally:
       environ['REQUEST_METHOD'] = method
+
 
     tag_parsing_script_id = self.getScriptId()
 
@@ -82,6 +90,7 @@ class IngestionPolicy(Folder):
 
     reference = self.REQUEST.get('reference')
     data_chunk = self.REQUEST.get('data_chunk')
+
 
     # the script parses the fluentd tag (reference) and returns a dictionary
     # which describes the ingestion movement. Then we use this dictionary to
