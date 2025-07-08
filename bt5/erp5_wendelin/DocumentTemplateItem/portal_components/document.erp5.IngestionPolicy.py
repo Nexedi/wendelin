@@ -68,7 +68,7 @@ class IngestionPolicy(Folder):
           self.REQUEST.processInputs()
           self.REQUEST.form['data_chunk'] = self.REQUEST._file.read()
       else:
-        if 'data_chunk' in self.REQUEST.form:
+        if ('data_chunk' in self.REQUEST.form) and self.REQUEST.form['data_chunk']:
           # old fluentd, data is urlencoded and zope have decoded the bytes as latin-1
           # https://github.com/zopefoundation/Zope/blob/031706db694b310d5b71829b22389c470f9b7a62/src/ZPublisher/HTTPRequest.py#L1518
           # re-encode to get the inital bytes
