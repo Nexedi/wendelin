@@ -25,7 +25,7 @@ from AccessControl import ClassSecurityInfo
 from Products.ERP5Type.Core.Folder import Folder
 from zExceptions import BadRequest, NotFound
 import six
-
+from six.moves.urllib.parse import unquote_to_bytes
 
 class IngestionPolicy(Folder):
   """
@@ -56,19 +56,28 @@ class IngestionPolicy(Folder):
     """
     environ = self.REQUEST.environ
     method = environ.pop('REQUEST_METHOD')
+
     try:
       if method != 'POST':
         raise BadRequest('Only POST request is allowed.')
-      if 'data_chunk' in self.REQUEST.form:
-        if six.PY3:
-          self.REQUEST.form['data_chunk'] = self.REQUEST.form['data_chunk'].encode('utf-8', 'surrogateescape')
-      elif self.REQUEST._file is not None:
-        if six.PY2:
-          assert not self.REQUEST.form, self.REQUEST.form # cgi and HTTPRequest seems fixed in py3
+      #keep old behavior
+      if six.PY2:
+        if self.REQUEST._file is not None:
+          assert not self.REQUEST.form, self.REQUEST.form # Are cgi and HTTPRequest fixed ?
           # Query string was ignored so parse again, faking a GET request.
           # Such POST is legit: https://stackoverflow.com/a/14710450
           self.REQUEST.processInputs()
-        self.REQUEST.form['data_chunk'] = self.REQUEST._file.read()
+          self.REQUEST.form['data_chunk'] = self.REQUEST._file.read()
+      else:
+        # old fluentd, data is urlencoded
+        if 'data_chunk' in self.REQUEST.form:
+          prefix = b'data_chunk='
+          data_chunk = self.REQUEST._file.read()
+          assert data_chunk.startswith(prefix)
+          # URL-decode it to get raw bytes
+          self.REQUEST.form['data_chunk'] = unquote_to_bytes(data_chunk[len(prefix):])
+        elif self.REQUEST._file is not None:
+          self.REQUEST.form['data_chunk'] = self.REQUEST._file.read()
 
     finally:
       environ['REQUEST_METHOD'] = method
