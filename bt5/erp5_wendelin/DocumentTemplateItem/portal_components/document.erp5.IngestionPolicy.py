@@ -75,7 +75,7 @@ class IngestionPolicy(Folder):
           # Latin-1 can decode any byte into a valide/invalide Unicode character
           # But it can only encode valide Unicode code points 0x00 to 0xFF (0-255).
           # let's only handle surrogateescape error
-          self.REQUEST.form['data_chunk'] = self.REQUEST.form['data_chunk'].encode('latin-1', errors='surrogateescape')
+          self.REQUEST.form['data_chunk'] = self.REQUEST.form['data_chunk'].encode('latin-1')
         else:
           self.REQUEST.form['data_chunk'] = self.REQUEST.get('BODY')
 
