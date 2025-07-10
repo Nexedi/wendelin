@@ -25,8 +25,7 @@ from AccessControl import ClassSecurityInfo
 from Products.ERP5Type.Core.Folder import Folder
 from zExceptions import BadRequest, NotFound
 import six
-from cgi import parse_header
-
+from Products.ERP5Type.Utils import parse_http_header
 
 class IngestionPolicy(Folder):
   """
@@ -74,7 +73,7 @@ class IngestionPolicy(Folder):
           # https://github.com/zopefoundation/Zope/blob/031706db694b310d5b71829b22389c470f9b7a62/src/ZPublisher/HTTPRequest.py#L569-L571
           # re-encode to get the inital bytes
           content_type = self.REQUEST.environ.get('CONTENT_TYPE')
-          _, params = parse_header(content_type)
+          _, params = parse_http_header(content_type)
           used_charset = params.get('charset', self.REQUEST.charset)
           self.REQUEST.form['data_chunk'] = self.REQUEST.form['data_chunk'].encode(used_charset, errors='surrogateescape')
         else:
