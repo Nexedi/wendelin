@@ -1,3 +1,0 @@
-The default security model of Wendelin Data Lake which can be summarized as:
-- All can download Data Sets
-- Only authenticated users may upload Data Sets
